@@ -1,0 +1,26 @@
+<web-app
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+  
+	<servlet>
+		<servlet-name>Controler</servlet-name>
+		<servlet-class>src.servlets.Controler</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>Controler</servlet-name>
+		<url-pattern>/controler</url-pattern>
+	</servlet-mapping>	
+	
+	<servlet>
+		<servlet-name>Initialise</servlet-name>
+		<servlet-class>src.beans.Initialise</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>Initialise</servlet-name>
+		<url-pattern>/initialise</url-pattern>
+	</servlet-mapping>	
+</web-app>
