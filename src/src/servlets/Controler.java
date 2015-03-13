@@ -45,15 +45,11 @@ import src.model.TreatmentData;
 @MultipartConfig
 public class Controler extends HttpServlet {
 
-    private ArrayList<File> listFiles;
-    private ArrayList<File> rasterFiles;
     
-    private String filePath;
-    private File file ;
-    private int maxMemSize = 4 * 1024;
-    private int maxFileSize = 50 * 1024;
+    private boolean inputFilesOK;
     
-    private File synonymFile;	
+    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/"; 
+    private Initialise init;
     private boolean synonyms;
     private boolean tdwg4Code;
     private boolean worldCell;
@@ -66,8 +62,11 @@ public class Controler extends HttpServlet {
     
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
 	dataTreatment = new TreatmentData();
+	
 	try {
-	    this.initialise(request, response);
+	    inputFilesOK = this.initialiseInputFiles(request, response);
+	    this.initialiseRastersFiles(request, response);
+	    
 	} catch (SQLException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
@@ -75,38 +74,15 @@ public class Controler extends HttpServlet {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
+	if(inputFilesOK){
+	    this.launchWorkflow();
+	}
     }
     
-    public void control() throws IOException{
-	if(this.listFiles.size() >= 1){
-	    System.out.println("random : " + dataTreatment.generateRandomKey());
-	    for(int i = 0 ; i < listFiles.size() ; i++){
-		int idFile = i + 1;
-        		
-		List<String> linesInputFile = dataTreatment.initialiseFile(listFiles.get(i), idFile);
-        			
-        	File inputFileModified = dataTreatment.createTemporaryFile(linesInputFile, idFile);
-        	String sqlInsert = dataTreatment.createSQLInsert(inputFileModified, linesInputFile);
-        	dataTreatment.createTableDarwinCoreInput(sqlInsert);
-	    }	
-	}
-	else{
-		System.out.println("Erreur, il n'y a pas de fichier");	
-	}
-	dataTreatment.deleteWrongIso2();
-	dataTreatment.createTableClean();
-	File wrongCoordinatesFile = dataTreatment.deleteWrongCoordinates();
-	File wrongGeospatial = dataTreatment.deleteWrongGeospatial();
+    
+    public boolean initialiseInputFiles(HttpServletRequest request, HttpServletResponse response) throws Exception{
 	
-	
-	dataTreatment.getPolygonTreatment();
-	
-	
-    }
-    /* These methods are called in vue (Ajax)*/
-    public void initialise(HttpServletRequest request, HttpServletResponse response) throws Exception{
-	
-	Initialise init = new Initialise();
+	init = new Initialise();
 	
 	// on prépare pour l'envoie par la mise en oeuvre en mémoire
 	DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
@@ -119,30 +95,78 @@ public class Controler extends HttpServlet {
 	    while (iterator.hasNext()) {
 		DiskFileItem item = (DiskFileItem) iterator.next();
 		String input = "inp" + nbFiles;
+
+		if(!new File(DIRECTORY_PATH + "/temp/").exists()){
+		    new File(DIRECTORY_PATH + "/temp/").mkdirs();
+		    if(!new File(DIRECTORY_PATH + "/temp/data/").exists()){
+			    new File(DIRECTORY_PATH + "/temp/data/").mkdirs();
+			    
+			}
+		}
 		
 		if(item.getFieldName().equals(input)){
 		    System.out.println("if : " + item.getFieldName());
 		    String fileExtensionName = item.getName();
 		    fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
 		    String fileName = item.getStoreLocation().getName();
-		    File file = new File(System.getProperty("user.dir") + "/workspace/WebWorkflowCleanData/data/" + fileName + "." + fileExtensionName);
+		    File file = new File(DIRECTORY_PATH + "/temp/data/" + fileName + "." + fileExtensionName);
 		    item.write(file);
 		    inputFilesList.add(file);
 		    nbFiles =+ 1;
 		}	
 	    }
-	    init.setInputFile(inputFilesList);
+	    init.setInputFilesList(inputFilesList);
 	}
 	catch(Exception e){
 	    e.printStackTrace();
+	    return false;
 	}
 
+	if(init.getInputFilesList().size() != 0){
+	    return true;
+	}
+	else{
+	    return false;
+	}
     }
 	
+    public void initialiseRastersFiles(HttpServletRequest request, HttpServletResponse response){
+	
+    }
+    
+    public void initialiseSynonymsFiles(HttpServletRequest request, HttpServletResponse response){
+	
+    }
+    
+    public void initialiseOptions(HttpServletRequest request, HttpServletResponse response){
+	
+    }
+    
+    public void launchWorkflow() throws IOException{
+	dataTreatment.deleteTables();
+	for(int i = 0 ; i < init.getInputFilesList().size() ; i++){
+	    int idFile = i + 1;
+    		
+	    List<String> linesInputFile = dataTreatment.initialiseFile(init.getInputFilesList().get(i), idFile);
+	    File inputFileModified = dataTreatment.createTemporaryFile(linesInputFile, idFile);
+	    String sqlInsert = dataTreatment.createSQLInsert(inputFileModified, linesInputFile);
+	    dataTreatment.createTableDarwinCoreInput(sqlInsert);
+	}	
+	
+	dataTreatment.deleteWrongIso2();
+	dataTreatment.createTableClean();
+	File wrongCoordinatesFile = dataTreatment.deleteWrongCoordinates();
+	File wrongGeospatial = dataTreatment.deleteWrongGeospatial();
+	
+	dataTreatment.getPolygonTreatment();
+	
+    }
+   /* 
     public void initialiseRasterFile(ArrayList<File> bilFile){
 	this.rasterFiles = bilFile;
     }
-	
+
+   
     public void initialiseSynonymFile(ArrayList<File> synonymFileList){
 	if(synonymFileList.size() == 1){
 	    this.synonymFile = synonymFileList.get(0);
@@ -154,52 +178,11 @@ public class Controler extends HttpServlet {
 	    System.out.println("Default file doesn't change");
 	}
     }
-	
+   
     public void initialiseOptions(boolean synonyms, boolean tdwg4Code, boolean worldCell){
 	this.synonyms = synonyms;
 	this.tdwg4Code = tdwg4Code;
 	this.worldCell = worldCell;
     }
-    
-    public File fileToInputStreamApp(Part uploadedFile) throws IOException{
-	Random random = new Random();
-	int nbFileRandom = random.nextInt();
-	
-	InputStream content = uploadedFile.getInputStream();
-	
-	BufferedReader br = null;
-	
-	File inputFile = new File(System.getProperty("user.dir") + "/workspace/WebWorkflowCleanData/data/" + uploadedFile.getName());
-	Writer fileWriter = new FileWriter(inputFile);
-	try {
-		br = new BufferedReader(new InputStreamReader(content));
-
-
-		String line;
-		while ((line = br.readLine()) != null) {
-			fileWriter.write(line);
-		}
-
-	} catch (IOException e) {
-		e.printStackTrace();
-	} finally {
-		if (content != null) {
-			try {
-			    content.close();
-			    fileWriter.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		if (br != null) {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	return inputFile;
-    }
+    */
 }

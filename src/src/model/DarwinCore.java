@@ -132,6 +132,19 @@ public class DarwinCore {
 		return resultatID;
 	}
 	
+	public ArrayList<String> getID(){
+	    ConnectionDatabase newConnection = new ConnectionDatabase();
+		
+		ArrayList<String> messages = new ArrayList<String>();
+		messages.add("\n--- Select id line from DarwinCoreInput ---\n");
+		
+		String sqlID= "SELECT id_ FROM Workflow.DarwinCoreInput;";
+		
+		messages.addAll(newConnection.newConnection("executeQuery", sqlID));
+		ArrayList<String> resultatID = newConnection.getResultatSelect();
+		
+		return resultatID;
+	}
 	
 	/**
 	 * Get all iso2 code clean (countryCode_) from input file. 
