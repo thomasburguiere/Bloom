@@ -15,7 +15,7 @@ function addField(compteur, idAdd, typeInput){
 	inp.setAttribute('style', 'color:rgb(51,153,255); border-color:rgb(255,255,255); border-style:solid;" size="100"')
 	//créé un retour charriot
 	var br = document.createElement('br');
-	br.setAttribute('id', 'br' + nb_inp);
+	br.setAttribute('id', 'br_' + typeInput + "_" + nb_inp);
 
 	//ajoute tous les nouveaux éléments au formulaire
 	var buttonADD = document.getElementById(idAdd);
@@ -42,16 +42,21 @@ function deleteField(compteur, typeInput)
 		
 		var id = nb_inp - 1;
 		var inp = document.getElementById(typeInput + id);
-		var br = document.getElementById('br' + id);
+		var br = document.getElementById('br_' + typeInput + "_" + id);
+		//alert('br_' + typeInput + "_" + id);
 		var formulaire = document.getElementById('formulaire');
+		//alert(typeInput + id);
 		formulaire.removeChild(inp);
+		
 		formulaire.removeChild(br);
-
+		
 		if(typeInput == 'raster'){
+			//alert(typeInput + id);
 			var header = document.getElementById('header' + id);
 			formulaire.removeChild(header);
 			document.getElementById('compteur_header').value --;
 		}
+			
 		//décrémente le compteur d'input
 		document.getElementById(compteur).value --;
 	}
@@ -60,6 +65,7 @@ function deleteField(compteur, typeInput)
 function addDeleteRasterFile(){
 	var rasterOption = document.getElementById('raster').checked;
 	nb_raster = document.getElementById('compteur_raster').value;
+	nb_header = document.getElementById('compteur_header').value;
 	if(rasterOption){
 		
 		if(nb_raster == 0){
@@ -82,12 +88,17 @@ function addDeleteRasterFile(){
 	    while(nb_raster != 0){
 	    	var id = nb_raster - 1;
 	        var raster = document.getElementById('raster' + id);
-	        var br = document.getElementById('br' + id);
+	        var header = document.getElementById('header' + id);
+	        var br = document.getElementById('br_raster_' + id);
+
 	        formulaire.removeChild(raster);
+	        formulaire.removeChild(header);
 	        formulaire.removeChild(br);
 	     
 	        //décrémente le compteur d'input
 	        document.getElementById('compteur_raster').value --;
+	        document.getElementById('compteur_header').value --;
+	        nb_header--;
 	        nb_raster--;
 	    }
 	 	// supprimer les boutons "add" et "delete"
