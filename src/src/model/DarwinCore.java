@@ -70,7 +70,7 @@ public class DarwinCore {
 				newLine += "\"" + line[j] + "\",";
 			}
 			newLine += Integer.toString(idFile_) + ",0," + "";
-			System.out.println(newLine);
+			//System.out.println(newLine);
 			inputParsingFile.set(l, newLine);
 		}
 		
@@ -130,6 +130,20 @@ public class DarwinCore {
 		ArrayList<String> resultatID = newConnection.getResultatSelect();
 		
 		return resultatID;
+	}
+	
+	public ArrayList<String> getGbifIDClean(){
+		ConnectionDatabase newConnection = new ConnectionDatabase();
+		
+		ArrayList<String> messages = new ArrayList<String>();
+		messages.add("\n--- Select id line from clean ---\n");
+		
+		String sqlID= "SELECT gbifID_ FROM Workflow.Clean;";
+		
+		messages.addAll(newConnection.newConnection("executeQuery", sqlID));
+		ArrayList<String> resultatGbifID = newConnection.getResultatSelect();
+		
+		return resultatGbifID;
 	}
 	
 	public ArrayList<String> getID(){

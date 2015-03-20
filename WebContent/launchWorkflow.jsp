@@ -11,6 +11,6 @@
 <title>Launch workflow</title>
 </head>
 <body>
-	<br>Input : ${fileName}
+	<br><IMG SRC="image/<%= request.getAttribute("p") %>"/>
 </body>
 </html>

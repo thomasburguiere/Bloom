@@ -16,21 +16,25 @@ import java.util.ArrayList;
  */
 
 
-public class Initialise implements Serializable{
+public class Initialise {
 
-    private ArrayList<File> inputFilesList;
-    private ArrayList<File> inputRastersList;
-    private ArrayList<File> inputSynonymsList;
+    private ArrayList<File> inputFilesList = new ArrayList<>();
+    private ArrayList<File> inputRastersList = new ArrayList<>();
+    private ArrayList<File> inputSynonymsList = new ArrayList<>();
     
     private boolean synonym;
     private boolean tdwg4Code;
     private boolean rasterCell;
     
 
-    public Initialise(){
-	
+    public ArrayList<File> getInputFilesList() {
+        return inputFilesList;
     }
- 
+
+    public void setInputFilesList(ArrayList<File> inputFilesList) {
+        this.inputFilesList = inputFilesList;
+    }
+    
     public ArrayList<File> getInputRastersList() {
         return inputRastersList;
     }
@@ -71,12 +75,5 @@ public class Initialise implements Serializable{
         this.rasterCell = rasterCell;
     }
 
-    public ArrayList<File> getInputFilesList() {
-        return inputFilesList;
-    }
-
-    public void setInputFilesList(ArrayList<File> inputFilesList) {
-        this.inputFilesList = inputFilesList;
-    }
     
 }

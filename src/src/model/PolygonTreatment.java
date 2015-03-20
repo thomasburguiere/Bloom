@@ -110,7 +110,7 @@ public class PolygonTreatment {
 
     public String tdwg4ContainedPoint(Point geoPoint, String iso2) throws IOException{
     	GeometryJSON geometryJSON = new GeometryJSON();
-    	BufferedReader buff = new BufferedReader(new FileReader(DIRECTORY_PATH + "/tdwg4.json"));
+    	BufferedReader buff = new BufferedReader(new FileReader(DIRECTORY_PATH + "src/ressources/tdwg4.json"));
 		
 		try {
 			String line = null;
