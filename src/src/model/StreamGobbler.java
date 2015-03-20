@@ -31,11 +31,11 @@ class StreamGobbler extends Thread{
             String line=null;                        
             while ( (line = br.readLine()) != null){
                 if (pw != null){
-                	//System.out.println(line);
+                	System.out.println(line);
                 	pw.println(line);
                 }
                 
-                //System.out.println(type + ">" + line);    
+                System.out.println(type + ">" + line);    
             }
             if (pw != null){
             	pw.flush();

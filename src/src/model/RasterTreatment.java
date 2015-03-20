@@ -181,10 +181,7 @@ public class RasterTreatment {
 	    FileOutputStream fos = new FileOutputStream(validRaster);
 	    Runtime rt = Runtime.getRuntime();
 	    String [] cmdarray = {"Rscript", scriptRaster, DIRECTORY_PATH + "temp/rasterAnalyse/", dataRasterFile.getAbsolutePath(), dataInputFile.getAbsolutePath()};
-
-	    for(int i = 0 ; i < cmdarray.length ; i++){
-		System.out.println(i + "   " + cmdarray[i]);
-	    }
+	    
 	    Process proc = rt.exec(cmdarray);
 	    // any error message?
 	    // any streamGobble is a thread
