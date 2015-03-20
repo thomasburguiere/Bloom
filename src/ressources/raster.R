@@ -1,10 +1,9 @@
 #!/usr/bin/env Rscript
+require(raster)
+require(rgdal)
 
 # sudo apt-get install libgdal1-dev libproj-dev
 # sudo apt-file update
-# install.packages('rgdal')
-require(raster)
-require(rgdal)
 
 ######################## MY VERSION ####################################################
 
