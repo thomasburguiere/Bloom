@@ -8,7 +8,6 @@
 	<p>Welcome to the clean data workflow !
 	<form action="controler" method="post" enctype="multipart/form-data" name="formulaire" id="formulaire" accept-charset=utf-8>
 		<script type="text/javascript" src="functions.js">
-			
 		</script>
 		<br> 
 			<input id="compteur_inp" type="hidden" name="compteur_inp" value=1 /> 
@@ -30,8 +29,26 @@
 				Check data in raster cells <br>
 			<input type="checkbox" id="tdwg4" name="tdwg4" value="tdwg4"> Botanic data (check tdwg4 code)
 		<br>
-
-		<font color="white"><input type="submit" value="Upload input file"></font>
+			<input id="establishment" type="checkbox" name="establishment" value="establishment" onclick="established()"> How biological individual(s) is represented in the Occurrence : became established at the location. ("establishmentMeans" DarwinCore term)
+		<br>
+		<div style="margin-left:40px" >
+			<input id="native" type="checkbox" name="native" value="native" onclick="checkEstablishment()"> Native
+		<br>
+			<input id="introduced" type="checkbox" name="introduced" value="introduced" onclick="checkEstablishment()"> Introduced
+		<br>
+			<input id="naturalised" type="checkbox" name="naturalised" value="naturalised" onclick="checkEstablishment()"> Naturalised
+		<br>
+			<input id="invasive" type="checkbox" name="invasive" value="invasive" onclick="checkEstablishment()"> Invasive
+		<br>
+			<input id="managed" type="checkbox" name="managed" value="managed" onclick="checkEstablishment()"> Managed
+		<br>
+			<input id="uncertain" type="checkbox" name="uncertain" value="uncertain" onclick="checkEstablishment()"> Uncertain
+		<br>
+			<input id="others" type="checkbox" name="others" value="others" onclick="checkEstablishment()"> Others (blank, tags no represented, ...)
+		</div>	
+			<input id="iptToolkit" type="checkbox" name="iptToolkit" value="iptToolkit"> Convert your data to Darwin Core format
+		<br id="brBeforeSubmit" > 
+		<font color="white"><input type="submit" value="Upload input file" id="submit"></font>
 	</form>
 </body>
 </html>

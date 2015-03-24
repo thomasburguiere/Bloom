@@ -12,11 +12,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import javax.print.attribute.standard.MediaSize.ISO;
+
 import org.opengis.feature.simple.SimpleFeature;
 
 import src.servlets.Controler;
 import ucar.nc2.util.xml.Parse;
 
+import com.mongodb.util.Hash;
 import com.sun.corba.se.impl.orb.ParserTable;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -290,43 +293,105 @@ public class TreatmentData {
 
     }
 
+    
+    public int getIndiceFromTag(String tagName){
+	
+	HashMap<String, ArrayList<String>> idAssoData = fileDarwinCore.getIdAssoData();
+
+	for(String id_ : idAssoData.keySet()){
+	    if(id_.equals("id_")){
+		ArrayList<String> tagsList = idAssoData.get(id_);
+		for(int i = 0 ; i < tagsList.size() ; i++){
+		    if(tagsList.get(i).equals(tagName)){
+			return i;
+		    }
+		}
+	    }
+	}
+	return 0;
+    }
     /**
      * Check if coordinates (latitude and longitude) are included in the country indicated by the iso2 code
      * 
      * @return void
      */
-    public void getPolygonTreatment(){
+    public File getPolygonTreatment(){
 	PolygonTreatment polygone = new PolygonTreatment();
+	fileDarwinCore.associateIdData();
 
-	ArrayList<String> decimalLatitude = fileDarwinCore.getDecimalLatitudeClean();
-	ArrayList<String> decimalLongitude = fileDarwinCore.getDecimalLongitudeClean();
-	ArrayList<String> iso2Codes = fileDarwinCore.getIso2Clean();
-	ArrayList<String> gbifIdList = fileDarwinCore.getGbifIDClean();
+	ArrayList<String> listToDelete = new ArrayList<>();
+	
+	HashMap<String, ArrayList<String>> idAssoData = fileDarwinCore.getIdAssoData(); 
 
-	for(int i = 1 ; i < decimalLatitude.size() ; i++){
-	    float latitude = 0;
-	    float longitude = 0;
-	    String iso2 = "";
-	    String iso3 = "";
-	    String gbifId_ = "";
+	int iLatitude = this.getIndiceFromTag("decimalLatitude_");
+	int iLongitude = this.getIndiceFromTag("decimalLongitude_");
+	int iIso2 = this.getIndiceFromTag("countryCode_");
+	int iGbifID = this.getIndiceFromTag("gbifID_");
+	
+	for (String id_ : idAssoData.keySet()) {
+	    if(!id_ .equals("id_")){
+		ArrayList<String> listInfos = idAssoData.get(id_);
+		
+		float latitude = 0;
+		float longitude = 0;
+		String iso2 = "";
+		String iso3 = "";
+		String gbifId_ = "";
 
-	    latitude = Float.parseFloat(decimalLatitude.get(i).replace("\"", ""));
-	    longitude = Float.parseFloat(decimalLongitude.get(i).replace("\"", ""));
-	    iso2 = iso2Codes.get(i);
-	    iso3 = this.convertIso2ToIso3(iso2);
-	    gbifId_ = gbifIdList.get(i);
+		latitude = Float.parseFloat(listInfos.get(iLatitude).replace("\"", ""));
+		longitude = Float.parseFloat(listInfos.get(iLongitude).replace("\"", ""));
+		iso2 = listInfos.get(iIso2);
+		iso3 = this.convertIso2ToIso3(iso2);
+		gbifId_ = listInfos.get(iGbifID);
 
-	    File geoJsonFile = new File(DIRECTORY_PATH + "src/ressources/gadm_json/" + iso3.toUpperCase() + "_adm0.json");
-	    GeometryFactory geometryFactory = new GeometryFactory();
-	    Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
-	    System.out.println("--------------------------------------------------------------");
-	    System.out.println("------------------ Check point in polygon --------------------");
-	    System.out.println("Lat : " + latitude + "\tLong : " +  longitude);
-	    System.out.println("gbifID : " + gbifId_ + "\tIso3 : " + iso3 + "\tiso2 : " + iso2);
-	    boolean isContained = polygone.polygonContainedPoint(point, geoJsonFile);
-	    System.out.println(isContained);
-	    System.out.println("--------------------------------------------------------------");
+		File geoJsonFile = new File(DIRECTORY_PATH + "src/ressources/gadm_json/" + iso3.toUpperCase() + "_adm0.json");
+		GeometryFactory geometryFactory = new GeometryFactory();
+		Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
+		System.out.println("--------------------------------------------------------------");
+		System.out.println("------------------ Check point in polygon --------------------");
+		System.out.println("Lat : " + latitude + "\tLong : " +  longitude);
+		System.out.println("id_ : " + id_ + "\tgbifID : " + gbifId_ + "\tIso3 : " + iso3 + "\tiso2 : " + iso2);
+
+		boolean isContained = polygone.polygonContainedPoint(point, geoJsonFile);
+
+		System.out.println("The point is contained in the polygone : " + isContained);
+		System.out.println("--------------------------------------------------------------\n");
+
+		if(!isContained){
+
+		    ConnectionDatabase newConnectionSelectID = new ConnectionDatabase();
+		    ArrayList<String> messagesSelectID = new ArrayList<String>();
+		    String sqlSelectID = "SELECT * FROM Workflow.Clean WHERE Clean.id_=" + id_ + ";";
+		    messagesSelectID.addAll(newConnectionSelectID.newConnection("executeQuery", sqlSelectID));
+		    ArrayList<String> selectIDResults = newConnectionSelectID.getResultatSelect();
+
+		    for(int j = 0 ; j < messagesSelectID.size() ; j++){
+			System.out.println(messagesSelectID.get(j));
+		    }
+		    
+		    for(int k = 0 ; k < selectIDResults.size() ; k++){
+			if(!listToDelete.contains(selectIDResults.get(k))){
+			    listToDelete.add(selectIDResults.get(k));
+			}
+		    }
+		    
+		    
+		    ConnectionDatabase newConnectionDeleteID = new ConnectionDatabase();
+		    ArrayList<String> messagesDeleteID = new ArrayList<String>();
+		    String sqlDeleteID = "DELETE FROM Workflow.Clean WHERE id_=" + id_ + ";";
+		    messagesDeleteID.addAll(newConnectionDeleteID.newConnection("executeUpdate", sqlDeleteID));
+		    
+		    for(int i = 0 ; i < messagesDeleteID.size() ; i++){
+			System.out.println(messagesDeleteID.get(i));
+		    }
+		}
+
+	    }
 	}
+	
+	File wrongPolygon = this.createFileCsv(listToDelete, "wrong/wrongPolygon");
+	
+	return wrongPolygon;
     }
 
     /**
@@ -463,6 +528,80 @@ public class TreatmentData {
 	}
 
 	return path.delete();
+
+    }
+
+    public void establishmentMeansOption(ArrayList<String> establishmentList){
+
+	// list containing tags "establishmentMeans" to delete
+	// inversed list of the begining (user want to keep the others) 
+	ArrayList<String> noEstablishment = new ArrayList<>();
+
+	for(int i = 0; i < establishmentList.size() ; i++){
+	    if(establishmentList.get(i).equals("others")){
+		ConnectionDatabase newConnectionOthers = new ConnectionDatabase();
+		ArrayList<String> messagesOthers = new ArrayList<String>();
+
+		String sqlOthers = "SELECT * FROM Workflow.Clean WHERE Clean.establishmentMeans_!=\"native\" && " +
+			"Clean.establishmentMeans_!=\"introduced\" && " +
+			"Clean.establishmentMeans_!=\"naturalised\" && " +
+			"Clean.establishmentMeans_!=\"invasive\" && " +
+			"Clean.establishmentMeans_!=\"managed\" && " +
+			"Clean.establishmentMeans_!=\"uncertain\";" ;
+		messagesOthers.addAll(newConnectionOthers.newConnection("executeQuery", sqlOthers));
+		ArrayList<String> othersResults = newConnectionOthers.getResultatSelect();
+		if(othersResults.size() > 1){
+		    for(int m = 0 ; m < othersResults.size() ; m++){
+			if(!noEstablishment.contains(othersResults.get(m))){
+			    noEstablishment.add(othersResults.get(m));
+			}
+		    }
+
+		}
+
+		for(int l = 0; l < messagesOthers.size() ; l++){
+		    System.out.println(messagesOthers.get(l));
+		}
+
+	    }
+	    else{
+
+		ConnectionDatabase newConnectionSelect = new ConnectionDatabase();
+		ArrayList<String> messagesSelect = new ArrayList<String>();
+		messagesSelect.add("\n--- Select no establishment Means ---\n");
+		String sqlSelectNoEstablishment = "SELECT * FROM Workflow.Clean WHERE Clean.establishmentMeans_=\"" + establishmentList.get(i) + "\";";
+		messagesSelect.addAll(newConnectionSelect.newConnection("executeQuery", sqlSelectNoEstablishment));
+
+		ArrayList<String> establishmentResults = newConnectionSelect.getResultatSelect();
+		if(establishmentResults.size() > 1){
+		    for(int m = 0 ; m < establishmentResults.size() ; m++){
+			if(!noEstablishment.contains(establishmentResults.get(m))){
+			    noEstablishment.add(establishmentResults.get(m));
+			}
+		    }
+		}
+
+		for(int k = 0; k < messagesSelect.size() ; k++){
+		    System.out.println(messagesSelect.get(k));
+		}
+
+		ConnectionDatabase newConnection = new ConnectionDatabase();
+		ArrayList<String> messagesDelete = new ArrayList<String>();
+		messagesDelete.add("\n--- establishment Means ---\n");
+		String sqlDeleteEstablishment = "DELETE FROM Workflow.Clean WHERE Clean.establishmentMeans_=\"" + establishmentList.get(i) + "\";";
+		messagesDelete.addAll(newConnection.newConnection("executeUpdate", sqlDeleteEstablishment));
+
+		for(int j = 0; j < messagesDelete.size() ; j++){
+		    System.out.println(messagesDelete.get(j));
+		}
+	    }
+	}
+
+	for(int k = 0; k < noEstablishment.size() ; k++){
+	    System.out.println(noEstablishment.get(k));
+	}
+
+	File noEstablishmentFile = this.createFileCsv(noEstablishment, "wrong/noEstablishmentMeans");
 
     }
 

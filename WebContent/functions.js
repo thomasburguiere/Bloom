@@ -37,8 +37,11 @@ function deleteField(compteur, typeInput)
 	var nb_inp = document.getElementById(compteur).value;
 
 	//S'il reste des input on supprime le dernier
-	
-	if(nb_inp > 0){
+	var min = 0;
+	if(typeInput == "inp"){
+		min = 1;
+	}
+	if(nb_inp > min){
 		
 		var id = nb_inp - 1;
 		var inp = document.getElementById(typeInput + id);
@@ -71,6 +74,7 @@ function addDeleteRasterFile(){
 		if(nb_raster == 0){
 			
 			//id, typeElement, type, onclick, style, value, elementAfter
+			
 			this.addElement('addRaster', 'input', 'button', 'javascript:addField(\'compteur_raster\', \'tdwg4\', \'raster\')', 'color:rgb(204,0,153); border-color:rgb(255,255,255); border-style:solid;" size="51"', 'Add a new raster file', 'tdwg4');
 			
 			this.addElement('delRaster', 'input', 'button', 'javascript:deleteField(\'compteur_raster\', \'raster\')', 'color:rgb(204,0,153); border-color:rgb(255,255,255); border-style:solid;" size="51"', 'Delete a raster file', 'tdwg4');
@@ -130,6 +134,37 @@ function addHeaderFile(){
 	document.getElementById("compteur_header").value ++;
 }
 
+function established() {
+	var establishmentIsChecked = document.getElementById("establishment").checked;
+	if(!establishmentIsChecked){
+		
+		document.getElementById("native").checked = false;
+		document.getElementById("introduced").checked = false;
+		document.getElementById("naturalised").checked = false;
+		document.getElementById("invasive").checked = false;
+		document.getElementById("managed").checked = false;
+		document.getElementById("uncertain").checked = false;
+	}
+}
+
+function checkEstablishment(){
+	
+	var establishmentIsChecked = document.getElementById("establishment").checked;
+	var native = document.getElementById("native").checked;
+	var introduced = document.getElementById("introduced").checked;
+	var naturalised = document.getElementById("naturalised").checked;
+	var invasive = document.getElementById("invasive").checked;
+	var managed = document.getElementById("managed").checked;
+	var uncertain = document.getElementById("uncertain").checked;
+	var others = document.getElementById("others").checked;
+	
+	if(native || introduced || naturalised || invasive || managed || uncertain || others){
+		document.getElementById("establishment").checked = true;
+	}
+	if(!native && !introduced && !naturalised && !invasive && !managed && !uncertain && !others){
+		document.getElementById("establishment").checked = false;
+	}
+}
 function addElement(id, typeElement, type, onclick, style, value, elementAfter){
 	var element = document.createElement(typeElement);
 	element.setAttribute('type', type);

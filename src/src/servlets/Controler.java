@@ -52,11 +52,14 @@ public class Controler extends HttpServlet {
     private boolean synonyms = false;
     private boolean tdwg4Code = false;
     private boolean raster = false;
-
+    private boolean establishment = false;
+    
     private ArrayList<File> inputFilesList;
     private ArrayList<File> rasterFilesList;
     private ArrayList<File> headerRasterList;
     private ArrayList<File> synonymFilesList;
+    
+    private ArrayList<String> establishmentList;
     
     private TreatmentData dataTreatment;
     
@@ -71,21 +74,21 @@ public class Controler extends HttpServlet {
 	
 	List<FileItem> listFileItems = this.initiliaseRequest(request);
 	System.out.println(listFileItems);
+	
 	this.initialiseInputFiles(listFileItems, response);
 	
 	boolean inputFilesIsValid = this.isValidInputFiles();
+	
 	if(inputFilesIsValid){
 	    
 	    this.launchWorkflow();
 	}
-	
 
 	if(this.synonyms){
 	    
 	   boolean synonymFileIsValid = this.isValidSynonymFile();
 	   this.launchSynonymOption(synonymFileIsValid);
 	}
-	
 	
 	if(this.tdwg4Code){
 	    dataTreatment.checkIsoTdwgCode();
@@ -97,6 +100,11 @@ public class Controler extends HttpServlet {
 	    if(rasterFilesIsValid){
 		this.launchRasterOption();
 	    }
+	}
+	 System.out.println("establishment : " + this.establishment);
+	//keep introduced data
+	if(this.establishment){
+	    this.launchEstablishmentMeansOption();
 	}
 
     }
@@ -125,6 +133,7 @@ public class Controler extends HttpServlet {
 	this.rasterFilesList = new ArrayList<>();
 	this.headerRasterList = new ArrayList<>();
 	this.synonymFilesList = new ArrayList<>();
+	this.establishmentList = new ArrayList<String>();
 	
 	Iterator<FileItem> iterator = (Iterator<FileItem>)items.iterator();
 	int nbFilesInput = 0;
@@ -145,7 +154,7 @@ public class Controler extends HttpServlet {
 	    String raster = "raster" + nbFilesRaster;
 	    String headerRaster = "header" + nbFilesHeader;
 	    String synonyms = "synonyms";
-
+	    
 	    //System.out.println(item);
 
 	    
@@ -218,8 +227,32 @@ public class Controler extends HttpServlet {
 	    else if(item.getFieldName().equals("tdwg4")){
 		this.setTdwg4Code(true);
 	    }
-	}
+	    else if(item.getFieldName().equals("establishment")){
+		this.setEstablishment(true);
+	    }
+	    
+	    if(this.establishment){
+		String param = item.getFieldName();
+		System.out.println(param);
+		switch(param){
+        		case "native" : establishmentList.add("native");
+        			break;
+        		case "introduced" : establishmentList.add("introduced");
+        			break;
+        		case "naturalised" : establishmentList.add("naturalised");
+        			break;
+        		case "invasive" : establishmentList.add("invasive");
+        			break;
+        		case "managed" : establishmentList.add("managed");
+        			break;
+        		case "uncertain" : establishmentList.add("uncertain");
+        			break;	
+        		case "others" : establishmentList.add("others");
+        			break;
+		}
+	    }
 
+	}
     }
     
     public void launchWorkflow() throws IOException{
@@ -238,7 +271,7 @@ public class Controler extends HttpServlet {
 	File wrongCoordinatesFile = dataTreatment.deleteWrongCoordinates();
 	File wrongGeospatial = dataTreatment.deleteWrongGeospatial();
 	
-	this.dataTreatment.getPolygonTreatment();
+	File wrongPolygon = this.dataTreatment.getPolygonTreatment();
 	
     }
        
@@ -300,6 +333,33 @@ public class Controler extends HttpServlet {
 
     }
 
+    public void launchEstablishmentMeansOption(){
+	if(this.establishmentList.size() != 0){
+	    this.inverseEstablishmentList();
+	    this.dataTreatment.establishmentMeansOption(this.establishmentList);
+	}
+    }
+    
+    public void inverseEstablishmentList(){
+	ArrayList<String> allEstablishmentMeans = new ArrayList<>();
+	allEstablishmentMeans.add("native");
+	allEstablishmentMeans.add("introduced");
+	allEstablishmentMeans.add("naturalised");
+	allEstablishmentMeans.add("invasive");
+	allEstablishmentMeans.add("managed");
+	allEstablishmentMeans.add("uncertain");
+	allEstablishmentMeans.add("others");
+	
+	ArrayList<String> inverseEstablishmentList = new ArrayList<>();
+	for(int i = 0 ; i < allEstablishmentMeans.size() ; i++){
+		if(!this.establishmentList.contains(allEstablishmentMeans.get(i))){
+		    inverseEstablishmentList.add(allEstablishmentMeans.get(i));
+		}
+	}
+	this.establishmentList.removeAll(this.establishmentList);
+	this.establishmentList = inverseEstablishmentList;
+    }
+    
     public boolean isSynonyms() {
 	return synonyms;
     }
@@ -322,6 +382,16 @@ public class Controler extends HttpServlet {
 
     public void setRaster(boolean raster) {
 	this.raster = raster;
+    }
+
+
+    public boolean isEstablishment() {
+        return establishment;
+    }
+
+
+    public void setEstablishment(boolean establishment) {
+        this.establishment = establishment;
     }
  
 }
