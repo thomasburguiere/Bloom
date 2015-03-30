@@ -15,26 +15,21 @@ import java.util.List;
  * 
  * DarwinCore
  */
-public class DarwinCore {
+public class DarwinCore extends CSVFile{
 
     private int idFile_;
-    private final File file;
-    private List<String> inputParsingFile;
     private HashMap<String, ArrayList<String>> idAssoData;
+    private ArrayList<String> darwinLines;
     
-    /**
-     * 
-     * package model
-     * 
-     * DarwinCore
-     * @param file
-     * @param nbFile
-     */
-    public DarwinCore(File file, int nbFile){
-	this.file = file;
-	this.idFile_ = nbFile;
+    public DarwinCore(File file){
+	super(file);
+    }   
+    
+    public DarwinCore(File file, int idFile){
+	super(file);
+	this.idFile_ = idFile;
+	this.darwinLines = super.getLines();
     }
-
 
     public void associateIdData(){
 	idAssoData = new HashMap<>();
@@ -67,31 +62,25 @@ public class DarwinCore {
      * 
      * @return List<String>
      */
-    public List<String> readFile() throws IOException {
+    public void readDarwinCoreFile() throws IOException {
+		
+	String separator = super.getSeparator();
 
-	inputParsingFile = new ArrayList<String>();
-	FileReader fr = new FileReader(file);
-	BufferedReader br = new BufferedReader(fr);
-
-	for (String line = br.readLine(); line != null; line = br.readLine()) {
-	    inputParsingFile.add(line);
-	}
-
-	String firstLine = inputParsingFile.get(0);
+	String firstLine = darwinLines.get(0);
 	String firstNewLine = "";
-	List<String> tags = Arrays.asList(firstLine.split(","));
+	List<String> tags = Arrays.asList(firstLine.split(separator));
 
 	for(int i = 0 ; i < tags.size() ; i++){
 	    String newTag = tags.get(i) + "_,";
 	    firstNewLine += newTag;
 	}
 
-	firstNewLine += "idFile_,changeProjSyst_,id_";
-	inputParsingFile.set(0, firstNewLine);
+	firstNewLine += "idFile_,id_";
+	darwinLines.set(0, firstNewLine);
 
 	// on n'ajoute pas le numéro du fichier pour la première ligne
-	for(int l = 1; l < inputParsingFile.size() ; l++){
-	    String line [] = inputParsingFile.get(l).split(",", -1);
+	for(int l = 1; l < darwinLines.size() ; l++){
+	    String line [] = darwinLines.get(l).split(separator, -1);
 	    // parcourir la ligne
 	    String newLine = "";
 	    for(int j = 0 ; j < line.length ; j++){
@@ -99,13 +88,9 @@ public class DarwinCore {
 	    }
 	    newLine += Integer.toString(idFile_) + ",0," + "";
 	    //System.out.println(newLine);
-	    inputParsingFile.set(l, newLine);
+	    darwinLines.set(l, newLine);
 	}
 
-	br.close();
-	fr.close();
-
-	return inputParsingFile;
     }
 
     /**
@@ -225,32 +210,6 @@ public class DarwinCore {
 	this.idFile_ = idFile_;
     }
 
-    /**
-     * Get all file lines
-     *  
-     * @return List<String>
-     */
-    public List<String> getInputParsingFile() {
-	return inputParsingFile;
-    }
-
-    /**
-     * Set all file lines
-     * @return void
-     */
-    public void setInputParsingFile(List<String> inputParsingFile) {
-	this.inputParsingFile = inputParsingFile;
-    }
-
-    /**
-     * Get file
-     * @return File
-     */
-    public File getFile() {
-	return file;
-    }
-
-
     public HashMap<String, ArrayList<String>> getIdAssoData() {
         return idAssoData;
     }
@@ -258,6 +217,14 @@ public class DarwinCore {
 
     public void setIdAssoData(HashMap<String, ArrayList<String>> idAssoData) {
         this.idAssoData = idAssoData;
+    }
+
+    public ArrayList<String> getDarwinLines() {
+        return darwinLines;
+    }
+
+    public void setDarwinLines(ArrayList<String> darwinLines) {
+        this.darwinLines = darwinLines;
     }
     
     

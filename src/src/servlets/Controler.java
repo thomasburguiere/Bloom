@@ -5,21 +5,12 @@
  */
 package src.servlets;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -28,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -79,6 +69,14 @@ public class Controler extends HttpServlet {
 	
 	boolean inputFilesIsValid = this.isValidInputFiles();
 	
+	SendSoap sendSoap = new SendSoap();
+	try {
+	    sendSoap.init();
+	} catch (Exception e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	/*
 	if(inputFilesIsValid){
 	    
 	    this.launchWorkflow();
@@ -106,7 +104,7 @@ public class Controler extends HttpServlet {
 	if(this.establishment){
 	    this.launchEstablishmentMeansOption();
 	}
-
+*/
     }
     
     public List<FileItem> initiliaseRequest(HttpServletRequest request){

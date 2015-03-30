@@ -1,26 +1,13 @@
 package src.model;
 
-import src.servlets.Controler;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import javax.print.attribute.standard.MediaSize.ISO;
-
-import org.opengis.feature.simple.SimpleFeature;
-
-import src.servlets.Controler;
-import ucar.nc2.util.xml.Parse;
-
-import com.mongodb.util.Hash;
-import com.sun.corba.se.impl.orb.ParserTable;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -93,8 +80,10 @@ public class TreatmentData {
      * @return ArrayList<String> lines of the file
      */ 
     public List <String> initialiseFile(File inputFile, int nbFile) throws IOException{
+	
 	fileDarwinCore = new DarwinCore(inputFile, nbFile);
-	List<String> listLinesDarwinCore = fileDarwinCore.readFile();
+	fileDarwinCore.readDarwinCoreFile();
+	List<String> listLinesDarwinCore = fileDarwinCore.getDarwinLines();
 
 	return listLinesDarwinCore;
     }
