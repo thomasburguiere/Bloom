@@ -2,22 +2,24 @@ function initialise(){
 	document.getElementById('compteur_inp').value = 1;
 	document.getElementById('compteur_raster').value = 0;
 	document.getElementById('compteur_header').value = 0;
-}	
+}
+
+//add a new input file
 function addField(compteur, idAdd, typeInput){
-	//compte le nombre d'input
+	//count inputs number
 	var nb_inp = document.getElementById(compteur).value;
 
-	//Créé un nouvel inputfile
+	//Create a new input file 
 	var inp = document.createElement('input');
 	inp.setAttribute('type', 'file');
 	inp.setAttribute('id', typeInput + nb_inp);
 	inp.setAttribute('name', typeInput + nb_inp);
-	inp.setAttribute('style', 'color:rgb(51,153,255); border-color:rgb(255,255,255); border-style:solid;" size="100"')
+	inp.setAttribute('style', 'color:rgb(51,153,255); border-color:rgb(255,255,255); border-style:solid;" size="100"');
 	//créé un retour charriot
 	var br = document.createElement('br');
 	br.setAttribute('id', 'br_' + typeInput + "_" + nb_inp);
 
-	//ajoute tous les nouveaux éléments au formulaire
+	// add all new elements to the eformulary
 	var buttonADD = document.getElementById(idAdd);
 	var formulaire = document.getElementById('formulaire');
 	formulaire.insertBefore(inp, buttonADD);
@@ -25,18 +27,43 @@ function addField(compteur, idAdd, typeInput){
 	if(typeInput == "raster"){
 		addHeaderFile();
 	}
+	if(typeInput == "inp"){
+		//formulaire.insertBefore(convert,buttonADD);
+		
+		var div = document.createElement('div');
+		div.setAttribute('id', 'divText_' + nb_inp);
+		div.setAttribute('style', "margin-left: 40px");
+		var checkbox = document.createElement('input');
+		checkbox.type = "checkbox";
+		checkbox.name = "convert_" + nb_inp;
+		checkbox.value = "value";
+		checkbox.id = "convert_" + nb_inp ;
+		checkbox.setAttribute('onclick', "addButtonLoad(" + nb_inp + ")");
+
+		var label = document.createElement('label');
+		label.htmlFor = "text" + nb_inp;
+		label.appendChild(document.createTextNode('Convert to DwC format'));
+
+		div.appendChild(checkbox);
+		div.appendChild(label);
+		
+		formulaire.insertBefore(div, buttonADD);
+		//document.getElementById('divText' + nb_inp).innerHTML = "Convert to DwC format !";
+		
+	}
 	formulaire.insertBefore(br, buttonADD);
 
-	//incrément le compteur d'input
+	//increment input counter
 	document.getElementById(compteur).value ++;
 }
 
+// delete a input file 
 function deleteField(compteur, typeInput)
 {
-	//compte le nombre d'input
+	// count inputs number
 	var nb_inp = document.getElementById(compteur).value;
 
-	//S'il reste des input on supprime le dernier
+	// if inputs exist => delete all
 	var min = 0;
 	if(typeInput == "inp"){
 		min = 1;
@@ -59,12 +86,17 @@ function deleteField(compteur, typeInput)
 			formulaire.removeChild(header);
 			document.getElementById('compteur_header').value --;
 		}
-			
-		//décrémente le compteur d'input
+		
+		if(typeInput == 'inp'){
+			var divText = document.getElementById('divText_' + id);
+			formulaire.removeChild(divText);
+		}
+		//decrement input counter
 		document.getElementById(compteur).value --;
 	}
 }
 
+// add or delete raster files
 function addDeleteRasterFile(){
 	var rasterOption = document.getElementById('raster').checked;
 	nb_raster = document.getElementById('compteur_raster').value;
@@ -88,7 +120,7 @@ function addDeleteRasterFile(){
         var del = document.getElementById('delRaster');
         var brAfter = document.getElementById('brAfterDelRaster');
         
-	    //S'il reste des input on supprime le dernier
+	    // if inputs exist => delete all
 	    while(nb_raster != 0){
 	    	var id = nb_raster - 1;
 	        var raster = document.getElementById('raster' + id);
@@ -99,13 +131,13 @@ function addDeleteRasterFile(){
 	        formulaire.removeChild(header);
 	        formulaire.removeChild(br);
 	     
-	        //décrémente le compteur d'input
+	        //decrement input counter
 	        document.getElementById('compteur_raster').value --;
 	        document.getElementById('compteur_header').value --;
 	        nb_header--;
 	        nb_raster--;
 	    }
-	 	// supprimer les boutons "add" et "delete"
+	 	// delete buttons "add" and "delete"
 	    //document.getElementById('compteur_raster').value = 0;
 	    formulaire.removeChild(brAfter);
 	    formulaire.removeChild(add);
@@ -113,6 +145,7 @@ function addDeleteRasterFile(){
 	}
 }
 
+// add a new input file : raster or dataset
 function addHeaderFile(){
 	//compte le nombre d'input
 	//var nb_raster = document.getElementById("compteur_raster").value;
@@ -134,6 +167,7 @@ function addHeaderFile(){
 	document.getElementById("compteur_header").value ++;
 }
 
+// initialise all establishmentMeans option to "false" if main checkbox doesn't checked
 function established() {
 	var establishmentIsChecked = document.getElementById("establishment").checked;
 	if(!establishmentIsChecked){
@@ -147,9 +181,10 @@ function established() {
 	}
 }
 
+// check option establishmentMeans
 function checkEstablishment(){
 	
-	var establishmentIsChecked = document.getElementById("establishment").checked;
+	//var establishmentIsChecked = document.getElementById("establishment").checked;
 	var native = document.getElementById("native").checked;
 	var introduced = document.getElementById("introduced").checked;
 	var naturalised = document.getElementById("naturalised").checked;
@@ -165,6 +200,8 @@ function checkEstablishment(){
 		document.getElementById("establishment").checked = false;
 	}
 }
+
+// add a new element with all parameters
 function addElement(id, typeElement, type, onclick, style, value, elementAfter){
 	var element = document.createElement(typeElement);
 	element.setAttribute('type', type);
@@ -177,4 +214,63 @@ function addElement(id, typeElement, type, onclick, style, value, elementAfter){
     var after = document.getElementById(elementAfter);
     var formulaire = document.getElementById('formulaire');
 	formulaire.insertBefore(element, after);
+}
+
+// when click on load button submit => not necessary now
+function mappingTable(div) {
+	//var formulaire = document.getElementById('formulaire');
+	var mappingTable = document.createElement('table');
+	mappingTable.id = "mappingTable";
+	var divConvert = document.getElementById(div);
+	divConvert.appendChild(mappingTable);
+	var arrayLignes = document.getElementById("mappingTable").rows; //l'array est stocké dans une variable
+	var longueur = arrayLignes.length;//on peut donc appliquer la propriété length
+	var i=0; //on définit un incrémenteur qui représentera la clé
+
+	while(i<longueur)
+	{
+		if(i % 2 == 0)//si la clé est paire
+		{
+			arrayLignes[i].style.backgroundColor = "#bdcbf5";
+		}
+		else //elle est impaire
+		{
+			arrayLignes[i].style.backgroundColor = "#829eeb";
+		}
+		i++;
+	}
+}
+
+// when click on "convert" checkbox
+function addButtonLoad(counter){
+	var div = "divText_" + counter;
+	var divConvert = document.getElementById(div);
+	var loadExist = document.getElementById('loadFile_' + counter);
+	var convert = document.getElementById('convert_' + counter).cheked;
+	
+	if(loadExist == null){
+
+		var buttonLoad = document.createElement('input');
+		buttonLoad.type = "submit";
+		buttonLoad.id = "loadFile_" + counter;
+		buttonLoad.name = "loadFile_" + counter;
+		buttonLoad.class = "button";
+		buttonLoad.value = "Load file for mapping";
+		buttonLoad.onclick="javascript:mappingTable(" + div + ")";
+
+		var br = document.createElement('br');
+		br.id = "brLoad_" + counter;
+		divConvert.appendChild(br);
+		divConvert.appendChild(buttonLoad);
+		//formulaire.insertBefore(div, buttonADD);
+	}
+	else{
+		if(!convert){
+			
+			var buttonLoad = document.getElementById("loadFile_"+counter);
+			divConvert.removeChild(buttonLoad);
+			var brLoad = document.getElementById("brLoad_"+counter);
+			divConvert.removeChild(brLoad);
+		}
+	}
 }

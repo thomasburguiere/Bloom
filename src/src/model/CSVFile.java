@@ -82,6 +82,7 @@ public class CSVFile {
 	    for(int i = 0 ; i < lines.size() ; i++){
 		String line = lines.get(i);
 		int compte = this.compterSeperateurs(line, sep);
+		System.out.println(i + " : " + compte);
 		if (compte == 0) {
                     // pas de séparateur dans cette ligne
                     isGoodCandidate = false;
