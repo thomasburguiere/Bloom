@@ -11,6 +11,6 @@
 <title>Launch workflow</title>
 </head>
 <body>
-	<br><IMG SRC="image/<%= request.getAttribute("p") %>"/>
+	<br>Helloooooooooooooooooo/>
 </body>
 </html>
