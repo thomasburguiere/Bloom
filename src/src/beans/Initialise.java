@@ -8,6 +8,9 @@ package src.beans;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+
+import src.model.MappingDwC;
 
 /**
  * src.beans
@@ -19,13 +22,37 @@ import java.util.ArrayList;
 public class Initialise {
 
     private ArrayList<File> inputFilesList = new ArrayList<>();
+    private ArrayList<File> inputMappedFilesList = new ArrayList<>();
     private ArrayList<File> inputRastersList = new ArrayList<>();
+    private ArrayList<File> headerRasterList = new ArrayList<>();
     private ArrayList<File> inputSynonymsList = new ArrayList<>();
+    private ArrayList<String> establishmentList = new ArrayList<>();
+    private List<MappingDwC> listDwcFiles = new ArrayList<>();
     
     private boolean synonym;
     private boolean tdwg4Code;
-    private boolean rasterCell;
+    private boolean raster;
+    private boolean establishment;    
     
+    public Initialise(){
+	
+    }
+    
+    public List<MappingDwC> getListDwcFiles() {
+        return listDwcFiles;
+    }
+
+    public void setListDwcFiles(List<MappingDwC> listDwcFiles) {
+        this.listDwcFiles = listDwcFiles;
+    }
+
+    public ArrayList<File> getInputMappedFilesList() {
+        return inputMappedFilesList;
+    }
+
+    public void setInputMappedFilesList(ArrayList<File> inputMappedFilesList) {
+        this.inputMappedFilesList = inputMappedFilesList;
+    }
 
     public ArrayList<File> getInputFilesList() {
         return inputFilesList;
@@ -41,6 +68,14 @@ public class Initialise {
 
     public void setInputRastersList(ArrayList<File> inputRastersList) {
         this.inputRastersList = inputRastersList;
+    }
+    
+    public ArrayList<File> getHeaderRasterList() {
+        return headerRasterList;
+    }
+
+    public void setHeaderRasterList(ArrayList<File> headerRasterList) {
+        this.headerRasterList = headerRasterList;
     }
 
     public ArrayList<File> getInputSynonymsList() {
@@ -67,13 +102,28 @@ public class Initialise {
         this.tdwg4Code = tdwg4Code;
     }
 
-    public boolean isRasterCell() {
-        return rasterCell;
+    public ArrayList<String> getEstablishmentList() {
+        return establishmentList;
     }
 
-    public void setRasterCell(boolean rasterCell) {
-        this.rasterCell = rasterCell;
+    public void setEstablishmentList(ArrayList<String> establishmentList) {
+        this.establishmentList = establishmentList;
     }
 
-    
+    public boolean isEstablishment() {
+        return establishment;
+    }
+
+    public void setEstablishment(boolean establishment) {
+        this.establishment = establishment;
+    }    
+
+    public boolean isRaster() {
+        return raster;
+    }
+
+    public void setRaster(boolean raster) {
+        this.raster = raster;
+    }   
+
 }
