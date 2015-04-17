@@ -5,19 +5,23 @@
  */
 package src.servlets;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -26,8 +30,12 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 
+import src.beans.Initialise;
+import src.model.CSVFile;
+import src.model.JSONobject;
+import src.model.LaunchWorkflow;
 import src.model.MappingDwC;
-import src.model.TreatmentData;
+import ucar.nc2.util.xml.Parse;
 
 /**
  * src.servlets
@@ -35,157 +43,35 @@ import src.model.TreatmentData;
  * LaunchWorkflow
  */
 
-@WebServlet(name = "Controler", urlPatterns ={"/HomePage.html"})
+@WebServlet(name = "Controler")
 public class Controler extends HttpServlet {
 
     private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/"; 
 
-
-    private boolean synonyms = false;
-    private boolean tdwg4Code = false;
-    private boolean raster = false;
-    private boolean establishment = false;
-    private boolean ipt = false;
-
-    private ArrayList<File> inputFilesList;
-    private ArrayList<File> rasterFilesList;
-    private ArrayList<File> headerRasterList;
-    private ArrayList<File> synonymFilesList;
-
-    private ArrayList<String> establishmentList;
-
-    private TreatmentData dataTreatment;
+    private Initialise initialisation;
 
     public Controler(){
 
-    }
-
-    public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{	
-	System.out.println("\nServlet MonControleur at " + request.getContextPath());
-/*
-	this.dataTreatment = new TreatmentData();
-	this.dataTreatment.generateRandomKey();
-*/
-	List<FileItem> listFileItems = this.initiliaseRequest(request);
-	System.out.println(listFileItems);
-
-	//this.initialiseInputFiles(listFileItems, response);
-
-	response.setContentType("text/html");
-	String loadFile = "loadFile";
-	
-	Iterator<FileItem> iterator = (Iterator<FileItem>)listFileItems.iterator();
-	while (iterator.hasNext()) {
-	    DiskFileItem item = (DiskFileItem) iterator.next();
-	    String fieldName = item.getFieldName();
-	    if(fieldName.split("_")[0].equals(loadFile)){
-		if(!new File(DIRECTORY_PATH + "temp/").exists()){
-		    new File(DIRECTORY_PATH + "temp/").mkdirs();
-		}
-		if(!new File(DIRECTORY_PATH + "temp/data/").exists()){
-		    new File(DIRECTORY_PATH + "temp/data/").mkdirs();
-		}
-		int counterRecupFile = Integer.parseInt(fieldName.split("_")[1]); 
-		String fileExtensionName = item.getName();
-		fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
-		String fileName = item.getStoreLocation().getName();
-		System.out.println(item.getStoreLocation());
-		File noMappedFile = new File(DIRECTORY_PATH + "temp/data/" + fileName + "." + fileExtensionName);
-		try {
-		    item.write(noMappedFile);
-		} catch (Exception e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}
-		
-		MappingDwC prepMapping = new MappingDwC(noMappedFile);
-		prepMapping.mappingDwC();
-		ArrayList<String> presentTags = prepMapping.getPresentTags();
-		ArrayList<String> columnsName = prepMapping.getTagsListNoMapped();
-		ArrayList<String> listDwCTag = prepMapping.getTagsListDwC();
-		
-		System.out.println(presentTags);
-		System.out.println(columnsName);
-		System.out.println(listDwCTag);
-	    }
-	}
-	
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
 	processRequest(request, response);
     }
 
-    /*
-	this.dataTreatment = new TreatmentData();
-	this.dataTreatment.generateRandomKey();
+    public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{	
+	response.setContentType("text/plain");
+	initialisation = new Initialise();
+	List<FileItem> listFileItems = this.initialiseRequest(request);
+	this.initialiseParameters(listFileItems, response);
+	request.setAttribute("initialise", initialisation);	
 
-	List<FileItem> listFileItems = this.initiliaseRequest(request);
-	//System.out.println(listFileItems);
+	LaunchWorkflow newLaunch = new LaunchWorkflow(this.initialisation);
 
-	//this.initialiseInputFiles(listFileItems, response);
+	//newLaunch.initialiseLaunchWorkflow();
 
-	//boolean inputFilesIsValid = this.isValidInputFiles();
-
-
-	if(inputFilesIsValid){
-
-	    this.launchWorkflow();
-	}
-
-	if(this.synonyms){
-
-	    boolean synonymFileIsValid = this.isValidSynonymFile();
-	    this.launchSynonymOption(synonymFileIsValid);
-	}
-
-	if(this.tdwg4Code){
-	    dataTreatment.checkIsoTdwgCode();
-	}
-
-	if(this.raster){
-
-	    boolean rasterFilesIsValid = this.isValidRasterFiles();
-	    if(rasterFilesIsValid){
-		this.launchRasterOption();
-	    }
-	}
-
-	System.out.println("establishment : " + this.establishment);
-	//keep introduced data
-	if(this.establishment){
-	    this.launchEstablishmentMeansOption();
-	}
-
-	if(this.ipt){
-	    System.out.println("ipt : " + ipt);
-	}
-
-    }*/
-
-    public File getFileFromParam(List<FileItem> items, String parametre){
-	Iterator<FileItem> iterator = (Iterator<FileItem>)items.iterator();
-	File file = null;
-	while (iterator.hasNext()) {
-	    DiskFileItem item = (DiskFileItem) iterator.next();
-	    if(item.getFieldName().equals(parametre)){
-		System.out.println("if input : " + item);
-		String fileExtensionName = item.getName();
-		fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
-		String fileName = item.getStoreLocation().getName();
-		file = new File(DIRECTORY_PATH + "temp/data/" + fileName + "." + fileExtensionName);
-		try {
-		    item.write(file);
-		} catch (Exception e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}
-	    }
-	}
-
-	return file;
     }
-    public List<FileItem> initiliaseRequest(HttpServletRequest request){
+
+    public List<FileItem> initialiseRequest(HttpServletRequest request){
 
 	// on prépare pour l'envoie par la mise en oeuvre en mémoire
 	DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
@@ -201,21 +87,18 @@ public class Controler extends HttpServlet {
 	return items;
     }
 
-    public void initialiseInputFiles(List<FileItem> items, HttpServletResponse response) throws IOException{
+    public void initialiseParameters(List<FileItem> items, HttpServletResponse response) throws IOException{
 
 	response.setContentType("text/html");
 
-	this.inputFilesList = new ArrayList<File>();
-	this.rasterFilesList = new ArrayList<File>();
-	this.headerRasterList = new ArrayList<File>();
-	this.synonymFilesList = new ArrayList<File>();
-	this.establishmentList = new ArrayList<String>();
-
 	Iterator<FileItem> iterator = (Iterator<FileItem>)items.iterator();
+	List<MappingDwC> listDwcFiles = new ArrayList<>();
+
 	int nbFilesInput = 0;
 	int nbFilesRaster = 0;
 	int nbFilesHeader = 0;
 	int nbFilesSynonyms = 0;
+	int nbMappingInput = 0;
 
 	if(!new File(DIRECTORY_PATH + "temp/").exists()){
 	    new File(DIRECTORY_PATH + "temp/").mkdirs();
@@ -225,34 +108,48 @@ public class Controler extends HttpServlet {
 	}
 
 	while (iterator.hasNext()) {
-	    DiskFileItem item = (DiskFileItem) iterator.next();
-	    String input = "inp" + nbFilesInput;
-	    String raster = "raster" + nbFilesRaster;
-	    String headerRaster = "header" + nbFilesHeader;
+	    // DiskFileItem item = (DiskFileItem) iterator.next();
+	    FileItem item = iterator.next();
+	    String input = "inp_" + nbFilesInput;
+	    String raster = "raster_" + nbFilesRaster;
+	    String headerRaster = "header_" + nbFilesHeader;
 	    String synonyms = "synonyms";
+	    String mapping = "mappingActive_" + nbMappingInput;
 
-	    //System.out.println(item);
-
-
-	    if(item.getFieldName().equals(input)){
-		System.out.println("if input : " + item);
-		String fileExtensionName = item.getName();
+	    String fieldName = item.getFieldName();
+	    // System.out.println(fieldName);
+	    if(fieldName.equals(input)){
+		DiskFileItem itemFile = (DiskFileItem) item;
+		String fileExtensionName = itemFile.getName();
 		fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
-		String fileName = item.getStoreLocation().getName();
-		System.out.println(item.getStoreLocation());
+		String fileName = itemFile.getStoreLocation().getName();
 		File file = new File(DIRECTORY_PATH + "temp/data/" + fileName + "." + fileExtensionName);
 		try {
-		    item.write(file);
+		    itemFile.write(file);
 		} catch (Exception e) {
 		    // TODO Auto-generated catch block
 		    e.printStackTrace();
 		}
-		this.inputFilesList.add(file);
-		nbFilesInput =+ 1;
+		CSVFile csvFile = new CSVFile(file);
+		MappingDwC newMappingDWC = new MappingDwC(csvFile, false);
+
+		newMappingDWC.setCounterID(nbFilesInput);
+		listDwcFiles.add(newMappingDWC);
+
+		
+		newMappingDWC.initialiseMapping();
+		HashMap<String, String> connectionTags = new HashMap<>();
+		ArrayList<String> tagsNoMapped = newMappingDWC.getTagsListNoMapped();
+		for(int i = 0 ; i < tagsNoMapped.size() ; i++){
+		    connectionTags.put(tagsNoMapped.get(i) + "_" + i, "");
+		}
+		newMappingDWC.setConnectionTags(connectionTags);
+		initialisation.getInputFilesList().add(csvFile.getCsvFile());
+		nbFilesInput ++;
 	    }
-	    else if(item.getFieldName().equals(raster)){
+	    else if(fieldName.equals(raster)){
 		System.out.println("if raster : " + item);
-		this.setRaster(true);
+		initialisation.setRaster(true);
 
 		String fileExtensionName = item.getName();
 		fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
@@ -264,10 +161,10 @@ public class Controler extends HttpServlet {
 		    // TODO Auto-generated catch block
 		    e.printStackTrace();
 		}
-		this.rasterFilesList.add(file);
-		nbFilesRaster =+ 1;
+		this.initialisation.getInputRastersList().add(file);
+		nbFilesRaster ++;
 	    }
-	    else if(item.getFieldName().equals(headerRaster)){
+	    else if(fieldName.equals(headerRaster)){
 		System.out.println("if header : " + item);
 
 		String fileExtensionName = item.getName();
@@ -280,54 +177,68 @@ public class Controler extends HttpServlet {
 		    // TODO Auto-generated catch block
 		    e.printStackTrace();
 		}
-		this.headerRasterList.add(file);
-		nbFilesHeader =+ 1;
+		this.initialisation.getHeaderRasterList().add(file);
+		nbFilesHeader ++;
 	    }
-	    else if(item.getFieldName().equals(synonyms)){
-		System.out.println("if synonym : " + item);
-		this.setSynonyms(true);
-		if(item.getName() != null){    
-		    String fileExtensionName = item.getName();
-		    fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
-		    String fileName = item.getStoreLocation().getName();
-		    File file = new File(DIRECTORY_PATH + "temp/data/" + fileName + "." + fileExtensionName);
-		    try {
-			item.write(file);
-		    } catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	    else if(fieldName.equals(synonyms)){
+		initialisation.setSynonym(true);		
+	    }
+	    else if(fieldName.equals("tdwg4")){
+		initialisation.setTdwg4Code(true);
+	    }
+	    else if(fieldName.equals("establishment")){
+		initialisation.setEstablishment(true);
+	    }
+	    else if(fieldName.contains("dropdownDwC_")){
+		String valueDropdown = item.getString();
+		String [] tableauField = fieldName.split("_");
+		String idDropdown = tableauField[tableauField.length-1];
+		for(int i = 0 ; i < listDwcFiles.size() ; i++ ){
+		    HashMap<String, String> connectionTags = listDwcFiles.get(i).getConnectionTags();
+		    for(Entry<String, String> entry : connectionTags.entrySet()) {
+			String [] tableKey = entry.getKey().split("_");
+			String idKey = tableKey[tableKey.length-1];
+			if(idDropdown.equals(idKey)){
+			    connectionTags.put(entry.getKey(), valueDropdown);
+			}    
 		    }
-		    this.synonymFilesList.add(file);
-		    nbFilesSynonyms =+ 1;
 		}
 	    }
-	    else if(item.getFieldName().equals("tdwg4")){
-		this.setTdwg4Code(true);
-	    }
-	    else if(item.getFieldName().equals("establishment")){
-		this.setEstablishment(true);
-	    }
-	    else if(item.getFieldName().equals("iptToolkit")){
-		this.setIpt(true);
+	    else if(fieldName.equals(mapping)){
+		System.out.println("if mapping : " + item.getString());
+		File noMappedFile = initialisation.getInputFilesList().get(nbMappingInput);
+		if(item.getString().equals("true")){
+		    for(int i = 0 ; i < listDwcFiles.size() ; i++ ){
+			int idFile = listDwcFiles.get(i).getCounterID();
+			if(idFile == nbMappingInput){
+			    MappingDwC mappingDWC = listDwcFiles.get(i);
+			    mappingDWC.setMapping(true);
+			    System.out.println(mappingDWC.getConnectionTags());
+			    mappingDWC.mappingDwC();
+			}
+		    }
+		}
+
+		nbMappingInput ++;
 	    }
 
-	    if(this.establishment){
+	    if(initialisation.isEstablishment()){
 		String param = item.getFieldName();
-		System.out.println(param);
+		//System.out.println(param);
 		switch(param){
-		case "native" : establishmentList.add("native");
+		case "native" : this.initialisation.getEstablishmentList().add("native");
 		break;
-		case "introduced" : establishmentList.add("introduced");
+		case "introduced" : this.initialisation.getEstablishmentList().add("introduced");
 		break;
-		case "naturalised" : establishmentList.add("naturalised");
+		case "naturalised" : this.initialisation.getEstablishmentList().add("naturalised");
 		break;
-		case "invasive" : establishmentList.add("invasive");
+		case "invasive" : this.initialisation.getEstablishmentList().add("invasive");
 		break;
-		case "managed" : establishmentList.add("managed");
+		case "managed" : this.initialisation.getEstablishmentList().add("managed");
 		break;
-		case "uncertain" : establishmentList.add("uncertain");
+		case "uncertain" : this.initialisation.getEstablishmentList().add("uncertain");
 		break;	
-		case "others" : establishmentList.add("others");
+		case "others" : this.initialisation.getEstablishmentList().add("others");
 		break;
 		}
 	    }
@@ -335,153 +246,20 @@ public class Controler extends HttpServlet {
 	}
     }
 
-    public void launchWorkflow() throws IOException{
-	this.dataTreatment.deleteTables();
-	for(int i = 0 ; i < this.inputFilesList.size() ; i++){
-	    int idFile = i + 1;
-
-	    List<String> linesInputFile = this.dataTreatment.initialiseFile(inputFilesList.get(i), idFile);
-	    File inputFileModified = this.dataTreatment.createTemporaryFile(linesInputFile, idFile);
-	    String sqlInsert = this.dataTreatment.createSQLInsert(inputFileModified, linesInputFile);
-	    this.dataTreatment.createTableDarwinCoreInput(sqlInsert);
-	}	
-
-	this.dataTreatment.deleteWrongIso2();
-	this.dataTreatment.createTableClean();
-	File wrongCoordinatesFile = dataTreatment.deleteWrongCoordinates();
-	File wrongGeospatial = dataTreatment.deleteWrongGeospatial();
-
-	File wrongPolygon = this.dataTreatment.getPolygonTreatment();
-
+    public String getDIRECTORY_PATH() {
+	return DIRECTORY_PATH;
     }
 
-
-    public boolean isValidInputFiles(){
-	System.out.println("size input : " + this.inputFilesList.size());
-	if(this.inputFilesList.size() != 0){
-	    System.out.println("Your data are valid");
-	    return true;
-	}
-	else{
-	    System.out.println("Your data aren't valid");
-	    return false;
-	}
-
+    public void setDIRECTORY_PATH(String dIRECTORY_PATH) {
+	DIRECTORY_PATH = dIRECTORY_PATH;
     }
 
-    public boolean isValidRasterFiles(){
-	System.out.println("size raster : " + this.rasterFilesList.size());
-	System.out.println("size header : " + this.headerRasterList.size());
-	if(this.rasterFilesList.size() == this.headerRasterList.size()){
-	    if(this.rasterFilesList.size() != 0){
-		return true;
-	    }
-	    else{
-		System.err.println("You have to put a raster file (format : bil, ...) if you desire to match your point and cells data.");
-		return false;
-	    }
-	}
-	else{
-	    System.err.println("You have to put a raster file AND its header file (format : hdr).");
-	    return false;
-	}
-
+    public Initialise getInitialisation() {
+	return initialisation;
     }
 
-    public boolean isValidSynonymFile(){
-	System.out.println("size synonym : " + this.synonymFilesList);
-	if(this.synonymFilesList.size() != 0){
-	    return true;
-	}
-	else{
-	    return false;
-	}
-    }
-
-    public void launchSynonymOption(boolean isValidSynonymFile){
-	if(isValidSynonymFile){
-	    this.dataTreatment.includeSynonyms(this.synonymFilesList.get(0));
-	}
-	else{
-	    this.dataTreatment.includeSynonyms(null);
-	}
-    }
-
-    public void launchRasterOption(){
-
-	File matrixFileValidCells = this.dataTreatment.checkWorldClimCell(this.rasterFilesList);
-
-    }
-
-    public void launchEstablishmentMeansOption(){
-	if(this.establishmentList.size() != 0){
-	    this.inverseEstablishmentList();
-	    this.dataTreatment.establishmentMeansOption(this.establishmentList);
-	}
-    }
-
-    public void inverseEstablishmentList(){
-	ArrayList<String> allEstablishmentMeans = new ArrayList<>();
-	allEstablishmentMeans.add("native");
-	allEstablishmentMeans.add("introduced");
-	allEstablishmentMeans.add("naturalised");
-	allEstablishmentMeans.add("invasive");
-	allEstablishmentMeans.add("managed");
-	allEstablishmentMeans.add("uncertain");
-	allEstablishmentMeans.add("others");
-
-	ArrayList<String> inverseEstablishmentList = new ArrayList<>();
-	for(int i = 0 ; i < allEstablishmentMeans.size() ; i++){
-	    if(!this.establishmentList.contains(allEstablishmentMeans.get(i))){
-		inverseEstablishmentList.add(allEstablishmentMeans.get(i));
-	    }
-	}
-	this.establishmentList.removeAll(this.establishmentList);
-	this.establishmentList = inverseEstablishmentList;
-    }
-
-    public boolean isSynonyms() {
-	return synonyms;
-    }
-
-    public void setSynonyms(boolean synonyms) {
-	this.synonyms = synonyms;
-    }
-
-    public boolean isTdwg4Code() {
-	return tdwg4Code;
-    }
-
-    public void setTdwg4Code(boolean tdwg4Code) {
-	this.tdwg4Code = tdwg4Code;
-    }
-
-    public boolean isRaster() {
-	return raster;
-    }
-
-    public void setRaster(boolean raster) {
-	this.raster = raster;
-    }
-
-
-    public boolean isEstablishment() {
-	return establishment;
-    }
-
-
-    public void setEstablishment(boolean establishment) {
-	this.establishment = establishment;
-    }
-
-
-    public boolean isIpt() {
-	return ipt;
-    }
-
-
-    public void setIpt(boolean ipt) {
-	this.ipt = ipt;
+    public void setInitialisation(Initialise initialisation) {
+	this.initialisation = initialisation;
     }
 
 
