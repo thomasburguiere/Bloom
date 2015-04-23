@@ -5,19 +5,16 @@
  */
 package src.servlets;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,12 +27,11 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 
+import src.beans.Finalisation;
 import src.beans.Initialise;
 import src.model.CSVFile;
-import src.model.JSONobject;
 import src.model.LaunchWorkflow;
 import src.model.MappingDwC;
-import ucar.nc2.util.xml.Parse;
 
 /**
  * src.servlets
@@ -47,33 +43,68 @@ import ucar.nc2.util.xml.Parse;
 public class Controler extends HttpServlet {
 
     private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/"; 
-
     private Initialise initialisation;
-
+    private int nbFileRandom;
+    private Finalisation finalisation;
+    
+    /**
+     * 
+     * src.servlets
+     * Controler
+     */
     public Controler(){
 
     }
 
+    /**
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     * @return void
+     */
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
 	processRequest(request, response);
     }
 
+    /**
+     * 
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     * @return void
+     */
     public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{	
 	response.setContentType("text/plain");
 	initialisation = new Initialise();
+	
+	this.setNbFileRandom(this.generateRandomKey());
+	this.initialisation.setNbFileRandom(this.getNbFileRandom());
+	
 	List<FileItem> listFileItems = this.initialiseRequest(request);
 	this.initialiseParameters(listFileItems, response);
 	request.setAttribute("initialise", initialisation);	
 
 	LaunchWorkflow newLaunch = new LaunchWorkflow(this.initialisation);
 
-	//newLaunch.initialiseLaunchWorkflow();
+	newLaunch.initialiseLaunchWorkflow();
+	
+	finalisation = newLaunch.getFinalisation();
+	request.setAttribute("finalisation", finalisation);
+	
+	this.getServletContext().getRequestDispatcher("/finalWorkflow.jsp").forward(request, response);
 
     }
 
+    /**
+     * Retrieve all request from the formulary
+     * 
+     * @param request
+     * @return List<FileItem>
+     */
     public List<FileItem> initialiseRequest(HttpServletRequest request){
 
-	// on prépare pour l'envoie par la mise en oeuvre en mémoire
 	DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
 	ServletFileUpload uploadHandler = new ServletFileUpload(fileItemFactory);
 	List<FileItem> items = null;
@@ -87,12 +118,20 @@ public class Controler extends HttpServlet {
 	return items;
     }
 
+    /**
+     * Initialise parameters/options
+     * 
+     * @param items
+     * @param response
+     * @throws IOException
+     * @return void
+     */
     public void initialiseParameters(List<FileItem> items, HttpServletResponse response) throws IOException{
 
 	response.setContentType("text/html");
 
 	Iterator<FileItem> iterator = (Iterator<FileItem>)items.iterator();
-	List<MappingDwC> listDwcFiles = new ArrayList<>();
+	ArrayList<MappingDwC> listDwcFiles = new ArrayList<>();
 
 	int nbFilesInput = 0;
 	int nbFilesRaster = 0;
@@ -122,8 +161,8 @@ public class Controler extends HttpServlet {
 		DiskFileItem itemFile = (DiskFileItem) item;
 		String fileExtensionName = itemFile.getName();
 		fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
-		String fileName = itemFile.getStoreLocation().getName();
-		File file = new File(DIRECTORY_PATH + "temp/data/" + fileName + "." + fileExtensionName);
+		
+		File file = new File(DIRECTORY_PATH + "temp/data/noMappedDWC_" + this.getNbFileRandom() + "_" + (nbFilesInput + 1 ) + "." + fileExtensionName);
 		try {
 		    itemFile.write(file);
 		} catch (Exception e) {
@@ -132,10 +171,10 @@ public class Controler extends HttpServlet {
 		}
 		CSVFile csvFile = new CSVFile(file);
 		MappingDwC newMappingDWC = new MappingDwC(csvFile, false);
-
-		newMappingDWC.setCounterID(nbFilesInput);
+		newMappingDWC.setCounterID(nbFilesInput + 1);
+		newMappingDWC.setOriginalName(itemFile.getName());
+		newMappingDWC.setOriginalExtension(fileExtensionName);
 		listDwcFiles.add(newMappingDWC);
-
 		
 		newMappingDWC.initialiseMapping();
 		HashMap<String, String> connectionTags = new HashMap<>();
@@ -144,11 +183,12 @@ public class Controler extends HttpServlet {
 		    connectionTags.put(tagsNoMapped.get(i) + "_" + i, "");
 		}
 		newMappingDWC.setConnectionTags(connectionTags);
-		initialisation.getInputFilesList().add(csvFile.getCsvFile());
+		newMappingDWC.getNoMappedFile().setCsvName(file.getName());
+		//initialisation.getInputFilesList().add(csvFile.getCsvFile());
 		nbFilesInput ++;
 	    }
 	    else if(fieldName.equals(raster)){
-		System.out.println("if raster : " + item);
+		//System.out.println("if raster : " + item);
 		initialisation.setRaster(true);
 
 		String fileExtensionName = item.getName();
@@ -165,7 +205,7 @@ public class Controler extends HttpServlet {
 		nbFilesRaster ++;
 	    }
 	    else if(fieldName.equals(headerRaster)){
-		System.out.println("if header : " + item);
+		//System.out.println("if header : " + item);
 
 		String fileExtensionName = item.getName();
 		fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
@@ -205,16 +245,13 @@ public class Controler extends HttpServlet {
 		}
 	    }
 	    else if(fieldName.equals(mapping)){
-		System.out.println("if mapping : " + item.getString());
-		File noMappedFile = initialisation.getInputFilesList().get(nbMappingInput);
+		//System.out.println("if mapping : " + item.getString());
 		if(item.getString().equals("true")){
 		    for(int i = 0 ; i < listDwcFiles.size() ; i++ ){
 			int idFile = listDwcFiles.get(i).getCounterID();
-			if(idFile == nbMappingInput){
+			if(idFile == (nbMappingInput + 1 )){
 			    MappingDwC mappingDWC = listDwcFiles.get(i);
 			    mappingDWC.setMapping(true);
-			    System.out.println(mappingDWC.getConnectionTags());
-			    mappingDWC.mappingDwC();
 			}
 		    }
 		}
@@ -244,23 +281,70 @@ public class Controler extends HttpServlet {
 	    }
 
 	}
+	
+	this.initialisation.setListDwcFiles(listDwcFiles);
+
     }
 
+    /**
+     * 
+     * @return String
+     */
     public String getDIRECTORY_PATH() {
 	return DIRECTORY_PATH;
     }
 
+    /**
+     * 
+     * @param dIRECTORY_PATH
+     * @return void
+     */
     public void setDIRECTORY_PATH(String dIRECTORY_PATH) {
 	DIRECTORY_PATH = dIRECTORY_PATH;
     }
 
+    /**
+     * 
+     * @return Initialise
+     */
     public Initialise getInitialisation() {
 	return initialisation;
     }
 
+    /**
+     * 
+     * @param initialisation
+     * @return void
+     */
     public void setInitialisation(Initialise initialisation) {
 	this.initialisation = initialisation;
     }
 
+    /**
+     * 
+     * @return int
+     */
+    public int getNbFileRandom() {
+        return nbFileRandom;
+    }
+
+    /**
+     * 
+     * @param nbFileRandom
+     * @return void
+     */
+    public void setNbFileRandom(int nbFileRandom) {
+        this.nbFileRandom = nbFileRandom;
+    }
+
+    /**
+     * 
+     * @return int
+     */
+    public int generateRandomKey(){
+	Random random = new Random();
+	nbFileRandom = random.nextInt();
+	return nbFileRandom;
+    }
 
 }

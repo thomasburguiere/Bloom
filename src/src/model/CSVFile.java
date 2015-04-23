@@ -1,7 +1,5 @@
 /**
- * src.model
- * CSVFile
- * TODO
+ * @author mhachet
  */
 package src.model;
 
@@ -28,50 +26,97 @@ public class CSVFile {
     protected File csvFile;
     protected ArrayList<String> lines;
     
+    /**
+     * 
+     * src.model
+     * CSVFile
+     * 
+     * @param file
+     */
     public CSVFile(File file) {
 	this.csvFile = file;
 	
 	try {
 	    this.readCsvFile();
 	} catch (IOException e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
 	this.findSeparator();
     }
     
+    /**
+     * 
+     * @return String
+     */
     public String getSeparator(){
 	return this.separator;
     }
     
+    /**
+     * 
+     * @param separator
+     * @return void
+     */
     public void setSeparator(String separator) {
         this.separator = separator;
     }
     
+    /**
+     * 
+     * @return String
+     */
     public String getCsvName() {
         return csvName;
     }
 
+    /**
+     * 
+     * @param csvName
+     * @return void
+     */
     public void setCsvName(String csvName) {
         this.csvName = csvName;
     }
 
+    /**
+     * 
+     * @return File
+     */
     public File getCsvFile() {
         return csvFile;
     }
 
+    /**
+     * 
+     * @param csvFile
+     * @return void
+     */
     public void setCsvFile(File csvFile) {
         this.csvFile = csvFile;
     }
 
+    /**
+     * 
+     * @return ArrayList<String>
+     */
     public ArrayList<String> getLines() {
         return lines;
     }
 
+    /**
+     * 
+     * @param lines
+     * @return void
+     */
     public void setLines(ArrayList<String> lines) {
         this.lines = lines;
     }   
    
+    /**
+     * Find the separator of csv file ("," "\t" or ";") 
+     * 
+     * @return void
+     */
     public void findSeparator(){
 	int previous = 0;
 	List<String> reste = new ArrayList<String>();
@@ -81,15 +126,14 @@ public class CSVFile {
         for (String sep : AVAILABLE_SEPARATORS) {
 	    for(int i = 0 ; i < lines.size() ; i++){
 		String line = lines.get(i);
-		int compte = this.compterSeperateurs(line, sep);
-		//System.out.println(i + " : " + compte);
+		int compte = this.countSeparators(line, sep);
 		if (compte == 0) {
-                    // pas de séparateur dans cette ligne
+                    // no separator in this line
                     isGoodCandidate = false;
                     break;
                 }
                 if (compte != previous && previous != 0) {
-                    // pas le même nombre de séparateurs que la ligne précédente
+                    // not the same number that the line before
                     isGoodCandidate = false;
                     break;
                 }
@@ -103,26 +147,30 @@ public class CSVFile {
         }
 
         if (reste.isEmpty()) {
-            // Exception ? aucun candidat
+            // no one separator found
             System.out.println("No separator found !");
         }
 
         else if (reste.size() > 1) {
-            // Exception ? trop de candidats
+            // too many separators found
             System.out.println("Too many separators found");
         }	
         else{
             this.setSeparator(reste.get(0));
             this.separator = this.getSeparator();
-            System.out.println("Separator is : " + this.getSeparator());
         }
     }
     
+    /**
+     * Read csv file and stock lines
+     * 
+     * @throws IOException
+     * @return void
+     */
     public void readCsvFile() throws IOException{
 	lines = new ArrayList<String>();
 	FileReader fr = new FileReader(this.csvFile);
 	BufferedReader br = new BufferedReader(fr);
-
 	for (String line = br.readLine(); line != null; line = br.readLine()) {
 	    lines.add(line);
 	}
@@ -131,7 +179,14 @@ public class CSVFile {
 	fr.close();
     }
     
-    public int compterSeperateurs(String line, String separator) {
+    /**
+     * Count number of separators 
+     * 
+     * @param line
+     * @param separator
+     * @return int
+     */
+    public int countSeparators(String line, String separator) {
         int number = 0;
 
         int pos = line.indexOf(separator);

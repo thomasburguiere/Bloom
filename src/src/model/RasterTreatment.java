@@ -230,7 +230,7 @@ public class RasterTreatment {
 	int count = 0;
 	try {
 	    while ((ligne=br.readLine())!=null){
-		//System.out.println("line : " + ligne);
+		//System.out.println(count + "   line : " + ligne);
 		if(count > 0){
 		    arraySplit = ligne.split(" ");
 		    //System.out.println("array : " + arraySplit.toString());
@@ -257,11 +257,13 @@ public class RasterTreatment {
      * @return File
      */
     public File writeMatrixReport(){
-	if(!new File(DIRECTORY_PATH + "temp/").exists())
-	{
+	if(!new File(DIRECTORY_PATH + "temp/").exists()){
 	    new File(DIRECTORY_PATH + "temp/").mkdirs();
 	}
-	File matrix = new File(DIRECTORY_PATH + "temp/cells_proba_raster_" + dataTreatment.getNbFileRandom() + ".csv");
+	if(!new File(DIRECTORY_PATH + "temp/data/").exists()){
+	    new File(DIRECTORY_PATH + "temp/data/").mkdirs();
+	}
+	File matrix = new File(DIRECTORY_PATH + "temp/data/cells_proba_raster_" + dataTreatment.getNbFileRandom() + ".csv");
 	FileWriter writer = null;
 	try {
 	    writer = new FileWriter(matrix);
@@ -397,7 +399,7 @@ public class RasterTreatment {
 	    {
 		new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
 	    }
-	    dataTreatment.createFileCsv(resultatSelect, "wrong/wrong_raster");
+	    dataTreatment.createFileCsv(resultatSelect, "wrong/wrong_raster_" + this.dataTreatment.getNbFileRandom() + ".csv" );
 	}
 
 	for(int j = 0 ; j < messagesSelect.size() ; j++){

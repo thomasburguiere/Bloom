@@ -1,3 +1,6 @@
+/**
+ * @author mhachet
+ */
 package src.model;
 
 import java.sql.Connection;
@@ -8,10 +11,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
 
 /**
  * 
- * model
+ * src.model
  * 
  * ConnectionDatabase.java
  */
@@ -27,11 +32,14 @@ public class ConnectionDatabase {
     private int i;
 
     /**
-     * Constructor
+     * 
+     * src.model
+     * ConnectionDatabase
      */
     public ConnectionDatabase(){
 
     }
+    
     /**
      * Create a new connection to the database
      * @param String choiceStatement : execute, executeQuery or executeUpdate
@@ -94,6 +102,14 @@ public class ConnectionDatabase {
 	return messages;
     }
 
+    public ArrayList<String> getCleanTableFromIdFile(int idFile){
+	this.newConnection("executeQuery", "SELECT * FROM Workflow.Clean WHERE idFile_=" + idFile + ";");
+
+	ArrayList<String> resultatCleantableFromidFile = this.getResultatSelect();
+
+	return resultatCleantableFromidFile;
+    }
+    
     /**
      * 
      * @return Statement
@@ -128,6 +144,7 @@ public class ConnectionDatabase {
 
     /**
      * Delete table of the database
+     * 
      * @param String tableName
      * @return ArrayList<String> messages list
      */
@@ -138,6 +155,7 @@ public class ConnectionDatabase {
 
     /**
      * Drop table of the database
+     * 
      * @param String tableName
      * @return ArrayList<String> messages list
      */
@@ -148,6 +166,7 @@ public class ConnectionDatabase {
 
     /**
      * Get all result come from request
+     * 
      * @return  ArrayList<String>
      */
     public ArrayList<String> getResultatSelect() {
@@ -156,13 +175,14 @@ public class ConnectionDatabase {
 
     /**
      * Format request resultat
+     * 
      * @param resultMeta
      * @throws SQLException
+     * @return void
      */
     public void setResultatSelect(ResultSetMetaData resultMeta) throws SQLException{
 	resultatSelect = new ArrayList<String>();
 	String line = "";
-	//On affiche le nom des colonnes
 	for(int i = 1; i <= resultMeta.getColumnCount(); i++){
 	    line += resultMeta.getColumnName(i) + ",";
 	}
@@ -186,9 +206,20 @@ public class ConnectionDatabase {
 
 	}
     }
+    
+    /**
+     * 
+     * @return boolean
+     */
     public boolean isResultat() {
 	return resultat;
     }
+    
+    /**
+     * 
+     * @param resultat
+     * @return void
+     */
     public void setResultat(boolean resultat) {
 	this.resultat = resultat;
     }

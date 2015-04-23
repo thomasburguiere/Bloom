@@ -24,10 +24,8 @@ rasterFile <- raster(bilFile)
 absData <- as.data.frame(extract(rasterFile,dataFrame))
 merged.absData <- cbind(merged.absData,absData)
 
-
-
 colnames(merged.absData) <- c("id_", names(rasterFile)[1])  #change colnames with .bil basenames list
 
-merged.absData <- merged.absData[complete.cases(merged.absData),]
-print(merged.absData)
-write.csv(merged.absData, file="outputRaster.csv")
+final <- merged.absData[complete.cases(merged.absData),]
+print(final)
+write.csv(final, file="outputRaster.csv")

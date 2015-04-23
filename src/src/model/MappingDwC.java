@@ -1,7 +1,5 @@
 /**
- * src.model
- * MappingDwC
- * TODO
+ * @author mhachet
  */
 package src.model;
 
@@ -18,12 +16,11 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 /**
+ * 
  * src.model
  * 
  * MappingDwC.java
- * MappingDwC
  */
 public class MappingDwC {
 
@@ -36,100 +33,229 @@ public class MappingDwC {
     private HashMap<String, ArrayList<String>> connectionValuesTags;
     private boolean mapping;
     private int counterID;
+    private String originalName = "";
+    private String originalExtension = "";
 
+    /**
+     * 
+     * src.model
+     * MappingDwC
+     */
     public MappingDwC(CSVFile noMappedFile, boolean mapping){
 	this.noMappedFile = noMappedFile;
 	this.mapping = mapping;
     }
+    
+    /**
+     * 
+     * @return String
+     */
+    public String getOriginalName() {
+        return originalName;
+    }
 
+    /**
+     * 
+     * @param originalName
+     * @return void
+     */
+    public void setOriginalName(String originalName) {
+        this.originalName = originalName;
+    }   
+
+    /**
+     * 
+     * @return String
+     */
+    public String getOriginalExtension() {
+        return originalExtension;
+    }
+
+    /**
+     * 
+     * @param originalExtension
+     * @return void
+     */
+    public void setOriginalExtension(String originalExtension) {
+        this.originalExtension = originalExtension;
+    }
+
+    /**
+     * 
+     * @return CSVFile
+     */
     public CSVFile getNoMappedFile() {
 	return noMappedFile;
     }
 
+    /**
+     * 
+     * @param noMappedFile
+     * @return void
+     */
     public void setNoMappedFile(CSVFile noMappedFile) {
 	this.noMappedFile = noMappedFile;
     }
 
+    /**
+     * 
+     * @return File
+     */
     public File getMappedFile() {
 	return mappedFile;
     }
 
+    /**
+     * 
+     * @param mappedFile
+     * @return void
+     */
     public void setMappedFile(File mappedFile) {
 	this.mappedFile = mappedFile;
     }
 
+    /**
+     * 
+     * @return int
+     */
     public int getCounterID() {
 	return counterID;
     }
 
+    /**
+     * 
+     * @param counterID
+     * @return void
+     */
     public void setCounterID(int counterID) {
 	this.counterID = counterID;
     }
 
+    /**
+     * 
+     * @return ArrayList<String>
+     */
     public ArrayList<String> getPresentTags() {
 	return presentTags;
     }
 
+    /**
+     * 
+     * @param presentTags
+     * @return void
+     */
     public void setPresentTags(ArrayList<String> presentTags) {
 	this.presentTags = presentTags;
     }
 
+    /**
+     * 
+     * @return ArrayList<String>
+     */
     public ArrayList<String> getTagsListNoMapped() {
 	return tagsListNoMapped;
     }
 
+    /**
+     * 
+     * @param tagsListNoMapped
+     * @return void
+     */
     public void setTagsListNoMapped(ArrayList<String> tagsListNoMapped) {
 	this.tagsListNoMapped = tagsListNoMapped;
     }
 
+    /**
+     * 
+     * @return ArrayList<String>
+     */
     public ArrayList<String> getTagsListDwC() {
 	return tagsListDwC;
     }
 
+    /**
+     * 
+     * @param tagsListDwC
+     * @return void
+     */
     public void setTagsListDwC(ArrayList<String> tagsListDwC) {
 	this.tagsListDwC = tagsListDwC;
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public boolean isMapping() {
 	return mapping;
     }
 
+    /**
+     * 
+     * @param mapping
+     * @return void
+     */
     public void setMapping(boolean mapping) {
 	this.mapping = mapping;
     }
 
+    /**
+     * 
+     * @return HashMap<String,String>
+     */
     public HashMap<String, String> getConnectionTags() {
 	return connectionTags;
     }
 
+    /**
+     * 
+     * @param connectionTags
+     * @return void
+     */
     public void setConnectionTags(HashMap<String, String> connectionTags) {
 	this.connectionTags = connectionTags;
     }
 
+    /**
+     * 
+     * @return HashMap<String,ArrayList<String>>
+     */
     public HashMap<String, ArrayList<String>> getConnectionValuesTags() {
 	return connectionValuesTags;
     }
 
+    /**
+     * 
+     * @param connectionValuesTags
+     * @return void
+     */
     public void setConnectionValuesTags(HashMap<String, ArrayList<String>> connectionValuesTags) {
 	this.connectionValuesTags = connectionValuesTags;
     }
 
+    /**
+     * Initialise mapping to DarwinCore format 
+     * set correct DwC tags
+     * set all tags in input file
+     * set present tags in both 
+     * 
+     * @return void
+     */
     public void initialiseMapping(){
 	this.setTagsListDwC(this.initialiseDwCTags());
 	this.setTagsListNoMapped(this.initialiseNoMappedTags());
 	this.setPresentTags(this.initialisePresentTags());
     }
 
-    public void mappingDwC() throws IOException{
-	CSVFile noMappedFile = this.getNoMappedFile();
-
-	this.setConnectionValuesTags(this.doConnectionValuesTags());
-	File mappedFile = this.createNewDwcFile();
-	this.setMappedFile(mappedFile);
-    }
-
-    public File createNewDwcFile() throws IOException{
-	String mappedFilename = noMappedFile.getCsvFile().getParent() + "/mappedDWC_" + noMappedFile.getCsvFile().getName();
+    /**
+     * Create the mapped DwC file
+     * 
+     * @param nbFileRandom
+     * @throws IOException
+     * @return File
+     */
+    public File createNewDwcFile(int nbFileRandom) throws IOException{
+	String mappedFilename = noMappedFile.getCsvFile().getParent() + "/mappedDWC_" + nbFileRandom + "_" + this.getCounterID() +".csv";
 	File mappedFile = new File(mappedFilename);
 	FileWriter writerMappedFile = new FileWriter (mappedFile);
 	HashMap<String, String> connectionTags = this.getConnectionTags();
@@ -158,8 +284,6 @@ public class MappingDwC {
 	    for(Entry<String, ArrayList<String>> entryValuesTags : connectionValuesTags.entrySet()){
 		ArrayList<String> listValues = entryValuesTags.getValue();
 		if(countCol < nbCol){
-		    //System.out.println(countLines + "  " + listValues.size());
-		    //System.out.println(entryValuesTags.getKey() + "  " + listValues);
 		    lineValues += listValues.get(countLines) +",";
 		}
 		else{
@@ -167,7 +291,6 @@ public class MappingDwC {
 		}
 		countCol ++;
 	    }
-	    //System.out.println(countCol + " " + lineValues);
 	    writerMappedFile.write(lineValues);
 	    countLines++;
 	}
@@ -175,6 +298,11 @@ public class MappingDwC {
 	return mappedFile;
     }
 
+    /**
+     * Found all DwC tags
+     * 
+     * @return ArrayList<String>
+     */
     public ArrayList<String> initialiseDwCTags(){
 
 	ArrayList<String> tagsListDwCInit = new ArrayList<String>();
@@ -204,6 +332,11 @@ public class MappingDwC {
 	return tagsListDwCInit;
     }
 
+    /**
+     * Found all tags in input file
+     * 
+     * @return ArrayList<String>
+     */
     public ArrayList<String> initialiseNoMappedTags(){
 	CSVFile csvNoMapped = new CSVFile(this.getNoMappedFile().getCsvFile());
 	ArrayList<String> linesCSV = csvNoMapped.getLines();
@@ -213,6 +346,11 @@ public class MappingDwC {
 	return tagsListNoMappedInit;
     }
 
+    /**
+     * Found all tags already DwC in input file 
+     * 
+     * @return ArrayList<String>
+     */
     public ArrayList<String> initialisePresentTags(){
 	ArrayList<String> presentTagsInit = new ArrayList<String>();
 	ArrayList<String> noMappedTags = this.getTagsListNoMapped();
@@ -227,7 +365,11 @@ public class MappingDwC {
 	return presentTagsInit;
     }
 
-    
+    /**
+     * Connect tags (from input file) to value (from input file)
+     * 
+     * @return HashMap<String,ArrayList<String>>
+     */
     public HashMap<String, ArrayList<String>> doConnectionValuesTags(){
 	HashMap<String, ArrayList<String>> connectionValuesTags = new HashMap<String, ArrayList<String>>();
 	CSVFile noMappedFile = this.getNoMappedFile();
@@ -271,7 +413,6 @@ public class MappingDwC {
 		countLine++;
 	    }
 	    readerNoMapped.close(); 
-	    System.out.println(connectionValuesTags);
 	}
 	catch(Exception e){
 	    System.err.println(e);

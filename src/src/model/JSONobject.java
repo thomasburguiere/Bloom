@@ -1,7 +1,5 @@
 /**
- * src.model
- * JSONobject
- * TODO
+ * @author mhachet
  */
 package src.model;
 
@@ -19,7 +17,6 @@ import org.json.simple.JSONObject;
  * src.model
  * 
  * JSONobject.java
- * JSONobject
  */
 
 public class JSONobject {

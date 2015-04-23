@@ -1,8 +1,9 @@
+/**
+ * @author mhachet
+ */
 package src.model;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,16 +22,36 @@ public class DarwinCore extends CSVFile{
     private HashMap<String, ArrayList<String>> idAssoData;
     private ArrayList<String> darwinLines;
     
+    /**
+     * 
+     * src.model
+     * DarwinCore
+     * 
+     * @param file
+     */
     public DarwinCore(File file){
 	super(file);
     }   
     
+    /**
+     * 
+     * src.model
+     * DarwinCore
+     * 
+     * @param file
+     * @param idFile
+     */
     public DarwinCore(File file, int idFile){
 	super(file);
 	this.idFile_ = idFile;
 	this.darwinLines = super.getLines();
     }
 
+    /**
+     * Connect id of the line to values
+     * 
+     * @return void
+     */
     public void associateIdData(){
 	idAssoData = new HashMap<>();
 	
@@ -45,7 +66,6 @@ public class DarwinCore extends CSVFile{
 	ArrayList<String> resultats = newConnection.getResultatSelect();
 
 	for(int i = 0 ; i < resultats.size() ; i++){
-	    //System.out.println(resultats.get(i).split(",")[0]);
 	    String id_ = resultats.get(i).split(",")[0];
 	    String line [] = resultats.get(i).split(",");
 	    ArrayList<String> infos = new ArrayList<>();
@@ -53,7 +73,6 @@ public class DarwinCore extends CSVFile{
 		infos.add(line[j]);
 	    }
 	    idAssoData.put(id_, infos);
-	    
 	}
     }
     
@@ -78,16 +97,14 @@ public class DarwinCore extends CSVFile{
 	firstNewLine += "idFile_,id_";
 	darwinLines.set(0, firstNewLine);
 
-	// on n'ajoute pas le numéro du fichier pour la première ligne
+	// don't add number file for the first line
 	for(int l = 1; l < darwinLines.size() ; l++){
 	    String line [] = darwinLines.get(l).split(separator, -1);
-	    // parcourir la ligne
 	    String newLine = "";
 	    for(int j = 0 ; j < line.length ; j++){
 		newLine += "\"" + line[j] + "\",";
 	    }
 	    newLine += Integer.toString(idFile_) + ",0," + "";
-	    //System.out.println(newLine);
 	    darwinLines.set(l, newLine);
 	}
 
@@ -131,6 +148,10 @@ public class DarwinCore extends CSVFile{
 	return resultatLongitude;
     }
 
+    /**
+     * Get id from table Clean 
+     * @return ArrayList<String>
+     */
     public ArrayList<String> getIDClean(){
 	ConnectionDatabase newConnection = new ConnectionDatabase();
 
@@ -145,6 +166,11 @@ public class DarwinCore extends CSVFile{
 	return resultatID;
     }
 
+    /**
+     * Get gbifID from Clean table
+     *  
+     * @return ArrayList<String>
+     */
     public ArrayList<String> getGbifIDClean(){
 	ConnectionDatabase newConnection = new ConnectionDatabase();
 
@@ -159,6 +185,11 @@ public class DarwinCore extends CSVFile{
 	return resultatGbifID;
     }
 
+    /**
+     * Get id from DarwinCoreInput table (not Clean)
+     *  
+     * @return ArrayList<String>
+     */
     public ArrayList<String> getID(){
 	ConnectionDatabase newConnection = new ConnectionDatabase();
 
@@ -210,22 +241,38 @@ public class DarwinCore extends CSVFile{
 	this.idFile_ = idFile_;
     }
 
+    /**
+     * 
+     * @return HashMap<String,ArrayList<String>>
+     */
     public HashMap<String, ArrayList<String>> getIdAssoData() {
         return idAssoData;
     }
 
-
+    /**
+     * 
+     * @param idAssoData
+     * @return void
+     */
     public void setIdAssoData(HashMap<String, ArrayList<String>> idAssoData) {
         this.idAssoData = idAssoData;
     }
 
+    /**
+     * 
+     * @return ArrayList<String>
+     */
     public ArrayList<String> getDarwinLines() {
         return darwinLines;
     }
 
+    /**
+     * 
+     * @param darwinLines
+     * @return void
+     */
     public void setDarwinLines(ArrayList<String> darwinLines) {
         this.darwinLines = darwinLines;
     }
-    
     
 }

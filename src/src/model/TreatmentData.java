@@ -1,3 +1,6 @@
+/**
+ * @author mhachet
+ */
 package src.model;
 
 import java.io.File;
@@ -13,7 +16,12 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 
-
+/**
+ * 
+ * src.model
+ * 
+ * TreatmentData.java
+ */
 public class TreatmentData {
 
     private DarwinCore fileDarwinCore;
@@ -34,6 +42,8 @@ public class TreatmentData {
     /**
      * Drop Clean and temp tables. 
      * Delete DarwinCoreInput table.
+     * 
+     * @return void
      */
     public void deleteTables(){
 	ConnectionDatabase newConnectionDeleteClean = new ConnectionDatabase();
@@ -65,20 +75,29 @@ public class TreatmentData {
 
 
     }
-
-    public int generateRandomKey(){
-	Random random = new Random();
-	nbFileRandom = random.nextInt();
-
-	return nbFileRandom;
+    
+    /**
+     * Convert input file (not DwC) to DwC format
+     * 
+     * @param mappingDWC
+     * @throws IOException
+     * @return void
+     */
+    public void mappingDwC(MappingDwC mappingDWC) throws IOException{
+	mappingDWC.setConnectionValuesTags(mappingDWC.doConnectionValuesTags());
+	File mappedFile = mappingDWC.createNewDwcFile(this.getNbFileRandom());
+	mappingDWC.setMappedFile(mappedFile);
     }
+    
     /**
      * Create a DarwinCore class for each file.
      * Initial file will be modified thanks to readFile()
-     * @param File inputFile
-     * @param int nbFile
-     * @return ArrayList<String> lines of the file
-     */ 
+     * 
+     * @param inputFile
+     * @param nbFile
+     * @throws IOException
+     * @return List<String>
+     */
     public List <String> initialiseFile(File inputFile, int nbFile) throws IOException{
 	
 	fileDarwinCore = new DarwinCore(inputFile, nbFile);
@@ -92,6 +111,7 @@ public class TreatmentData {
      * Modified initial files in order to fill in table DarwinCoreInput
      * @param List<String> linesInputModified
      * @param int nbFile
+     * @throws IOException
      * @return File temporary
      */
     public File createTemporaryFile(List<String> linesInputModified, int nbFile) throws IOException{
@@ -99,7 +119,10 @@ public class TreatmentData {
 	if(!new File(DIRECTORY_PATH + "temp/").exists()){
 	    new File(DIRECTORY_PATH + "temp/").mkdirs();
 	}
-	File tempFile = new File(DIRECTORY_PATH + "temp/inputFile_" + Integer.toString(nbFile) + ".csv");
+	if(!new File(DIRECTORY_PATH + "temp/data/").exists()){
+	    new File(DIRECTORY_PATH + "temp/data/").mkdirs();
+	}
+	File tempFile = new File(DIRECTORY_PATH + "temp/data/inputFile_" + Integer.toString(nbFile) + ".csv");
 	FileWriter writer = null;
 	try{
 	    writer = new FileWriter(tempFile);
@@ -134,6 +157,7 @@ public class TreatmentData {
      * Create DarwinCoreInput table in the database from input file(s)
      * 
      * @param String insertFileSQL
+     * @return void
      */
     public void createTableDarwinCoreInput(String insertFileSQL){
 	ConnectionDatabase newConnection = new ConnectionDatabase();
@@ -152,6 +176,8 @@ public class TreatmentData {
     /**
      * Create temporary table "temp" with only correct iso2 code in DarwinCoreInput table.
      * Iso2 code (countryCode_) is correct if it's contained in IsoCode table (iso2_).
+     * 
+     * @return void
      */
     public void deleteWrongIso2() {
 	ConnectionDatabase newConnectionTemp = new ConnectionDatabase();
@@ -177,6 +203,7 @@ public class TreatmentData {
      *   
      *   tag "hasGeospatialIssues" = false
      *   
+     *  @return void
      */
     public void createTableClean(){
 	ConnectionDatabase newConnectionClean = new ConnectionDatabase();
@@ -216,7 +243,7 @@ public class TreatmentData {
 	    new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
 	}
 
-	File wrongCoor = this.createFileCsv(resultatSelect, "wrong/wrong_coordinates");
+	File wrongCoor = this.createFileCsv(resultatSelect, "wrong/wrong_coordinates_" + this.getNbFileRandom() + ".csv");
 
 
 	for(int j = 0 ; j < messages.size() ; j++){
@@ -226,6 +253,7 @@ public class TreatmentData {
 	return wrongCoor;
     }
 
+ 
     /**
      * Select wrong geospatial and write in a file :
      * tag "hasGeospatialIssues_" = true
@@ -250,7 +278,7 @@ public class TreatmentData {
 	    new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
 	}
 
-	File wrongGeo = this.createFileCsv(resultatSelect, "wrong/wrong_geospatialIssues");
+	File wrongGeo = this.createFileCsv(resultatSelect, "wrong/wrong_geospatialIssues_" + this.getNbFileRandom() + ".csv");
 
 	for(int j = 0 ; j < messages.size() ; j++){
 	    System.out.println(messages.get(j));
@@ -261,9 +289,9 @@ public class TreatmentData {
 
 
     /**
-     * 
      * Add synonyms for each taxon (if exist)
      * 
+     * @param includeSynonyms
      * @return void
      */
     public void includeSynonyms(File includeSynonyms){
@@ -282,7 +310,12 @@ public class TreatmentData {
 
     }
 
-    
+    /**
+     * Found indice corresponding to tag name
+     * 
+     * @param tagName
+     * @return int
+     */
     public int getIndiceFromTag(String tagName){
 	
 	HashMap<String, ArrayList<String>> idAssoData = fileDarwinCore.getIdAssoData();
@@ -299,6 +332,8 @@ public class TreatmentData {
 	}
 	return 0;
     }
+    
+    
     /**
      * Check if coordinates (latitude and longitude) are included in the country indicated by the iso2 code
      * 
@@ -378,7 +413,7 @@ public class TreatmentData {
 	    }
 	}
 	
-	File wrongPolygon = this.createFileCsv(listToDelete, "wrong/wrongPolygon");
+	File wrongPolygon = this.createFileCsv(listToDelete, "wrong/wrongPolygon_" + this.getNbFileRandom() + ".csv");
 	
 	return wrongPolygon;
     }
@@ -388,7 +423,6 @@ public class TreatmentData {
      * 
      * @param ArrayList<String> linesFile
      * @param String fileName
-     *  
      * @return File 
      */
     public File createFileCsv(ArrayList<String> linesFile, String fileName){
@@ -397,8 +431,8 @@ public class TreatmentData {
 	    new File(DIRECTORY_PATH + "temp/").mkdirs();
 	}
 
-	String fileRename = fileName + "_" + nbFileRandom + ".csv";
-	File newFile = new File(DIRECTORY_PATH + "temp/" + fileRename);
+	//String fileRename = fileName + "_" + nbFileRandom + ".csv";
+	File newFile = new File(DIRECTORY_PATH + "temp/" + fileName);
 	FileWriter writer = null;
 	try {
 	    writer = new FileWriter(newFile);
@@ -416,7 +450,7 @@ public class TreatmentData {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	System.out.println(fileRename + " written !!!");
+	System.out.println(fileName + " written !!!");
 	return newFile;
     }
 
@@ -454,7 +488,7 @@ public class TreatmentData {
      * @return void
      */
     public void checkIsoTdwgCode(){
-
+	//change example : locationID="TDWG:MXS-JA"
 	PolygonTreatment tdwg4 = new PolygonTreatment();
 	ArrayList<String> decimalLatitude = fileDarwinCore.getDecimalLatitudeClean();
 	ArrayList<String> decimalLongitude = fileDarwinCore.getDecimalLongitudeClean();
@@ -501,6 +535,12 @@ public class TreatmentData {
 	return matrixFileValidCells;
     }
 
+    /**
+     * Delete a directory
+     * 
+     * @param path
+     * @return boolean
+     */
     public boolean deleteDirectory(File path){
 
 	if(path.isDirectory()){
@@ -520,7 +560,13 @@ public class TreatmentData {
 
     }
 
-    public void establishmentMeansOption(ArrayList<String> establishmentList){
+    /**
+     * Filter on establishmentMeans
+     * 
+     * @param establishmentList
+     * @return void
+     */
+    public File establishmentMeansOption(ArrayList<String> establishmentList){
 
 	// list containing tags "establishmentMeans" to delete
 	// inversed list of the begining (user want to keep the others) 
@@ -590,39 +636,77 @@ public class TreatmentData {
 	    System.out.println(noEstablishment.get(k));
 	}
 
-	File noEstablishmentFile = this.createFileCsv(noEstablishment, "wrong/noEstablishmentMeans");
+	File noEstablishmentFile = this.createFileCsv(noEstablishment, "wrong/noEstablishmentMeans_" + this.getNbFileRandom() + ".csv");
+	
+	return noEstablishmentFile;
 
     }
-
+    
+    /**
+     * 
+     * @return DarwinCore
+     */
     public DarwinCore getFileDarwinCore() {
 	return fileDarwinCore;
     }
 
+    /**
+     * 
+     * @param fileDarwinCore
+     * @return void
+     */
     public void setFileDarwinCore(DarwinCore fileDarwinCore) {
 	this.fileDarwinCore = fileDarwinCore;
     }
 
+    /**
+     * 
+     * @return ArrayList<File>
+     */
     public ArrayList<File> getRasterFiles() {
 	return rasterFiles;
     }
 
+    /**
+     * 
+     * @param rasterFiles
+     * @return void
+     */
     public void setRasterFiles(ArrayList<File> rasterFiles) {
 	this.rasterFiles = rasterFiles;
     }
 
+    /**
+     * 
+     * @return HashMap<Integer,HashMap<String,Boolean>>
+     */
     public HashMap<Integer, HashMap<String, Boolean>> getHashMapValidOrNot() {
 	return hashMapValidOrNot;
     }
 
+    /**
+     * 
+     * @param hashMapValidOrNot
+     * @return void
+     */
     public void setHashMapValidOrNot(
 	    HashMap<Integer, HashMap<String, Boolean>> hashMapValidOrNot) {
 	this.hashMapValidOrNot = hashMapValidOrNot;
     }
 
+    /**
+     * 
+     * @return int
+     */
     public int getNbFileRandom() {
 	return nbFileRandom;
     }
 
+    /**
+     * 
+     * @param nbFileRandom
+     * @return void
+     */
     public void setNbFileRandom(int nbFileRandom) {
 	this.nbFileRandom = nbFileRandom;
     }
