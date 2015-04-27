@@ -8,10 +8,19 @@ package src.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import src.beans.Finalisation;
 import src.beans.Initialise;
+import src.beans.Step1_MappingDwc;
+import src.beans.Step2_CheckCoordinates;
+import src.beans.Step3_CheckGeoIssue;
+import src.beans.Step4_CheckTaxonomy;
+import src.beans.Step5_IncludeSynonym;
+import src.beans.Step6_CheckTDWG;
+import src.beans.Step7_CheckISo2Coordinates;
+import src.beans.Step8_CheckCoordinatesRaster;
 
 /**
  * src.model
@@ -24,6 +33,15 @@ public class LaunchWorkflow {
     private Initialise initialisation;
     private Finalisation finalisation;
     private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/";
+    
+    private Step1_MappingDwc step1;
+    private Step2_CheckCoordinates step2;
+    private Step3_CheckGeoIssue step3;
+    private Step4_CheckTaxonomy step4;
+    private Step5_IncludeSynonym step5;
+    private Step6_CheckTDWG step6;
+    private Step7_CheckISo2Coordinates step7;
+    private Step8_CheckCoordinatesRaster step8;
     
     /**
      * 
@@ -45,6 +63,14 @@ public class LaunchWorkflow {
 	this.dataTreatment.setNbFileRandom(initialisation.getNbFileRandom());
 	
 	finalisation = new Finalisation();
+	step1 = new Step1_MappingDwc();
+	step2 = new Step2_CheckCoordinates();
+	step3 = new Step3_CheckGeoIssue();
+	step4 = new Step4_CheckTaxonomy();
+	step5 = new Step5_IncludeSynonym();
+	step6 = new Step6_CheckTDWG();
+	step7 = new Step7_CheckISo2Coordinates();
+	step8 = new Step8_CheckCoordinatesRaster();
 	
 	boolean inputFilesIsValid = this.isValidInputFiles();
 	
@@ -90,13 +116,23 @@ public class LaunchWorkflow {
 	this.dataTreatment.deleteTables();
 	
 	ArrayList<MappingDwC> listMappingDWC = this.initialisation.getListDwcFiles();
+	HashMap<MappingDwC, String> mappingPath = step1.getMappedFilesAssociatedPath();
 	
 	for(int i = 0 ; i < listMappingDWC.size() ; i++){
-	    boolean mapping = listMappingDWC.get(i).isMapping();
+	    MappingDwC mappingDwc = listMappingDWC.get(i);
+	    boolean mapping = mappingDwc.isMapping();
 	    if(mapping){
-		this.dataTreatment.mappingDwC(listMappingDWC.get(i));
+		step1.setInvolved(mapping);
+		
+		this.dataTreatment.mappingDwC(mappingDwc);
+		String pathMappedFile = mappingDwc.getMappedFile().getAbsolutePath().replace(DIRECTORY_PATH,"");
+		mappingPath.put(mappingDwc, pathMappedFile);
+		
+		
 	    }
 	}
+	
+	System.out.println(mappingPath);
 	
 	for(int i = 0 ; i < this.initialisation.getListDwcFiles().size() ; i++){
 	    MappingDwC fileInput = this.initialisation.getListDwcFiles().get(i);
@@ -275,6 +311,7 @@ public class LaunchWorkflow {
 	    String pathFile = cleanOutput.getAbsolutePath().replace(DIRECTORY_PATH,"");
 	    listPathsOutput.add(pathFile);
 	}
+	
 	finalisation.setListPathsOutputFiles(listPathsOutput);
 	finalisation.setFinalOutputFiles(listFinalOutput);
     }
@@ -310,5 +347,78 @@ public class LaunchWorkflow {
 
     public void setFinalisation(Finalisation finalisation) {
         this.finalisation = finalisation;
-    }    
+    }
+
+    public String getDIRECTORY_PATH() {
+        return DIRECTORY_PATH;
+    }
+
+    public void setDIRECTORY_PATH(String dIRECTORY_PATH) {
+        DIRECTORY_PATH = dIRECTORY_PATH;
+    }
+
+    public Step1_MappingDwc getStep1() {
+        return step1;
+    }
+
+    public void setStep1(Step1_MappingDwc step1) {
+        this.step1 = step1;
+    }
+
+    public Step2_CheckCoordinates getStep2() {
+        return step2;
+    }
+
+    public void setStep2(Step2_CheckCoordinates step2) {
+        this.step2 = step2;
+    }
+
+    public Step3_CheckGeoIssue getStep3() {
+        return step3;
+    }
+
+    public void setStep3(Step3_CheckGeoIssue step3) {
+        this.step3 = step3;
+    }
+
+    public Step4_CheckTaxonomy getStep4() {
+        return step4;
+    }
+
+    public void setStep4(Step4_CheckTaxonomy step4) {
+        this.step4 = step4;
+    }
+
+    public Step5_IncludeSynonym getStep5() {
+        return step5;
+    }
+
+    public void setStep5(Step5_IncludeSynonym step5) {
+        this.step5 = step5;
+    }
+
+    public Step6_CheckTDWG getStep6() {
+        return step6;
+    }
+
+    public void setStep6(Step6_CheckTDWG step6) {
+        this.step6 = step6;
+    }
+
+    public Step7_CheckISo2Coordinates getStep7() {
+        return step7;
+    }
+
+    public void setStep7(Step7_CheckISo2Coordinates step7) {
+        this.step7 = step7;
+    }
+
+    public Step8_CheckCoordinatesRaster getStep8() {
+        return step8;
+    }
+
+    public void setStep8(Step8_CheckCoordinatesRaster step8) {
+        this.step8 = step8;
+    }  
+    
 }

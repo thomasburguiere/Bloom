@@ -5,6 +5,7 @@
 	version="3.0">
 	<welcome-file-list>
 		<welcome-file>HomePage.jsp</welcome-file>
+		<welcome-file>finalWorkflow.jsp</welcome-file>
 	</welcome-file-list>
 	<servlet>
 		<servlet-name>Controler</servlet-name>
@@ -47,5 +48,69 @@
 	<servlet-mapping>
 		<servlet-name>Download</servlet-name>
 		<url-pattern>/temp/*</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Step1_MappingDwc</servlet-name>
+		<servlet-class>src.beans.Step1_MappingDwc</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Step1_MappingDwc</servlet-name>
+		<url-pattern>/step1</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Step2_CheckCoordinates</servlet-name>
+		<servlet-class>src.beans.Step2_CheckCoordinates</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Step2_CheckCoordinates</servlet-name>
+		<url-pattern>/step2</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Step3_CheckGeoIssue</servlet-name>
+		<servlet-class>src.beans.Step3_CheckGeoIssue</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Step3_CheckGeoIssue</servlet-name>
+		<url-pattern>/step3</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Step4_CheckTaxonomy</servlet-name>
+		<servlet-class>src.beans.Step4_CheckTaxonomy</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Step4_CheckTaxonomy</servlet-name>
+		<url-pattern>/step4</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Step5_IncludeSynonym</servlet-name>
+		<servlet-class>src.beans.Step5_IncludeSynonym</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Step5_IncludeSynonym</servlet-name>
+		<url-pattern>/step5</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Step6_CheckTDWG</servlet-name>
+		<servlet-class>src.beans.Step6_CheckTDWG</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Step6_CheckTDWG</servlet-name>
+		<url-pattern>/step6</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Step7_CheckISo2Coordinates</servlet-name>
+		<servlet-class>src.beans.Step7_CheckISo2Coordinates</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Step7_CheckISo2Coordinates</servlet-name>
+		<url-pattern>/step7</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Step8_CheckCoordinatesRaster</servlet-name>
+		<servlet-class>src.beans.Step8_CheckCoordinatesRaster</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Step8_CheckCoordinatesRaster</servlet-name>
+		<url-pattern>/step8</url-pattern>
 	</servlet-mapping>
 </web-app>

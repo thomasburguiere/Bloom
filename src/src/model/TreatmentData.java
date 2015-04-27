@@ -9,7 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+
+import src.model.RasterTreatment;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -75,7 +76,7 @@ public class TreatmentData {
 
 
     }
-    
+
     /**
      * Convert input file (not DwC) to DwC format
      * 
@@ -88,7 +89,7 @@ public class TreatmentData {
 	File mappedFile = mappingDWC.createNewDwcFile(this.getNbFileRandom());
 	mappingDWC.setMappedFile(mappedFile);
     }
-    
+
     /**
      * Create a DarwinCore class for each file.
      * Initial file will be modified thanks to readFile()
@@ -99,7 +100,7 @@ public class TreatmentData {
      * @return List<String>
      */
     public List <String> initialiseFile(File inputFile, int nbFile) throws IOException{
-	
+
 	fileDarwinCore = new DarwinCore(inputFile, nbFile);
 	fileDarwinCore.readDarwinCoreFile();
 	List<String> listLinesDarwinCore = fileDarwinCore.getDarwinLines();
@@ -253,7 +254,7 @@ public class TreatmentData {
 	return wrongCoor;
     }
 
- 
+
     /**
      * Select wrong geospatial and write in a file :
      * tag "hasGeospatialIssues_" = true
@@ -317,7 +318,7 @@ public class TreatmentData {
      * @return int
      */
     public int getIndiceFromTag(String tagName){
-	
+
 	HashMap<String, ArrayList<String>> idAssoData = fileDarwinCore.getIdAssoData();
 
 	for(String id_ : idAssoData.keySet()){
@@ -332,8 +333,8 @@ public class TreatmentData {
 	}
 	return 0;
     }
-    
-    
+
+
     /**
      * Check if coordinates (latitude and longitude) are included in the country indicated by the iso2 code
      * 
@@ -344,18 +345,18 @@ public class TreatmentData {
 	fileDarwinCore.associateIdData();
 
 	ArrayList<String> listToDelete = new ArrayList<>();
-	
+
 	HashMap<String, ArrayList<String>> idAssoData = fileDarwinCore.getIdAssoData(); 
 
 	int iLatitude = this.getIndiceFromTag("decimalLatitude_");
 	int iLongitude = this.getIndiceFromTag("decimalLongitude_");
 	int iIso2 = this.getIndiceFromTag("countryCode_");
 	int iGbifID = this.getIndiceFromTag("gbifID_");
-	
+
 	for (String id_ : idAssoData.keySet()) {
 	    if(!id_ .equals("id_")){
 		ArrayList<String> listInfos = idAssoData.get(id_);
-		
+
 		float latitude = 0;
 		float longitude = 0;
 		String iso2 = "";
@@ -392,19 +393,19 @@ public class TreatmentData {
 		    for(int j = 0 ; j < messagesSelectID.size() ; j++){
 			System.out.println(messagesSelectID.get(j));
 		    }
-		    
+
 		    for(int k = 0 ; k < selectIDResults.size() ; k++){
 			if(!listToDelete.contains(selectIDResults.get(k))){
 			    listToDelete.add(selectIDResults.get(k));
 			}
 		    }
-		    
-		    
+
+
 		    ConnectionDatabase newConnectionDeleteID = new ConnectionDatabase();
 		    ArrayList<String> messagesDeleteID = new ArrayList<String>();
 		    String sqlDeleteID = "DELETE FROM Workflow.Clean WHERE id_=" + id_ + ";";
 		    messagesDeleteID.addAll(newConnectionDeleteID.newConnection("executeUpdate", sqlDeleteID));
-		    
+
 		    for(int i = 0 ; i < messagesDeleteID.size() ; i++){
 			System.out.println(messagesDeleteID.get(i));
 		    }
@@ -412,9 +413,9 @@ public class TreatmentData {
 
 	    }
 	}
-	
+
 	File wrongPolygon = this.createFileCsv(listToDelete, "wrong/wrongPolygon_" + this.getNbFileRandom() + ".csv");
-	
+
 	return wrongPolygon;
     }
 
@@ -490,32 +491,59 @@ public class TreatmentData {
     public void checkIsoTdwgCode(){
 	//change example : locationID="TDWG:MXS-JA"
 	PolygonTreatment tdwg4 = new PolygonTreatment();
-	ArrayList<String> decimalLatitude = fileDarwinCore.getDecimalLatitudeClean();
-	ArrayList<String> decimalLongitude = fileDarwinCore.getDecimalLongitudeClean();
-	ArrayList<String> iso2Codes = fileDarwinCore.getIso2Clean();
+	fileDarwinCore.associateIdData();
+	HashMap<String, ArrayList<String>> idAssoData = fileDarwinCore.getIdAssoData(); 
 
-	for(int i = 1 ; i < decimalLatitude.size() ; i++){
-	    float latitude = 0;
-	    float longitude = 0;
-	    String iso2 = "";
-	    latitude = Float.parseFloat(decimalLatitude.get(i).replace("\"", ""));
-	    longitude = Float.parseFloat(decimalLongitude.get(i).replace("\"", ""));
-	    iso2 = iso2Codes.get(i).replace("\"", "");
-	    GeometryFactory geometryFactory = new GeometryFactory();
-	    Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
-	    System.out.println("--------------------------------------------------------------");
-	    System.out.println("---------------- Check point in TDWG4 code -------------------");
-	    System.out.println("Lat : " + latitude + "\tLong : " + longitude);
-	    System.out.print("iso2 : " + iso2);
-	    String tdwg4Code = "";
-	    try {
-		tdwg4Code = tdwg4.tdwg4ContainedPoint(point, iso2);
-	    } catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+	int iLatitude = this.getIndiceFromTag("decimalLatitude_");
+	int iLongitude = this.getIndiceFromTag("decimalLongitude_");
+	int iIso2 = this.getIndiceFromTag("countryCode_");
+
+	for (String id_ : idAssoData.keySet()) {
+	    if(!id_ .equals("id_")){
+		ArrayList<String> listInfos = idAssoData.get(id_);
+
+		float latitude = 0;
+		float longitude = 0;
+		String iso2 = "";
+
+		latitude = Float.parseFloat(listInfos.get(iLatitude).replace("\"", ""));
+		longitude = Float.parseFloat(listInfos.get(iLongitude).replace("\"", ""));
+		iso2 = listInfos.get(iIso2);
+		GeometryFactory geometryFactory = new GeometryFactory();
+		Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
+		System.out.println("--------------------------------------------------------------");
+		System.out.println("---------------- Check point in TDWG4 code -------------------");
+		System.out.println("Lat : " + latitude + "\tLong : " + longitude);
+		System.out.print("iso2 : " + iso2);
+		String tdwg4Code = "";
+		try {
+		    tdwg4Code = tdwg4.tdwg4ContainedPoint(point, iso2);
+		} catch (IOException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
+		System.out.println("\ttdwg4 : " + tdwg4Code);
+		System.out.println("--------------------------------------------------------------");
+
+		ConnectionDatabase newConnectionSelectID = new ConnectionDatabase();
+		String sqlSelectID = "SELECT locationID_ FROM Workflow.Clean WHERE Clean.id_=" + id_ + ";";
+		newConnectionSelectID.newConnection("executeQuery", sqlSelectID);
+		ArrayList<String> selectIDResults = newConnectionSelectID.getResultatSelect();
+		System.out.println(selectIDResults);
+		String newLocationID = "";
+		if(selectIDResults.size() > 1 || !selectIDResults.get(1).replaceAll("\"", "").equals(" ")){
+		    newLocationID = selectIDResults.get(1).replaceAll("\"", "") + ";TDWG=" + tdwg4Code;
+		}
+		else{
+		    newLocationID = "TDWG=" + tdwg4Code;
+		}
+		
+		String sqlUpdateTDWG = "UPDATE Workflow.Clean SET Clean.locationID_=\"" + newLocationID + "\" WHERE Clean.id_=" + id_ + ";";
+		//System.out.println(sqlUpdateTDWG);
+		ConnectionDatabase newConnectionUpdateClean = new ConnectionDatabase();
+		newConnectionUpdateClean.newConnection("executeUpdate", sqlUpdateTDWG);
+		
 	    }
-	    System.out.println("\ttdwg4 : " + tdwg4Code);
-	    System.out.println("--------------------------------------------------------------");
 	}
     }
 
@@ -637,11 +665,11 @@ public class TreatmentData {
 	}
 
 	File noEstablishmentFile = this.createFileCsv(noEstablishment, "wrong/noEstablishmentMeans_" + this.getNbFileRandom() + ".csv");
-	
+
 	return noEstablishmentFile;
 
     }
-    
+
     /**
      * 
      * @return DarwinCore

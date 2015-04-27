@@ -1,7 +1,0 @@
-function downloadFinalFiles(){
-	
-}
-
-function initialiseFinal(){
-	
-}

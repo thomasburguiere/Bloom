@@ -69,6 +69,6 @@
 		<input type="submit" value="Launch workflow" id="workflowLaunch" name="workflowLaunch" class="button" ></font>
 	</form>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-	<script type="text/javascript" src="functions.js"></script>
+	<script type="text/javascript" src="js/functions.js"></script>
 </body>
 </html>

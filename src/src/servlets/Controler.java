@@ -29,6 +29,14 @@ import org.apache.commons.io.FilenameUtils;
 
 import src.beans.Finalisation;
 import src.beans.Initialise;
+import src.beans.Step1_MappingDwc;
+import src.beans.Step2_CheckCoordinates;
+import src.beans.Step3_CheckGeoIssue;
+import src.beans.Step4_CheckTaxonomy;
+import src.beans.Step5_IncludeSynonym;
+import src.beans.Step6_CheckTDWG;
+import src.beans.Step7_CheckISo2Coordinates;
+import src.beans.Step8_CheckCoordinatesRaster;
 import src.model.CSVFile;
 import src.model.LaunchWorkflow;
 import src.model.MappingDwC;
@@ -46,6 +54,15 @@ public class Controler extends HttpServlet {
     private Initialise initialisation;
     private int nbFileRandom;
     private Finalisation finalisation;
+    
+    private Step1_MappingDwc step1;
+    private Step2_CheckCoordinates step2;
+    private Step3_CheckGeoIssue step3;
+    private Step4_CheckTaxonomy step4;
+    private Step5_IncludeSynonym step5;
+    private Step6_CheckTDWG step6;
+    private Step7_CheckISo2Coordinates step7;
+    private Step8_CheckCoordinatesRaster step8;
     
     /**
      * 
@@ -92,6 +109,24 @@ public class Controler extends HttpServlet {
 	
 	finalisation = newLaunch.getFinalisation();
 	request.setAttribute("finalisation", finalisation);
+	
+	step1 = newLaunch.getStep1();
+	System.out.println(step1.isInvolved());
+	request.setAttribute("step1", step1);
+	step2 = newLaunch.getStep2();
+	request.setAttribute("step2", step2);
+	step3 = newLaunch.getStep3();
+	request.setAttribute("step3", step3);
+	step4 = newLaunch.getStep4();
+	request.setAttribute("step4", step4);
+	step5 = newLaunch.getStep5();
+	request.setAttribute("step5", step5);
+	step6 = newLaunch.getStep6();
+	request.setAttribute("step6", step6);
+	step7 = newLaunch.getStep7();
+	request.setAttribute("step7", step7);
+	step8 = newLaunch.getStep8();
+	request.setAttribute("step8", step8);
 	
 	this.getServletContext().getRequestDispatcher("/finalWorkflow.jsp").forward(request, response);
 
