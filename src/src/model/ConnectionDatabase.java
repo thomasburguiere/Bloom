@@ -90,7 +90,7 @@ public class ConnectionDatabase {
 	    else if(choiceStatement == "executeUpdate"){
 		i = statement.executeUpdate(sql);
 		messages.add(sql);
-		messages.add("nb lignes affectées : " + Integer.toString(i));
+		messages.add("nb lignes affectées :" + Integer.toString(i));
 	    }
 
 	    statement.close();

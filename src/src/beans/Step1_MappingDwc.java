@@ -15,7 +15,7 @@ import src.model.MappingDwC;
  */
 public class Step1_MappingDwc {
 
-    private boolean step1_ok = false;
+    private boolean step1_ok = true;
     private boolean involved = false;
     private HashMap<MappingDwC, String> mappedFilesAssociatedPath = new HashMap<MappingDwC, String>();
     

@@ -11,7 +11,7 @@ package src.beans;
  * Step3_CheckGeoIssue
  */
 public class Step3_CheckGeoIssue {
-    private boolean step3_ok = false;
+    private boolean step3_ok = true;
     private int nbFound = 0;
     private boolean involved = true;
     private String pathWrongGeoIssue= "";

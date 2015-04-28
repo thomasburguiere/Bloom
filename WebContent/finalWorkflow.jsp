@@ -51,37 +51,38 @@
 			type="hidden" id="step8_path" value="${step8.pathWrongRaster}" />
 	</div>
 
-	<br>
-	<div id=divStep1 style="visibility: hidden">
-		Step 1 : Mapping to DarwinCore format <br>
+	<div id=divStep1 style="display: none">
+		<p id="p_ok1"> Step 1 : Mapping to DarwinCore format </p> 
 		<c:forEach items="${step1.mappedFilesAssociatedPath}" var="entry"> 
 			${entry.key.originalName} : <a href=<c:out value='${entry.value}'/>> Download</a>
 			<br>
 		</c:forEach>
 	</div>
-	<div id=divStep2 style="visibility: hidden">
-		Step 2 : Check coordinates <br> Number of occurrences found : <br>
+	<div id=divStep2 style="display: none">
+		<p id="p_ok2"> Step 2 : Check coordinates </p> 
+		Number of occurrences found : ${step2.nbFound}
 	</div>
-	<div id=divStep3 style="visibility: hidden">
-		Step 3 : Check geospatial issue <br> Number of occurrences found
-		: <br>
+	<div id=divStep3 style="display: none">
+		<p id="p_ok3"> Step 3 : Check geospatial issue </p> 
+		Number of occurrences found : ${step3.nbFound}
 	</div>
-	<div id=divStep4 style="visibility: hidden">
-		Step 4 : Check taxonomy (KEW API) <br>
+	<div id=divStep4 style="display: none">
+		<p id="p_ok4"> Step 4 : Check taxonomy (KEW API)</p> 
 	</div>
-	<div id=divStep5 style="visibility: hidden">
-		Step 5 : Add synonyms <br> Number of occurrences involved : <br>
+	<div id=divStep5 style="display: none">
+		<p id="p_ok5"> Step 5 : Add synonyms </p> 
+		Number of occurrences involved : ${step5.nbFound}
 	</div>
-	<div id=divStep6 style="visibility: hidden">
-		Step 6 : Check TDWG code <br>
+	<div id=divStep6 style="display: none">
+		<p id="p_ok6"> Step 6 : Check TDWG code </p>
 	</div>
-	<div id=divStep7 style="visibility: hidden">
-		Step 7 : Check if coordinates are equivalent to ISO2 code <br>
-		Number of wrong occurrences : <br>
+	<div id=divStep7 style="display: none">
+		<p id="p_ok7"> Step 7 : Check if coordinates are equivalent to ISO2 code </p>
+		Number of wrong occurrences : ${step7.nbFound}
 	</div>
-	<div id=divStep8 style="visibility: hidden">
-		Step 8 :Check coordinates in raster cells <br> Number of
-		occurrences found : <br>
+	<div id=divStep8 style="display: none">
+		<p id="p_ok8"> Step 8 :Check coordinates in raster cells</p> 
+		Number of occurrences found : "${step8.nbFound}"
 	</div>
 
 	<!-- <a href=${finalisation.pathMatrixFile}> Download input data who are valid for raster</a> 

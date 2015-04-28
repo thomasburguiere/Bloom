@@ -33,7 +33,9 @@ public class RasterTreatment {
     private HashMap<Integer, HashMap<String, Boolean>> hashMapValidOrNot;
     private TreatmentData dataTreatment;
     private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/";
-
+    private int nbWrongOccurrences;
+    
+    
     public RasterTreatment(ArrayList<File> rasterFiles, TreatmentData dataTreatment){
 	this.rasterFiles = rasterFiles;
 	this.dataTreatment = dataTreatment;
@@ -67,6 +69,8 @@ public class RasterTreatment {
 	// delete from Clean table, all data not included
 	this.deleteWrongCellsFromClean(listNotValidData);
 
+	this.setNbWrongOccurrences(listNotValidData.size());
+	
 	// remove temporary files bind to the raster analysis
 	//dataTreatment.deleteDirectory(new File(DIRECTORY_PATH + "temp/rasterAnalyse/"));
 
@@ -394,7 +398,7 @@ public class RasterTreatment {
 	messagesSelect.addAll(newConnectionSelect.newConnection("executeQuery", sqlIdDelete));
 	ArrayList<String> resultatSelect = newConnectionSelect.getResultatSelect();
 	if(resultatSelect != null){
-	    messagesSelect.add("nb lignes affectées : " + Integer.toString(resultatSelect.size() - 1));
+	    messagesSelect.add("nb lignes affectées :" + Integer.toString(resultatSelect.size() - 1));
 	    if(!new File(DIRECTORY_PATH + "temp/wrong/").exists())
 	    {
 		new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
@@ -420,7 +424,7 @@ public class RasterTreatment {
 	    messagesDelete.addAll(newConnectionDelete.newConnection("executeUpdate", sqlDeleteCell));
 	    ArrayList<String> resultatDelete = newConnectionDelete.getResultatSelect();
 	    if(resultatDelete != null){
-		messagesDelete.add("nb lignes affectées : " + Integer.toString(resultatDelete.size() - 1));
+		messagesDelete.add("nb lignes affectées :" + Integer.toString(resultatDelete.size() - 1));
 	    }
 
 
@@ -430,4 +434,47 @@ public class RasterTreatment {
 	    }
 	}
     }
+
+    public ArrayList<File> getRasterFiles() {
+        return rasterFiles;
+    }
+
+    public void setRasterFiles(ArrayList<File> rasterFiles) {
+        this.rasterFiles = rasterFiles;
+    }
+
+    public HashMap<Integer, HashMap<String, Boolean>> getHashMapValidOrNot() {
+        return hashMapValidOrNot;
+    }
+
+    public void setHashMapValidOrNot(
+    	HashMap<Integer, HashMap<String, Boolean>> hashMapValidOrNot) {
+        this.hashMapValidOrNot = hashMapValidOrNot;
+    }
+
+    public TreatmentData getDataTreatment() {
+        return dataTreatment;
+    }
+
+    public void setDataTreatment(TreatmentData dataTreatment) {
+        this.dataTreatment = dataTreatment;
+    }
+
+    public String getDIRECTORY_PATH() {
+        return DIRECTORY_PATH;
+    }
+
+    public void setDIRECTORY_PATH(String dIRECTORY_PATH) {
+        DIRECTORY_PATH = dIRECTORY_PATH;
+    }
+
+    public int getNbWrongOccurrences() {
+        return nbWrongOccurrences;
+    }
+
+    public void setNbWrongOccurrences(int nbWrongOccurrences) {
+        this.nbWrongOccurrences = nbWrongOccurrences;
+    }
+    
+    
 }

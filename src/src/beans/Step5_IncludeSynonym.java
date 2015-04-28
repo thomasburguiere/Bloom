@@ -12,7 +12,7 @@ package src.beans;
  */
 public class Step5_IncludeSynonym {
 
-    private boolean step5_ok = false;
+    private boolean step5_ok = true;
     private int nbFound = 0;
     private boolean involved = false;
     

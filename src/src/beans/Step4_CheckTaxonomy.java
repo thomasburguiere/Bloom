@@ -12,8 +12,9 @@ package src.beans;
  */
 public class Step4_CheckTaxonomy {
 
-    private boolean step4_ok = false;
+    private boolean step4_ok = true;
     private boolean involved = false;
+    private int nbSynonymsInvolved;
     
     /**
      * 
@@ -39,5 +40,5 @@ public class Step4_CheckTaxonomy {
     public void setInvolved(boolean involved) {
         this.involved = involved;
     }
-    
+ 
 }

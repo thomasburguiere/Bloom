@@ -12,7 +12,7 @@ package src.beans;
  * Step2_CheckCoordinates
  */
 public class Step2_CheckCoordinates {
-    private boolean step2_ok = false;
+    private boolean step2_ok = true;
     private int nbFound = 0;
     private boolean involved = true;
     private String pathWrongCoordinates = "";

@@ -12,7 +12,7 @@ package src.beans;
  */
 public class Step8_CheckCoordinatesRaster {
 
-    private boolean step8_ok = false;
+    private boolean step8_ok = true;
     private boolean involved = false;
     private int nbFound = 0;
     private String pathWrongRaster = "";

@@ -12,7 +12,7 @@ package src.beans;
  */
 public class Step7_CheckISo2Coordinates {
 
-    private boolean step7_ok = false;
+    private boolean step7_ok = true;
     private String pathWrongIso2 = "";
     private int nbFound = 0;
     private boolean involved = true;

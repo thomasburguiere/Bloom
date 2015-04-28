@@ -30,7 +30,12 @@ public class TreatmentData {
     private HashMap<Integer, HashMap<String, Boolean>> hashMapValidOrNot;
     private int nbFileRandom;
     private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/";
-
+    private int nbWrongCoordinates = 0;
+    private int nbWrongGeospatialIssues = 0;
+    private int nbSynonymInvolved = 0;
+    private int nbWrongIso2 = 0;
+    private int nbWrongRaster = 0;
+    
     /**
      * 
      * package model
@@ -237,8 +242,10 @@ public class TreatmentData {
 	String sqlRetrieveWrongCoord = "SELECT * FROM Workflow.DarwinCoreInput WHERE decimalLatitude_=0 OR decimalLatitude_>90 OR decimalLatitude_<-90 OR decimalLongitude_=0 OR decimalLongitude_>180 OR decimalLongitude_<-180;";
 	messages.addAll(newConnection.newConnection("executeQuery", sqlRetrieveWrongCoord));
 	ArrayList<String> resultatSelect = newConnection.getResultatSelect();
-	messages.add("nb lignes affectées : " + Integer.toString(resultatSelect.size() - 1));
+	messages.add("nb lignes affectées :" + Integer.toString(resultatSelect.size() - 1));
 
+	
+	
 	if(!new File(DIRECTORY_PATH + "temp/wrong/").exists())
 	{
 	    new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
@@ -248,6 +255,9 @@ public class TreatmentData {
 
 
 	for(int j = 0 ; j < messages.size() ; j++){
+	    if(messages.get(j).contains("nb lignes affectées")){
+		this.setNbWrongCoordinates(Integer.parseInt(messages.get(j).split(":")[1]));
+	    }
 	    System.out.println(messages.get(j));
 	}
 
@@ -274,6 +284,8 @@ public class TreatmentData {
 
 	messages.add("nb lignes affectées : " + Integer.toString(resultatSelect.size() - 1));
 
+	this.setNbWrongGeospatialIssues(resultatSelect.size() - 1 );
+	
 	if(!new File(DIRECTORY_PATH + "temp/wrong/").exists())
 	{
 	    new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
@@ -296,19 +308,21 @@ public class TreatmentData {
      * @return void
      */
     public void includeSynonyms(File includeSynonyms){
-
+	SynonymsTreatment treatmentSynonyms = null;
+	
 	if(includeSynonyms != null){
-	    SynonymsTreatment treatmentSynonyms = new SynonymsTreatment(includeSynonyms);
+	    treatmentSynonyms = new SynonymsTreatment(includeSynonyms);
 	    //treatmentSynonyms.getTagsSynonymsTempTable();
 	    treatmentSynonyms.createSynonymTempTable();
 	    treatmentSynonyms.updateCleanFromSynonymTemp();
 	}
 	else{
-	    SynonymsTreatment treatmentSynonymsDefault = new SynonymsTreatment();
-	    treatmentSynonymsDefault.updateClean();
+	    treatmentSynonyms = new SynonymsTreatment();
+	    treatmentSynonyms.updateClean();
 
 	}
 
+	this.setNbSynonymInvolved(treatmentSynonyms.getNbSynonymInvolved());
     }
 
     /**
@@ -352,7 +366,8 @@ public class TreatmentData {
 	int iLongitude = this.getIndiceFromTag("decimalLongitude_");
 	int iIso2 = this.getIndiceFromTag("countryCode_");
 	int iGbifID = this.getIndiceFromTag("gbifID_");
-
+	int nbWrongIso2 = 0;
+	
 	for (String id_ : idAssoData.keySet()) {
 	    if(!id_ .equals("id_")){
 		ArrayList<String> listInfos = idAssoData.get(id_);
@@ -383,7 +398,7 @@ public class TreatmentData {
 		System.out.println("--------------------------------------------------------------\n");
 
 		if(!isContained){
-
+		    nbWrongIso2 ++;
 		    ConnectionDatabase newConnectionSelectID = new ConnectionDatabase();
 		    ArrayList<String> messagesSelectID = new ArrayList<String>();
 		    String sqlSelectID = "SELECT * FROM Workflow.Clean WHERE Clean.id_=" + id_ + ";";
@@ -415,7 +430,8 @@ public class TreatmentData {
 	}
 
 	File wrongPolygon = this.createFileCsv(listToDelete, "wrong/wrongPolygon_" + this.getNbFileRandom() + ".csv");
-
+	this.setNbWrongIso2(nbWrongIso2);
+	
 	return wrongPolygon;
     }
 
@@ -560,6 +576,8 @@ public class TreatmentData {
 
 	File matrixFileValidCells = rasterTreatment.treatmentRaster();
 
+	this.setNbWrongIso2(rasterTreatment.getNbWrongOccurrences());
+	
 	return matrixFileValidCells;
     }
 
@@ -739,5 +757,54 @@ public class TreatmentData {
 	this.nbFileRandom = nbFileRandom;
     }
 
+    public String getDIRECTORY_PATH() {
+        return DIRECTORY_PATH;
+    }
+
+    public void setDIRECTORY_PATH(String dIRECTORY_PATH) {
+        DIRECTORY_PATH = dIRECTORY_PATH;
+    }
+
+    public int getNbWrongCoordinates() {
+        return nbWrongCoordinates;
+    }
+
+    public void setNbWrongCoordinates(int nbWrongCoordinates) {
+        this.nbWrongCoordinates = nbWrongCoordinates;
+    }
+
+    public int getNbWrongGeospatialIssues() {
+        return nbWrongGeospatialIssues;
+    }
+
+    public void setNbWrongGeospatialIssues(int nbWrongGeospatialIssues) {
+        this.nbWrongGeospatialIssues = nbWrongGeospatialIssues;
+    }
+
+    public int getNbSynonymInvolved() {
+        return nbSynonymInvolved;
+    }
+
+    public void setNbSynonymInvolved(int nbSynonymInvolved) {
+        this.nbSynonymInvolved = nbSynonymInvolved;
+    }
+
+    public int getNbWrongIso2() {
+        return nbWrongIso2;
+    }
+
+    public void setNbWrongIso2(int nbWrongIso2) {
+        this.nbWrongIso2 = nbWrongIso2;
+    }
+
+    public int getNbWrongRaster() {
+        return nbWrongRaster;
+    }
+
+    public void setNbWrongRaster(int nbWrongRaster) {
+        this.nbWrongRaster = nbWrongRaster;
+    }
+    
+    
 }
 

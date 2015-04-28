@@ -12,7 +12,7 @@ package src.beans;
  */
 public class Step6_CheckTDWG {
 
-    private boolean step6_ok = false;
+    private boolean step6_ok = true;
     private boolean involved = false;
     
     /**

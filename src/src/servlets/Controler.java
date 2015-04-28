@@ -188,10 +188,10 @@ public class Controler extends HttpServlet {
 	    String raster = "raster_" + nbFilesRaster;
 	    String headerRaster = "header_" + nbFilesHeader;
 	    String synonyms = "synonyms";
-	    String mapping = "mappingActive_" + nbMappingInput;
+	    String mapping = "mappingActive_";
 
 	    String fieldName = item.getFieldName();
-	    // System.out.println(fieldName);
+	    System.out.println("fieldName : " + fieldName);
 	    if(fieldName.equals(input)){
 		DiskFileItem itemFile = (DiskFileItem) item;
 		String fileExtensionName = itemFile.getName();
@@ -206,7 +206,7 @@ public class Controler extends HttpServlet {
 		}
 		CSVFile csvFile = new CSVFile(file);
 		MappingDwC newMappingDWC = new MappingDwC(csvFile, false);
-		newMappingDWC.setCounterID(nbFilesInput + 1);
+		newMappingDWC.setCounterID(nbFilesInput);
 		newMappingDWC.setOriginalName(itemFile.getName());
 		newMappingDWC.setOriginalExtension(fileExtensionName);
 		listDwcFiles.add(newMappingDWC);
@@ -279,12 +279,15 @@ public class Controler extends HttpServlet {
 		    }
 		}
 	    }
-	    else if(fieldName.equals(mapping)){
-		//System.out.println("if mapping : " + item.getString());
+	    else if(fieldName.contains(mapping)){
+		System.out.println("if mapping : " + fieldName);
+		int idMapping = Integer.parseInt(fieldName.split("_")[1]);
 		if(item.getString().equals("true")){
 		    for(int i = 0 ; i < listDwcFiles.size() ; i++ ){
 			int idFile = listDwcFiles.get(i).getCounterID();
-			if(idFile == (nbMappingInput + 1 )){
+			
+			if(idFile == (idMapping)){
+			    System.out.println("idMapping : " + idMapping + "  idFile : " + idFile);
 			    MappingDwC mappingDWC = listDwcFiles.get(i);
 			    mappingDWC.setMapping(true);
 			}
@@ -293,6 +296,7 @@ public class Controler extends HttpServlet {
 
 		nbMappingInput ++;
 	    }
+	    
 
 	    if(initialisation.isEstablishment()){
 		String param = item.getFieldName();

@@ -29,7 +29,7 @@
 			<input id="loadFile0" type="submit" name="loadFile" class="button" value="Load file for mapping" onclick="javascript:mappingTable('divText0')"/>-->
 		</div>
 		<br> <input id="synonyms" type="checkbox"
-			name="synonyms" value="synonyms" onclick="handleClick(this)"> Include synonyms taxons
+			name="synonyms" value="synonyms"> Include synonyms taxons
 		<br>
 		<div id="divRaster">
 			<input id="compteur_raster" type="hidden" name="compteur_raster"
@@ -41,10 +41,10 @@
 			<div id="divRasterFiles" style="margin-left: 40px">
 			</div>
 		</div>
-		<input type="checkbox" id="tdwg4" name="tdwg4" value="tdwg4" onclick="handleClick(this)"> Botanic data (check tdwg4 code)
+		<input type="checkbox" id="tdwg4" name="tdwg4" value="tdwg4"> Botanic data (check tdwg4 code)
 		<br>
 		<input id="establishment" type="checkbox" name="establishment"
-			value="establishment" onclick="established()" onclick="handleClick(this)"> How biological
+			value="establishment" onclick="established()"> How biological
 			individual(s) is represented in the Occurrence : became established at
 			the location. ("establishmentMeans" DarwinCore term)
 		<br>

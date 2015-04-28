@@ -8,6 +8,7 @@ package src.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,17 +84,23 @@ public class LaunchWorkflow {
 
 	    boolean synonymFileIsValid = this.isValidSynonymFile();
 	    this.launchSynonymOption(synonymFileIsValid);
+	    step5.setInvolved(true);
 	}
 
 	if(this.initialisation.isTdwg4Code()){
 	    dataTreatment.checkIsoTdwgCode();
+	    step6.setInvolved(true);
 	}
 
 	if(this.initialisation.isRaster()){
-
+	    step8.setInvolved(true);
 	    boolean rasterFilesIsValid = this.isValidRasterFiles();
 	    if(rasterFilesIsValid){
-		this.launchRasterOption();
+		this.launchRasterOption();	
+		step8.setStep8_ok(true);
+	    }
+	    else{
+		step8.setStep8_ok(false);
 	    }
 	}
 
@@ -158,14 +165,17 @@ public class LaunchWorkflow {
 	File wrongCoordinatesFile = dataTreatment.deleteWrongCoordinates();
 	finalisation.setWrongCoordinatesFile(wrongCoordinatesFile);
 	finalisation.setPathWrongCoordinatesFile(wrongCoordinatesFile.getAbsolutePath().replace(DIRECTORY_PATH, ""));	
+	step2.setNbFound(this.dataTreatment.getNbWrongCoordinates());
 	
 	File wrongGeospatial = dataTreatment.deleteWrongGeospatial();
 	finalisation.setWrongGeospatial(wrongGeospatial);
 	finalisation.setPathWrongGeospatial(wrongGeospatial.getAbsolutePath().replace(DIRECTORY_PATH, ""));
+	step3.setNbFound(this.dataTreatment.getNbSynonymInvolved());
 	
 	File wrongPolygon = this.dataTreatment.getPolygonTreatment();
 	finalisation.setWrongPolygon(wrongPolygon);
 	finalisation.setPathWrongPolygon(wrongPolygon.getAbsolutePath().replace(DIRECTORY_PATH, ""));
+	step7.setNbFound(this.dataTreatment.getNbWrongIso2());
 	
     }
 
@@ -195,20 +205,41 @@ public class LaunchWorkflow {
     public boolean isValidRasterFiles(){
 	//System.out.println("size raster : " + this.initialisation.getInputRastersList().size());
 	//System.out.println("size header : " + this.initialisation.getHeaderRasterList().size());
+	boolean isValid = true;
 	if(this.initialisation.getInputRastersList().size() == this.initialisation.getHeaderRasterList().size()){
-	    if(this.initialisation.getInputRastersList().size() != 0){
-		return true;
-	    }
-	    else{
+	    if(this.initialisation.getInputRastersList().size() == 0){
 		System.err.println("You have to put a raster file (format : bil, ...) if you desire to match your point and cells data.");
-		return false;
+		isValid = false;
 	    }
 	}
 	else{
 	    System.err.println("You have to put a raster file AND its header file (format : hdr).");
-	    return false;
+	    isValid = false;
 	}
+	
+	for(int i = 0 ; i < this.initialisation.getInputRastersList().size() ; i++){
+	    File raster = this.initialisation.getInputRastersList().get(i);
+	    String extensionRaster = raster.getName().substring(raster.getName().lastIndexOf("."));
+	    String [] extensionsRaster = {".bil", ".grd", ".asc", ".sdat", ".rsc", ".nc", ".cdf", ".bsq", ".bip"};
+	    ArrayList<String> extensionsRasterList = new ArrayList(Arrays.asList(extensionsRaster));
+	    
+	    if(!extensionsRasterList.contains(extensionRaster)){
+		isValid = false;
+	    }
+	    
+	}
+	for(int i = 0 ; i < this.initialisation.getHeaderRasterList().size() ; i++){
+	    File header = this.initialisation.getHeaderRasterList().get(i);
+	    String extensionHeader = header.getName().substring(header.getName().lastIndexOf("."));
+	    if(!extensionHeader.equals(".hdr")){
+		isValid = false;
+	    }
+	    
+	    
+	}
+	
 
+	return isValid;
     }
 
     /**
@@ -239,6 +270,8 @@ public class LaunchWorkflow {
 	else{
 	    this.dataTreatment.includeSynonyms(null);
 	}
+	
+	step5.setNbFound(this.dataTreatment.getNbSynonymInvolved());
     }
 
     /**
@@ -251,7 +284,7 @@ public class LaunchWorkflow {
 	File matrixFileValidCells = this.dataTreatment.checkWorldClimCell(this.initialisation.getInputRastersList());
 	finalisation.setMatrixFileValidCells(matrixFileValidCells);
 	finalisation.setPathMatrixFile(matrixFileValidCells.getAbsolutePath().replace(DIRECTORY_PATH, ""));
-	
+	step8.setNbFound(this.dataTreatment.getNbWrongRaster());
     }
 
     /**
@@ -305,7 +338,7 @@ public class LaunchWorkflow {
 	    
 	    ConnectionDatabase newConnection = new ConnectionDatabase();
 	    ArrayList<String > resultCleanTable = newConnection.getCleanTableFromIdFile(idFile);
-	    String nameFile = originalName.replace("." + originalExtension, "") + "_clean.csv";
+	    String nameFile = originalName.replace("." + originalExtension, "") + "_" + initialisation.getNbFileRandom() + "_clean.csv";
 	    File cleanOutput = this.dataTreatment.createFileCsv(resultCleanTable, nameFile);
 	    listFinalOutput.add(cleanOutput);
 	    String pathFile = cleanOutput.getAbsolutePath().replace(DIRECTORY_PATH,"");
