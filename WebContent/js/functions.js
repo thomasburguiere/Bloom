@@ -10,36 +10,42 @@ function addField(compteur, idAdd, typeInput){
 	//count inputs number
 	var nb_inp = document.getElementById(compteur).value;
 
-	//Create a new input file 
+	//Create a new input file
+	var divInputRow = document.createElement("div");
+	//divInputRow.setAttribute("class", "row");
+	divInputRow.setAttribute("id", "divInput_" + nb_inp);
+	
 	var inp = document.createElement('input');
 	inp.setAttribute('type', 'file');
 	inp.setAttribute('id', typeInput + "_" + nb_inp);
 	inp.setAttribute('name', typeInput + "_" + nb_inp);
-	inp.setAttribute('style', 'color:rgb(51,153,255); border-color:rgb(255,255,255); border-style:solid;" size="100"');
+	//inp.setAttribute("class", "row");
+	//inp.setAttribute('style', 'color:rgb(51,153,255); border-color:rgb(255,255,255); border-style:solid;" size="100"');
 
 	if(typeInput == "inp"){
 		inp.setAttribute('onchange', 'loadInputFile('+nb_inp+')');
-
+		
 		// add all new elements to the formulary
-		var buttonADD = document.getElementById(idAdd);
-		var formulaire = document.getElementById('formulaire');
-		formulaire.insertBefore(inp, buttonADD);
-
-		var div = document.createElement('div');
-		div.setAttribute('id', 'divLoad_' + nb_inp);
-		div.setAttribute('style', "margin-left: 40px");
-
-		formulaire.insertBefore(div, buttonADD);
+		var inputs = document.getElementById("bloc-inputs");		
+		
+		divInputRow.appendChild(inp);
+		
+		var divLoad = document.createElement('div');
+		divLoad.setAttribute('id', 'divLoad_' + nb_inp);
+		divLoad.setAttribute("class", "mapping");
+				
+		inputs.appendChild(divInputRow);
+		inputs.appendChild(divLoad);
 	}
 	if(typeInput == "raster"){
-
+		//inp.setAttribute("class", "");
 		var tableRaster = document.getElementById("rasterTable");
 		var nb_header = document.getElementById("compteur_header").value;
 		var header = document.createElement('input');
 		header.setAttribute('type', 'file');
 		header.setAttribute('id', 'header_' + nb_header);
 		header.setAttribute('name', 'header_' + nb_header);
-		header.setAttribute('style', 'color:rgb(51,153,255); border-color:rgb(255,255,255); border-style:solid;" size="100"');
+		//header.setAttribute('style', 'color:rgb(51,153,255); border-color:rgb(255,255,255); border-style:solid;" size="100"');
 
 		var rowInputRaster = tableRaster.insertRow(-1);
 		var rowNb = parseInt(nb_header) + 2;
@@ -62,7 +68,7 @@ function addField(compteur, idAdd, typeInput){
 function deleteField(compteur, typeInput){
 	// count inputs number
 	var nb_inp = document.getElementById(compteur).value;
-	var formulaire = document.getElementById('formulaire');
+	//var formulaire = document.getElementById('formulaire');
 	// if inputs exist => delete all
 	var min = 0;
 	if(typeInput == "inp"){
@@ -71,16 +77,22 @@ function deleteField(compteur, typeInput){
 	if(nb_inp > min){
 		var id = nb_inp - 1;
 		var inp = document.getElementById(typeInput + "_" + id);
-
+		
 		if(typeInput == 'raster'){
 			var tableRaster = document.getElementById("rasterTable");
 			tableRaster.deleteRow(-1);
 			document.getElementById('compteur_header').value --;
 		}
 		if(typeInput == 'inp'){
-			formulaire.removeChild(inp);
+			var bloc_inputs = document.getElementById("bloc-inputs");
+			var divInput = document.getElementById("divInput_" + id);
+			
+			divInput.removeChild(inp);
+			
+			bloc_inputs.removeChild(divInput);
+			
 			var divLoad = document.getElementById('divLoad_' + id);
-			formulaire.removeChild(divLoad);
+			bloc_inputs.removeChild(divLoad);
 		}
 		//decrement input counter
 		document.getElementById(compteur).value --;
@@ -97,15 +109,16 @@ function addDeleteRasterFile(){
 		divRasterFiles.style.display = "block";
 		if(nb_raster == 0){
 			var tableRaster = document.getElementById("rasterTable");
-
+			
 			if(tableRaster == null){
-
+				
 				//divRasterFiles.id = "divRasterFiles";
 				var addRasterButton = document.createElement("input");
 				addRasterButton.id = "addRaster";
 				addRasterButton.name = "addRaster";
 				addRasterButton.type = "button";
-				addRasterButton.style = "color:rgb(204,0,153); border-color:rgb(255,255,255); border-style:solid;";
+				addRasterButton.class = "btn btn-default dropdown-toggle";
+				//addRasterButton.style = "color:rgb(204,0,153); border-color:rgb(255,255,255); border-style:solid;";
 				addRasterButton.size="51";
 				addRasterButton.value = "Add a new raster file";
 				addRasterButton.setAttribute("onclick", "addField(\'compteur_raster\',\'tdwg4\',\'raster\')");
@@ -114,7 +127,7 @@ function addDeleteRasterFile(){
 				delRasterButton.id = "delRaster";
 				delRasterButton.name = "delRaster";
 				delRasterButton.type = "button";
-				delRasterButton.style = "color:rgb(204,0,153); border-color:rgb(255,255,255); border-style:solid;";
+				//delRasterButton.style = "color:rgb(204,0,153); border-color:rgb(255,255,255); border-style:solid;";
 				delRasterButton.size = "51";
 				delRasterButton.value = "Delete a raster file";
 				delRasterButton.setAttribute("onclick","deleteField(\'compteur_raster\',\'raster\')");
@@ -122,35 +135,73 @@ function addDeleteRasterFile(){
 				var tableRaster = document.createElement("table");
 				tableRaster.id = "rasterTable";
 				tableRaster.name = "rasterTable";
-
-				var row = tableRaster.insertRow(-1);
-				row.id = "row_raster_0";
-				row.name = "row_raster_0";
-
-				var cell_0 = row.insertCell(0);
-				cell_0.appendChild(addRasterButton);
-
-				var cell_1 = row.insertCell(1);
-				cell_1.appendChild(delRasterButton);
-
-				tableRaster.appendChild(row);
-
-				var rowInfo = tableRaster.insertRow(-1);
-				rowInfo.id = "row_raster_1";
-				rowInfo.name = "row_raster_1";
-
-				var cell_2 = rowInfo.insertCell(0);
-				cell_2.innerHTML = "Raster file";
-				var cell_3 = rowInfo.insertCell(1);
-				cell_3.innerHTML = "Header file";
-
+				tableRaster.setAttribute("class", "table table-striped");
 				divRasterFiles.appendChild(tableRaster);
+				
+				this.addLine(addRasterButton,delRasterButton, "row_raster_0");
+				this.addLine("Raster file","Header file","row_raster_1");				
+				
+				
 			}
 		}
 	}
 	else{
 		divRasterFiles.style.display = "none";
 	}
+}
+
+function addLine(val1,val2, idLine){
+	
+    // On créé le corps du tableau
+    TBODY = document.createElement ("tbody");
+	THEAD = document.createElement('thead');
+	
+    // On créé la ligne
+    TR = document.createElement ("tr");
+	TR.setAttribute("id", idLine);
+	
+    // On créé la premiere cellule
+    TD1  = document.createElement ("td");
+    if(idLine == "row_raster_1"){
+    	TXT1 = document.createTextNode (val1);
+    	TD1.appendChild (TXT1);
+    }
+    else{
+    	TD1.appendChild(val1);
+    }
+    
+	
+    // On créé la deuxieme cellule
+    TD2  = document.createElement ("td");
+    if(idLine == "row_raster_1"){
+    	TXT2 = document.createTextNode (val2);
+    	TD2.appendChild (TXT2);
+    }
+    else{
+    	TD2.appendChild(val2);
+    }
+    
+	
+    // On assemble les cellules a la ligne
+    TR.appendChild(TD1);
+    TR.appendChild(TD2);
+    
+    if(idLine != "row_raster_0"){
+    	 // On assemble la ligne au corps du tableau
+        TBODY.appendChild(TR);
+        
+        // On assemble le corps du tableau au tableau
+        document.getElementById ('rasterTable').appendChild (TBODY);
+    }
+    else{
+    	THEAD.appendChild(TR);
+    	
+    	// On assemble le corps du tableau au tableau
+        document.getElementById ('rasterTable').appendChild (THEAD);
+    }
+   
+	
+    
 }
 
 //initialise all establishmentMeans option to "false" if main checkbox doesn't checked

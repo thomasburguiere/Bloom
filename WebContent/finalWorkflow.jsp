@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page import="src.servlets.Controler"%>
 <%@page import="src.beans.*"%>
 
@@ -15,10 +16,6 @@
 <body onload="initialiseFinalPage()">
 	<div>
 		<br> All steps are finished. <br>
-		<!--<c:forEach items="${finalisation.listPathsOutputFiles}" var="path">
-			<a href=<c:out value='${path}'/>>Download input data </a>
-			<br>
-		</c:forEach>-->
 	</div>
 	<div id="hiddenResults">
 		<input type="hidden" id="step1_involved" value="${step1.involved}" />
@@ -52,92 +49,50 @@
 	</div>
 
 	<div id=divStep1 style="display: none">
-		<p id="p_ok1"> Step 1 : Mapping to DarwinCore format </p> 
+		<p id="p_ok1">Step 1 : Mapping to DarwinCore format</p>
 		<c:forEach items="${step1.mappedFilesAssociatedPath}" var="entry"> 
-			${entry.key.originalName} : <a href=<c:out value='${entry.value}'/>> Download</a>
+			${entry.key.originalName} : <a href=<c:out value='${entry.value}'/>>
+				Download</a>
 			<br>
 		</c:forEach>
 	</div>
 	<div id=divStep2 style="display: none">
-		<p id="p_ok2"> Step 2 : Check coordinates </p> 
+		<p id="p_ok2">Step 2 : Check coordinates</p>
 		Number of occurrences found : ${step2.nbFound}
 	</div>
 	<div id=divStep3 style="display: none">
-		<p id="p_ok3"> Step 3 : Check geospatial issue </p> 
+		<p id="p_ok3">Step 3 : Check geospatial issue</p>
 		Number of occurrences found : ${step3.nbFound}
 	</div>
 	<div id=divStep4 style="display: none">
-		<p id="p_ok4"> Step 4 : Check taxonomy (KEW API)</p> 
+		<p id="p_ok4">Step 4 : Check taxonomy (KEW API)</p>
 	</div>
 	<div id=divStep5 style="display: none">
-		<p id="p_ok5"> Step 5 : Add synonyms </p> 
+		<p id="p_ok5">Step 5 : Add synonyms</p>
 		Number of occurrences involved : ${step5.nbFound}
 	</div>
 	<div id=divStep6 style="display: none">
-		<p id="p_ok6"> Step 6 : Check TDWG code </p>
+		<p id="p_ok6">Step 6 : Check TDWG code</p>
 	</div>
 	<div id=divStep7 style="display: none">
-		<p id="p_ok7"> Step 7 : Check if coordinates are equivalent to ISO2 code </p>
+		<p id="p_ok7">Step 7 : Check if coordinates are equivalent to ISO2
+			code</p>
 		Number of wrong occurrences : ${step7.nbFound}
 	</div>
 	<div id=divStep8 style="display: none">
-		<p id="p_ok8"> Step 8 :Check coordinates in raster cells</p> 
+		<p id="p_ok8">Step 8 :Check coordinates in raster cells</p>
 		Number of occurrences found : "${step8.nbFound}"
 	</div>
-
-	<!-- <a href=${finalisation.pathMatrixFile}> Download input data who are valid for raster</a> 
-	
-	<script>
-function initialiseFinalPage(){
-	var step1_involved = document.getElementById("step1_involved");
-	alert("magna " + step1_involved);
-	if(step1_involved){
-		this.initialiseStep1();
-	}
-	
-	var step2_involved = document.getElementById("step2_involved");
-	if(step2_involved){
-		this.initialiseStep1();
-	}
-	
-	var step3_involved = document.getElementById("step3_involved");
-	if(step3_involved){
-		this.initialiseStep1();
-	}
-	
-	var step4_involved = document.getElementById("step4_involved");
-	if(step4_involved){
-		this.initialiseStep1();
-	}
-	
-	var step5_involved = document.getElementById("step5_involved");
-	if(step5_involved){
-		this.initialiseStep1();
-	}
-	
-	var step6_involved = document.getElementById("step6_involved");
-	if(step6_involved){
-		this.initialiseStep1();
-	}
-	
-	var step7_involved = document.getElementById("step7_involved");
-	if(step7_involved){
-		this.initialiseStep1();
-	}
-	
-	var step8_involved = document.getElementById("step8_involved");
-	if(step8_involved){
-		this.initialiseStep1();
-	}
-}
-
-function initialiseStep1(){
-	var step1_ok = document.getElementById("step1_ok");
-	var divStep1 = document.getElementById("divStep1");
-	divStep1.setAttribute('style', "margin-left: 40px");
-	divStep1.setAttribute("style", "visibility: visible");
-	//divStep1.appendChild(divStep1Results);
-}
-</script>	-->
+	<br>
+	<div id="downloadFinalFiles">
+	<p> These files can be downloaded : </p>
+		<c:forEach items="${finalisation.listPathsOutputFiles}" var="path">
+			<c:set var="name" value="${fn:split(path, '/')}" />
+			<c:set var="length" value="${fn:length(name)}"/>
+ 			${name[length-1]}
+			<a href=<c:out value='${path}'/>>Download clean data </a>
+			<br>
+		</c:forEach>
+	</div>
 </body>
 </html>
