@@ -113,4 +113,12 @@
 		<servlet-name>Step8_CheckCoordinatesRaster</servlet-name>
 		<url-pattern>/step8</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>ExampleWebTestCase</servlet-name>
+		<servlet-class>src.test.ExampleWebTestCase</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ExampleWebTestCase</servlet-name>
+		<url-pattern>/testCase</url-pattern>
+	</servlet-mapping>
 </web-app>

@@ -41,6 +41,7 @@ public class CSVFile {
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
+	this.csvName = file.getName();
 	this.findSeparator();
     }
     
@@ -126,6 +127,7 @@ public class CSVFile {
         for (String sep : AVAILABLE_SEPARATORS) {
 	    for(int i = 0 ; i < lines.size() ; i++){
 		String line = lines.get(i);
+		
 		int compte = this.countSeparators(line, sep);
 		if (compte == 0) {
                     // no separator in this line

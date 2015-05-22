@@ -16,7 +16,7 @@
 			Biodiversity
 			Linked
 			Organisms
-			Occurences
+			Occurrences
 			Megadatasets
 		</div>
 			<!--  enctype="multipart/form-data"  -->
