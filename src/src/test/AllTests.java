@@ -20,11 +20,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.Map.Entry;
+import java.util.UUID;
 
-import org.apache.commons.io.FilenameUtils;
-import org.junit.*;
-import static net.sourceforge.jwebunit.junit.JWebUnit.*;
+import junit.framework.TestCase;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import src.beans.Finalisation;
 import src.beans.Initialise;
 import src.beans.Step1_MappingDwc;
@@ -36,18 +40,20 @@ import src.beans.Step6_CheckTDWG;
 import src.beans.Step7_CheckISo2Coordinates;
 import src.beans.Step8_CheckCoordinatesRaster;
 import src.model.CSVFile;
+import src.model.LaunchWorkflow;
 import src.model.MappingDwC;
-import src.servlets.*;
 
-public class ExampleWebTestCase {
+public class AllTests{
 
-    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/"; 
+    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/test/";
+    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/";
+
     private Initialise initialisation;
-    private int nbFileRandom;
+    private String nbSessionRandom;
     private ArrayList<File> inputFilesList;
     private ArrayList<File> inputsRasterList;
     private ArrayList<File> inputHeaderList;
-    
+
     private Finalisation finalisation;
     private Step1_MappingDwc step1;
     private Step2_CheckCoordinates step2;
@@ -60,49 +66,73 @@ public class ExampleWebTestCase {
 
     @Before
     public void prepare() {
+
+
 	initialisation = new Initialise();
 	inputFilesList = new ArrayList<>();
 	inputHeaderList = new ArrayList<>();
 	inputsRasterList = new ArrayList<>();
-	
-	this.setNbFileRandom(this.generateRandomKey());
+
+	initialisation.setDIRECTORY_PATH(DIRECTORY_PATH);
+	initialisation.setRESSOURCES_PATH(RESSOURCES_PATH);
+
+	this.setNbSessionRandom(this.generateRandomKey());
 	this.prepareInputFiles();
+
+	initialisation.setRaster(true);
 	this.prepareInputsRaster();
 	this.prepareInputsHeader();
-	
+
+	initialisation.setEstablishment(true);
+	this.prepareEstablishment();
+
 	initialisation.setSynonym(true);
 	initialisation.setTdwg4Code(true);
-	initialisation.setEstablishment(true);
-	
-	setBaseUrl("http://localhost:8080/WebWorkflowCleanData/HomePage.jsp");
-	
+
+	//this.test();
+
+	//setBaseUrl("http://localhost:8080/WebWorkflowCleanData/HomePage.jsp");	
+    }
+
+    @Test
+    public void test(){
+
+	LaunchWorkflow newLaunch = new LaunchWorkflow(this.getInitialisation());
+	System.out.println(this.getInitialisation());
+	try {
+	    newLaunch.initialiseLaunchWorkflow();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+
+    }
+    
+    @After
+    public void compareAfterTest(){
 	
     }
 
     public void prepareInputFiles(){
-	
-	if(!new File(DIRECTORY_PATH + "test/").exists()){
-	    new File(DIRECTORY_PATH + "test/").mkdirs();
-	}
-	
-	if(!new File(DIRECTORY_PATH + "test/temp/").exists()){
-	    new File(DIRECTORY_PATH + "test/temp/").mkdirs();
+
+	if(!new File(DIRECTORY_PATH + "temp/").exists()){
+	    new File(DIRECTORY_PATH + "temp/").mkdirs();
 	}
 
 	ArrayList<MappingDwC> listDwcFiles = new ArrayList<>();
-	inputFilesList.add(new File(DIRECTORY_PATH + "test/data/occurrence_mini.csv"));
-	inputFilesList.add(new File(DIRECTORY_PATH + "test/data/occurrence_mini2.csv"));
-	inputFilesList.add(new File(DIRECTORY_PATH + "test/data/test_ipt.csv"));
+	inputFilesList.add(new File(DIRECTORY_PATH + "inputs_data/occurrence_mini.csv"));
+	inputFilesList.add(new File(DIRECTORY_PATH + "inputs_data/occurrence_mini2.csv"));
+	inputFilesList.add(new File(DIRECTORY_PATH + "inputs_data/test_ipt.csv"));
 
 	for(int i = 0 ; i < inputFilesList.size() ; i++){
-	    File file = new File(DIRECTORY_PATH + "test/temp/noMappedDWC_" + this.getNbFileRandom() + "_" + (i + 1 ) + ".csv");
+	    File file = new File(DIRECTORY_PATH + "temp/noMappedDWC_" + this.getNbSessionRandom() + "_" + (i + 1 ) + ".csv");
 	    FileWriter writer = null;
 	    try {
 		writer = new FileWriter(file.getAbsoluteFile());
 
 		BufferedWriter output = new BufferedWriter(writer);
 		ArrayList<String> linesFile = this.getLinesFile(inputFilesList.get(i));
-		System.out.println(linesFile.size());
+
 		for(int j = 0 ; j < linesFile.size() ; j++){
 		    output.write(linesFile.get(j) + "\n");
 		    output.flush();
@@ -120,41 +150,65 @@ public class ExampleWebTestCase {
 	    String nameFile = inputFilesList.get(i).getName();
 	    newMappingDWC.setOriginalExtension(nameFile.substring(nameFile.indexOf('.')+1,nameFile.length()));
 	    listDwcFiles.add(newMappingDWC);
-	    newMappingDWC.initialiseMapping();
+	    newMappingDWC.initialiseMapping(this.getNbSessionRandom());
 	    HashMap<String, String> connectionTags = new HashMap<>();
 	    ArrayList<String> tagsNoMapped = newMappingDWC.getTagsListNoMapped();
 	    for(int k = 0 ; k < tagsNoMapped.size() ; k++){
 		connectionTags.put(tagsNoMapped.get(k) + "_" + k, "");
 	    }
+	    System.out.println(connectionTags);
 	    newMappingDWC.setConnectionTags(connectionTags);
 	    newMappingDWC.getNoMappedFile().setCsvName(file.getName());
 	    //initialisation.getInputFilesList().add(csvFile.getCsvFile());
+
+	    boolean doMapping = newMappingDWC.doMapping();
+	    newMappingDWC.setMapping(doMapping);
+	    if(doMapping){
+		ArrayList<String> presentTags = newMappingDWC.getPresentTags();
+		for(Entry<String, String> entry : connectionTags.entrySet()) {
+		    String [] tableKey = entry.getKey().split("_");
+		    String idKey = tableKey[tableKey.length-1];
+		    if(presentTags.contains(idKey)){
+			connectionTags.put(entry.getKey(), idKey);
+		    }else{
+			//connectionTags.put(entry.getKey());
+		    }
+		}
+	    }
+
 	}
 
+	this.initialisation.setListDwcFiles(listDwcFiles);
     }
 
     public void prepareInputsRaster(){
-	
+
 	initialisation.setRaster(true);
-	
-	inputsRasterList.add(new File(DIRECTORY_PATH + "test/data/alt_22.bil"));
-	inputsRasterList.add(new File(DIRECTORY_PATH + "test/data/prec1_46.bil"));
-	inputsRasterList.add(new File(DIRECTORY_PATH + "test/data/tmean1.bil"));
-	
+
+	inputsRasterList.add(new File(DIRECTORY_PATH + "inputs_data/alt_22.bil"));
+	inputsRasterList.add(new File(DIRECTORY_PATH + "inputs_data/prec1_46.bil"));
+	inputsRasterList.add(new File(DIRECTORY_PATH + "inputs_data/tmean1.bil"));
+
 	this.initialisation.setInputRastersList(inputsRasterList);
     }
-    
-    public void prepareInputsHeader(){
-	inputHeaderList.add(new File(DIRECTORY_PATH + "test/data/alt_22.hdr"));
-	inputHeaderList.add(new File(DIRECTORY_PATH + "test/data/prec1_46.hdr"));
-	inputHeaderList.add(new File(DIRECTORY_PATH + "test/data/tmean1.hdr"));
-	
-	this.initialisation.setHeaderRasterList(inputHeaderList);
-	
-    }
-    @Test
-    public void testLogin() {
 
+    public void prepareInputsHeader(){
+	inputHeaderList.add(new File(DIRECTORY_PATH + "inputs_data/alt_22.hdr"));
+	inputHeaderList.add(new File(DIRECTORY_PATH + "inputs_data/prec1_46.hdr"));
+	inputHeaderList.add(new File(DIRECTORY_PATH + "inputs_data/tmean1.hdr"));
+
+	this.initialisation.setHeaderRasterList(inputHeaderList);
+
+    }
+
+    public void prepareEstablishment(){
+	ArrayList<String> listEstablishment = new ArrayList<>();
+	listEstablishment.add("introduced");
+	listEstablishment.add("invasive");
+	listEstablishment.add("native");
+	listEstablishment.add("managed");
+
+	this.initialisation.setEstablishmentList(listEstablishment);
     }
 
     public ArrayList<String> getLinesFile(File file){
@@ -180,10 +234,9 @@ public class ExampleWebTestCase {
     /**
      * @return int
      */
-    private int generateRandomKey() {
-	Random random = new Random();
-	nbFileRandom = random.nextInt();
-	return nbFileRandom;
+    private String generateRandomKey() {
+	String nbSessionRandom = UUID.randomUUID().toString().replace("-","_");
+	return nbSessionRandom;
     }
 
     public String getDIRECTORY_PATH() {
@@ -202,18 +255,18 @@ public class ExampleWebTestCase {
 	this.initialisation = initialisation;
     }
 
-    public int getNbFileRandom() {
-	return nbFileRandom;
+    public String getNbSessionRandom() {
+	return nbSessionRandom;
     }
 
-    public void setNbFileRandom(int nbFileRandom) {
-	this.nbFileRandom = nbFileRandom;
+    public void setNbSessionRandom(String nbSessionRandom) {
+	this.nbSessionRandom = nbSessionRandom;
     }
 
     public Finalisation getFinalisation() {
 	return finalisation;
     }
-
+    //_clean
     public void setFinalisation(Finalisation finalisation) {
 	this.finalisation = finalisation;
     }

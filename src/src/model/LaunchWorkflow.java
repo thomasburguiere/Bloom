@@ -33,7 +33,7 @@ public class LaunchWorkflow {
     private TreatmentData dataTreatment;
     private Initialise initialisation;
     private Finalisation finalisation;
-    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/";
+    //private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/";
     
     private Step1_MappingDwc step1;
     private Step2_CheckCoordinates step2;
@@ -61,7 +61,9 @@ public class LaunchWorkflow {
      */
     public void initialiseLaunchWorkflow() throws IOException{
 	this.dataTreatment = new TreatmentData();
-	this.dataTreatment.setNbFileRandom(initialisation.getNbFileRandom());
+	this.dataTreatment.setNbSessionRandom(initialisation.getNbSessionRandom());
+	this.dataTreatment.setDIRECTORY_PATH(initialisation.getDIRECTORY_PATH());
+	this.dataTreatment.setRESSOURCES_PATH(initialisation.getRESSOURCES_PATH());
 	
 	finalisation = new Finalisation();
 	step1 = new Step1_MappingDwc();
@@ -111,6 +113,8 @@ public class LaunchWorkflow {
 	}
 	
 	this.writeFinalOutput();
+	
+	this.dataTreatment.deleteTables();
     }
     
     /**
@@ -120,7 +124,6 @@ public class LaunchWorkflow {
      * @return void
      */
     public void launchWorkflow() throws IOException{
-	this.dataTreatment.deleteTables();
 	
 	ArrayList<MappingDwC> listMappingDWC = this.initialisation.getListDwcFiles();
 	HashMap<MappingDwC, String> mappingPath = step1.getMappedFilesAssociatedPath();
@@ -132,15 +135,13 @@ public class LaunchWorkflow {
 		step1.setInvolved(mapping);
 		
 		this.dataTreatment.mappingDwC(mappingDwc);
-		String pathMappedFile = mappingDwc.getMappedFile().getAbsolutePath().replace(DIRECTORY_PATH,"");
+		String pathMappedFile = mappingDwc.getMappedFile().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(),"");
 		mappingPath.put(mappingDwc, pathMappedFile);
 		
 		
 	    }
 	}
-	
-	System.out.println(mappingPath);
-	
+		
 	for(int i = 0 ; i < this.initialisation.getListDwcFiles().size() ; i++){
 	    MappingDwC fileInput = this.initialisation.getListDwcFiles().get(i);
 	    int idFile = fileInput.getCounterID();
@@ -164,17 +165,17 @@ public class LaunchWorkflow {
 	
 	File wrongCoordinatesFile = dataTreatment.deleteWrongCoordinates();
 	finalisation.setWrongCoordinatesFile(wrongCoordinatesFile);
-	finalisation.setPathWrongCoordinatesFile(wrongCoordinatesFile.getAbsolutePath().replace(DIRECTORY_PATH, ""));	
+	finalisation.setPathWrongCoordinatesFile(wrongCoordinatesFile.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));	
 	step2.setNbFound(this.dataTreatment.getNbWrongCoordinates());
 	
 	File wrongGeospatial = dataTreatment.deleteWrongGeospatial();
 	finalisation.setWrongGeospatial(wrongGeospatial);
-	finalisation.setPathWrongGeospatial(wrongGeospatial.getAbsolutePath().replace(DIRECTORY_PATH, ""));
+	finalisation.setPathWrongGeospatial(wrongGeospatial.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
 	step3.setNbFound(this.dataTreatment.getNbSynonymInvolved());
 	
 	File wrongPolygon = this.dataTreatment.getPolygonTreatment();
 	finalisation.setWrongPolygon(wrongPolygon);
-	finalisation.setPathWrongPolygon(wrongPolygon.getAbsolutePath().replace(DIRECTORY_PATH, ""));
+	finalisation.setPathWrongPolygon(wrongPolygon.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
 	step7.setNbFound(this.dataTreatment.getNbWrongIso2());
 	
     }
@@ -185,7 +186,7 @@ public class LaunchWorkflow {
      * @return boolean
      */
     public boolean isValidInputFiles(){
-	System.out.println("size input : " + this.initialisation.getListDwcFiles().size());
+
 	if(this.initialisation.getListDwcFiles().size() != 0){
 	    System.out.println("Your data are valid");
 	    return true;
@@ -283,7 +284,7 @@ public class LaunchWorkflow {
 
 	File matrixFileValidCells = this.dataTreatment.checkWorldClimCell(this.initialisation.getInputRastersList());
 	finalisation.setMatrixFileValidCells(matrixFileValidCells);
-	finalisation.setPathMatrixFile(matrixFileValidCells.getAbsolutePath().replace(DIRECTORY_PATH, ""));
+	finalisation.setPathMatrixFile(matrixFileValidCells.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
 	step8.setNbFound(this.dataTreatment.getNbWrongRaster());
     }
 
@@ -297,7 +298,7 @@ public class LaunchWorkflow {
 	    this.inverseEstablishmentList();
 	    File wrongEstablishmentMeans = this.dataTreatment.establishmentMeansOption(this.initialisation.getEstablishmentList());
 	    finalisation.setWrongEstablishmentMeans(wrongEstablishmentMeans);
-	    finalisation.setPathWrongEstablishmentMeans(wrongEstablishmentMeans.getAbsolutePath().replace(DIRECTORY_PATH, ""));
+	    finalisation.setPathWrongEstablishmentMeans(wrongEstablishmentMeans.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
 	}
     }
 
@@ -330,6 +331,10 @@ public class LaunchWorkflow {
 	ArrayList<File> listFinalOutput = new ArrayList<>();
 	ArrayList<String> listPathsOutput = new ArrayList<>();
 	
+	if(!new File(initialisation.getDIRECTORY_PATH() + "temp/final_results/").exists()){
+	    new File(initialisation.getDIRECTORY_PATH() + "temp/final_results/").mkdir();
+	}
+	
 	int nbFiles = this.initialisation.getNbFiles();
 	for(int i = 0 ; i < nbFiles ; i++){
 	    int idFile = this.initialisation.getListDwcFiles().get(i).getCounterID();
@@ -337,11 +342,12 @@ public class LaunchWorkflow {
 	    String originalExtension = this.initialisation.getListDwcFiles().get(i).getOriginalExtension();
 	    
 	    ConnectionDatabase newConnection = new ConnectionDatabase();
-	    ArrayList<String > resultCleanTable = newConnection.getCleanTableFromIdFile(idFile);
-	    String nameFile = originalName.replace("." + originalExtension, "") + "_" + initialisation.getNbFileRandom() + "_clean.csv";
+	    ArrayList<String > resultCleanTable = newConnection.getCleanTableFromIdFile(idFile, initialisation.getNbSessionRandom());
+	    String nameFile = originalName.replace("." + originalExtension, "") + "_" + initialisation.getNbSessionRandom() + "_clean.csv";
 	    File cleanOutput = this.dataTreatment.createFileCsv(resultCleanTable, nameFile);
+
 	    listFinalOutput.add(cleanOutput);
-	    String pathFile = cleanOutput.getAbsolutePath().replace(DIRECTORY_PATH,"");
+	    String pathFile = cleanOutput.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(),"");
 	    listPathsOutput.add(pathFile);
 	}
 	
@@ -382,6 +388,7 @@ public class LaunchWorkflow {
         this.finalisation = finalisation;
     }
 
+    /*
     public String getDIRECTORY_PATH() {
         return DIRECTORY_PATH;
     }
@@ -389,7 +396,7 @@ public class LaunchWorkflow {
     public void setDIRECTORY_PATH(String dIRECTORY_PATH) {
         DIRECTORY_PATH = dIRECTORY_PATH;
     }
-
+     */
     public Step1_MappingDwc getStep1() {
         return step1;
     }

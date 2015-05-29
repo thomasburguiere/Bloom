@@ -4,9 +4,7 @@
 package src.beans;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 import src.model.MappingDwC;
 
@@ -24,12 +22,14 @@ public class Initialise {
     private ArrayList<String> establishmentList = new ArrayList<>();
     private ArrayList<MappingDwC> listDwcFiles = new ArrayList<>();
     
+    private String DIRECTORY_PATH = "";
+    private String RESSOURCES_PATH = "";
     
     private boolean synonym;
     private boolean tdwg4Code;
     private boolean raster;
     private boolean establishment;    
-    private int nbFileRandom;
+    private String nbSessionRandom;
     
     /**
      * 
@@ -214,17 +214,17 @@ public class Initialise {
      * 
      * @return int
      */
-    public int getNbFileRandom() {
-        return nbFileRandom;
+    public String getNbSessionRandom() {
+        return nbSessionRandom;
     }
 
     /**
      * 
-     * @param nbFileRandom
+     * @param nbSessionRandom
      * @return void
      */
-    public void setNbFileRandom(int nbFileRandom) {
-        this.nbFileRandom = nbFileRandom;
+    public void setNbSessionRandom(String nbSessionRandom) {
+        this.nbSessionRandom = nbSessionRandom;
     }
     
     public int getNbFiles(){
@@ -232,4 +232,21 @@ public class Initialise {
 	
 	return nbFiles;
     }
+
+    public String getDIRECTORY_PATH() {
+        return this.DIRECTORY_PATH;
+    }
+
+    public void setDIRECTORY_PATH(String DIRECTORY_PATH) {
+        this.DIRECTORY_PATH = DIRECTORY_PATH;
+    }
+
+    public String getRESSOURCES_PATH() {
+        return this.RESSOURCES_PATH;
+    }
+
+    public void setRESSOURCES_PATH(String RESSOURCES_PATH) {
+        this.RESSOURCES_PATH = RESSOURCES_PATH;
+    }
+    
 }

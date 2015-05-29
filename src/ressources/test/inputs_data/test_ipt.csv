@@ -1,4 +1,4 @@
-hasCoordinate,scientificName,decimalLatitude,countryCode,establishmentMeans,decimalLongitude,hasGeospatialIssues,gbifID,locationID
+hasCoordinate,scientificName,decimalLatitude,isoCode,establishmentMeans,decimalLongitude,hasGeospatialIssues,gbifID,locationID
 false,Aceras anthropophorum f. angustatum (Rouy) Maire,20.706412,MX,introduced,-103.361475,false,10,magna
 false,Amerorchis rotundifolia f. immaculata Mazurski & Laur.P.Johnson,49.553650,FR,invasive,6.240743,false,11,
 false,Dactylorhiza fuchsii f. alpina Landwehr,46.091972,SI,native,14.935949,false,12,crin

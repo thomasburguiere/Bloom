@@ -11,8 +11,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-
 
 /**
  * 
@@ -75,7 +73,7 @@ public class ConnectionDatabase {
 		messages.add(sql);
 		//messages.add(resultat.toString());
 	    }
-	    // SELECT - retourne ResultSet : contenant les résultats 
+	    // SELECT - retourne ResultSet : contenant les résultats TDWG=
 	    else if(choiceStatement == "executeQuery"){
 		resultSet = statement.executeQuery(sql);
 		messages.add(sql);
@@ -96,14 +94,14 @@ public class ConnectionDatabase {
 	    statement.close();
 
 	} catch ( SQLException e ) {
-	    messages.add( "Erreur lors de la connexion : " + e.getMessage() );
+	    messages.add( "Connection error : " + e.getMessage() );
 	}
 
 	return messages;
     }
 
-    public ArrayList<String> getCleanTableFromIdFile(int idFile){
-	this.newConnection("executeQuery", "SELECT * FROM Workflow.Clean WHERE idFile_=" + idFile + ";");
+    public ArrayList<String> getCleanTableFromIdFile(int idFile, String nbSessionRandom){
+	this.newConnection("executeQuery", "SELECT * FROM Workflow.Clean_" + nbSessionRandom + " WHERE idFile_=" + idFile + " AND UUID_=\"" + nbSessionRandom + "\";");
 
 	ArrayList<String> resultatCleantableFromidFile = this.getResultatSelect();
 
@@ -148,8 +146,8 @@ public class ConnectionDatabase {
      * @param String tableName
      * @return ArrayList<String> messages list
      */
-    public ArrayList<String> deleteTable(String tableName){
-	ArrayList<String> messages = this.newConnection("executeUpdate", "DELETE FROM " + tableName + ";");
+    public ArrayList<String> deleteTable(String tableName, String UUIDcondition){
+	ArrayList<String> messages = this.newConnection("executeUpdate", "DELETE FROM " + tableName + " WHERE UUID_=\"" + UUIDcondition +"\";");
 	return messages;
     }
 

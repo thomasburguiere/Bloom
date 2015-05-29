@@ -24,8 +24,8 @@ import com.vividsolutions.jts.geom.Polygon;
 
 public class PolygonTreatment {
 
-    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/";
-
+    private String DIRECTORY_PATH = "";
+    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/";
 
     /**
      * 
@@ -35,6 +35,28 @@ public class PolygonTreatment {
     public PolygonTreatment(){
 
     }
+
+    
+    public String getDIRECTORY_PATH() {
+        return DIRECTORY_PATH;
+    }
+
+
+    public void setDIRECTORY_PATH(String DIRECTORY_PATH) {
+        this.DIRECTORY_PATH = DIRECTORY_PATH;
+    }
+
+    
+
+    public String getRESSOURCES_PATH() {
+        return this.RESSOURCES_PATH;
+    }
+
+
+    public void setRESSOURCES_PATH(String RESSOURCES_PATH) {
+	this.RESSOURCES_PATH = RESSOURCES_PATH;
+    }
+
 
     /**
      * Check if a geospatial point is in a country (polygon or multipolygon)
@@ -52,6 +74,7 @@ public class PolygonTreatment {
 	try {
 	    jsonInput = new FileInputStream(geoJsonFile);
 	} catch (FileNotFoundException e1) {
+	    System.out.println(geoJsonFile.getAbsolutePath());
 	    // TODO Auto-generated catch block
 	    e1.printStackTrace();
 	}
@@ -121,7 +144,7 @@ public class PolygonTreatment {
      */
     public String tdwg4ContainedPoint(Point geoPoint, String iso2) throws IOException{
 	GeometryJSON geometryJSON = new GeometryJSON();
-	BufferedReader buff = new BufferedReader(new FileReader(DIRECTORY_PATH + "src/ressources/tdwg4.json"));
+	BufferedReader buff = new BufferedReader(new FileReader(RESSOURCES_PATH + "tdwg4.json"));
 
 	try {
 	    String line = null;
@@ -138,7 +161,7 @@ public class PolygonTreatment {
 
 			return tdwg4Code;
 		    }
-		}		
+		}
 	    }
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block

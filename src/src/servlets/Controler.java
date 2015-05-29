@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,8 +52,10 @@ import src.model.MappingDwC;
 public class Controler extends HttpServlet {
 
     private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/"; 
+    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/";
+    
     private Initialise initialisation;
-    private int nbFileRandom;
+    private String nbSessionRandom;
     private Finalisation finalisation;
     
     private Step1_MappingDwc step1;
@@ -95,9 +98,11 @@ public class Controler extends HttpServlet {
     public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{	
 	response.setContentType("text/plain");
 	initialisation = new Initialise();
+	initialisation.setDIRECTORY_PATH(DIRECTORY_PATH);
+	initialisation.setRESSOURCES_PATH(RESSOURCES_PATH);
 	
-	this.setNbFileRandom(this.generateRandomKey());
-	this.initialisation.setNbFileRandom(this.getNbFileRandom());
+	this.setNbSessionRandom(this.generateRandomKey());
+	this.initialisation.setNbSessionRandom(this.getNbSessionRandom());
 	
 	List<FileItem> listFileItems = this.initialiseRequest(request);
 	this.initialiseParameters(listFileItems, response);
@@ -111,7 +116,6 @@ public class Controler extends HttpServlet {
 	request.setAttribute("finalisation", finalisation);
 	
 	step1 = newLaunch.getStep1();
-	System.out.println(step1.isInvolved());
 	request.setAttribute("step1", step1);
 	step2 = newLaunch.getStep2();
 	request.setAttribute("step2", step2);
@@ -130,6 +134,7 @@ public class Controler extends HttpServlet {
 	
 	this.getServletContext().getRequestDispatcher("/finalWorkflow.jsp").forward(request, response);
 
+	
     }
 
     /**
@@ -197,7 +202,7 @@ public class Controler extends HttpServlet {
 		String fileExtensionName = itemFile.getName();
 		fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
 		
-		File file = new File(DIRECTORY_PATH + "temp/data/noMappedDWC_" + this.getNbFileRandom() + "_" + (nbFilesInput + 1 ) + "." + fileExtensionName);
+		File file = new File(DIRECTORY_PATH + "temp/data/noMappedDWC_" + this.getNbSessionRandom() + "_" + (nbFilesInput + 1 ) + "." + fileExtensionName);
 		try {
 		    itemFile.write(file);
 		} catch (Exception e) {
@@ -211,7 +216,7 @@ public class Controler extends HttpServlet {
 		newMappingDWC.setOriginalExtension(fileExtensionName);
 		listDwcFiles.add(newMappingDWC);
 		
-		newMappingDWC.initialiseMapping();
+		newMappingDWC.initialiseMapping(this.getNbSessionRandom());
 		HashMap<String, String> connectionTags = new HashMap<>();
 		ArrayList<String> tagsNoMapped = newMappingDWC.getTagsListNoMapped();
 		for(int i = 0 ; i < tagsNoMapped.size() ; i++){
@@ -277,7 +282,9 @@ public class Controler extends HttpServlet {
 			    connectionTags.put(entry.getKey(), valueDropdown);
 			}    
 		    }
+		    System.out.println(connectionTags);
 		}
+		
 	    }
 	    else if(fieldName.contains(mapping)){
 		System.out.println("if mapping : " + fieldName);
@@ -319,6 +326,7 @@ public class Controler extends HttpServlet {
 		}
 	    }
 
+	    
 	}
 	
 	this.initialisation.setListDwcFiles(listDwcFiles);
@@ -363,27 +371,30 @@ public class Controler extends HttpServlet {
      * 
      * @return int
      */
-    public int getNbFileRandom() {
-        return nbFileRandom;
+    public String getNbSessionRandom() {
+        return nbSessionRandom;
     }
 
     /**
      * 
-     * @param nbFileRandom
+     * @param nbSessionRandom
      * @return void
      */
-    public void setNbFileRandom(int nbFileRandom) {
-        this.nbFileRandom = nbFileRandom;
+    public void setNbSessionRandom(String nbSessionRandom) {
+        this.nbSessionRandom = nbSessionRandom;
     }
 
     /**
      * 
      * @return int
      */
-    public int generateRandomKey(){
-	Random random = new Random();
-	nbFileRandom = random.nextInt();
-	return nbFileRandom;
+    public String generateRandomKey(){
+	String nbUUID = UUID.randomUUID().toString().replace("-", "_");
+	//String nbSessionRandom =  UUID.randomUUID();
+	//Random random = new Random();
+	//nbFileRandom = random.nextInt();
+	//System.out.println(nbFileRandom);
+	return nbUUID;
     }
 
 }

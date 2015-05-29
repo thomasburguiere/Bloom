@@ -5,7 +5,7 @@
 	version="3.0">
 	<welcome-file-list>
 		<welcome-file>HomePage.jsp</welcome-file>
-		<welcome-file>finalWorkflow.jsp</welcome-file>
+		<!-- <welcome-file>finalWorkflow.jsp</welcome-file> -->
 	</welcome-file-list>
 	<servlet>
 		<servlet-name>Controler</servlet-name>

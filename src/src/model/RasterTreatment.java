@@ -32,7 +32,8 @@ public class RasterTreatment {
     private ArrayList<File> rasterFiles;
     private HashMap<Integer, HashMap<String, Boolean>> hashMapValidOrNot;
     private TreatmentData dataTreatment;
-    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/";
+    private String DIRECTORY_PATH = "";
+    private String RESSOURCES_PATH = "";
     private int nbWrongOccurrences;
     
     
@@ -118,18 +119,18 @@ public class RasterTreatment {
 	 *	BSQ			Band Sequential (BSQ) Image File		.bsq				NA
 	 *	BIP			Band Interleaved by Pixel (ESRI BIP)		.bip				NA
 	 ************************************************************************************************/
-	String scriptRaster = DIRECTORY_PATH + "src/ressources/raster.R";
+	String scriptRaster = RESSOURCES_PATH + "raster.R";
 	if(!new File(DIRECTORY_PATH + "temp/rasterAnalyse/").exists())
 	{
 	    new File(DIRECTORY_PATH + "temp/rasterAnalyse/").mkdirs();
 	}
-	File dataInputFile = new File(DIRECTORY_PATH + "temp/rasterAnalyse/dataInputFile.csv");			
+	File dataInputFileRaster = new File(DIRECTORY_PATH + "temp/rasterAnalyse/dataInputFileRaster.csv");			
 
 	ArrayList<Integer> listValidData = new ArrayList<>();
 	ArrayList<Integer> idForOneRaster = new ArrayList<>();
 
 	for(int i = 0 ; i < rasterFiles.size() ; i++){
-	    idForOneRaster = this.rasterScript(scriptRaster, rasterFiles.get(i), dataInputFile);
+	    idForOneRaster = this.rasterScript(scriptRaster, rasterFiles.get(i), dataInputFileRaster);
 	    listValidData.addAll(idForOneRaster);
 
 	    String rasterFileName = rasterFiles.get(i).getName();
@@ -155,11 +156,11 @@ public class RasterTreatment {
      * 
      * @param String scriptRaster path of raster script
      * @param File dataRasterFile raster file for the analysis
-     * @param File dataInputFile input data 
+     * @param File dataInputFileRaster input data 
      * 
      * @return ArrayList<Integer>
      */
-    public ArrayList<Integer> rasterScript(String scriptRaster, File dataRasterFile, File dataInputFile){
+    public ArrayList<Integer> rasterScript(String scriptRaster, File dataRasterFile, File dataInputFileRaster){
 
 	ArrayList<String> decimalLatitude = dataTreatment.getFileDarwinCore().getDecimalLatitudeClean();
 	ArrayList<String> decimalLongitude = dataTreatment.getFileDarwinCore().getDecimalLongitudeClean();
@@ -172,7 +173,7 @@ public class RasterTreatment {
 	File validRaster = new File(DIRECTORY_PATH + "temp/rasterAnalyse/validRaster.txt");
 	try {
 
-	    FileWriter dataInputWriterTemp = new FileWriter(dataInputFile, false);
+	    FileWriter dataInputWriterTemp = new FileWriter(dataInputFileRaster, false);
 	    BufferedWriter dataWriter = new BufferedWriter(dataInputWriterTemp);
 
 	    for(int i = 0 ; i < decimalLatitude.size() ; i++){
@@ -181,10 +182,10 @@ public class RasterTreatment {
 
 	    dataWriter.flush();
 	    dataWriter.close();
-	    
+
 	    FileOutputStream fos = new FileOutputStream(validRaster);
 	    Runtime rt = Runtime.getRuntime();
-	    String [] cmdarray = {"Rscript", scriptRaster, DIRECTORY_PATH + "temp/rasterAnalyse/", dataRasterFile.getAbsolutePath(), dataInputFile.getAbsolutePath()};
+	    String [] cmdarray = {"Rscript", scriptRaster, DIRECTORY_PATH + "temp/rasterAnalyse/", dataRasterFile.getAbsolutePath(), dataInputFileRaster.getAbsolutePath()};
 	    
 	    Process proc = rt.exec(cmdarray);
 	    // any error message?
@@ -267,7 +268,7 @@ public class RasterTreatment {
 	if(!new File(DIRECTORY_PATH + "temp/data/").exists()){
 	    new File(DIRECTORY_PATH + "temp/data/").mkdirs();
 	}
-	File matrix = new File(DIRECTORY_PATH + "temp/data/cells_proba_raster_" + dataTreatment.getNbFileRandom() + ".csv");
+	File matrix = new File(DIRECTORY_PATH + "temp/rasterAnalyse/cells_proba_raster_" + dataTreatment.getNbSessionRandom() + ".csv");
 	FileWriter writer = null;
 	try {
 	    writer = new FileWriter(matrix);
@@ -375,17 +376,18 @@ public class RasterTreatment {
 	/*
 	 * First, retrieve wrong data, not included in a raster cell.
 	 */
-	String sqlIdDelete = "SELECT * FROM Workflow.Clean WHERE ";
+	String sqlIdDelete = "SELECT * FROM Workflow.Clean_" + this.getDataTreatment().getNbSessionRandom() + " WHERE (";
 	for(int j = 0 ; j < notValidData.size() ; j++){
 	    int id_ = notValidData.get(j);
+	    String CleanTableId = "Clean_" + this.getDataTreatment().getNbSessionRandom() + ".id_=";
 	    if(j == 0){
-		sqlIdDelete += "Clean.id_=" + id_;
+		sqlIdDelete += CleanTableId + id_;
 	    }
 	    else{
-		sqlIdDelete += " OR Clean.id_=" + id_;
+		sqlIdDelete += " OR " + CleanTableId + id_;
 	    }
 	}
-	sqlIdDelete += ";";
+	sqlIdDelete += ") AND UUID_=\"" + this.getDataTreatment().getNbSessionRandom() + "\";";
 
 
 
@@ -403,7 +405,7 @@ public class RasterTreatment {
 	    {
 		new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
 	    }
-	    dataTreatment.createFileCsv(resultatSelect, "wrong/wrong_raster_" + this.dataTreatment.getNbFileRandom() + ".csv" );
+	    dataTreatment.createFileCsv(resultatSelect, "wrong/wrong_raster_" + this.dataTreatment.getNbSessionRandom() + ".csv" );
 	}
 
 	for(int j = 0 ; j < messagesSelect.size() ; j++){
@@ -420,7 +422,8 @@ public class RasterTreatment {
 	    ArrayList<String> messagesDelete = new ArrayList<String>();
 	    messagesDelete.add("\n--- Delete points not in cells ---");
 
-	    String sqlDeleteCell = "DELETE FROM Clean WHERE Clean.id_=" + id_ + ";"; 
+	    String sqlDeleteCell = "DELETE FROM Clean_" + this.getDataTreatment().getNbSessionRandom() + " WHERE Clean_" + this.getDataTreatment().getNbSessionRandom() + ".id_=" + id_ + " AND UUID_=\"" + this.getDataTreatment().getNbSessionRandom() + "\";";
+
 	    messagesDelete.addAll(newConnectionDelete.newConnection("executeUpdate", sqlDeleteCell));
 	    ArrayList<String> resultatDelete = newConnectionDelete.getResultatSelect();
 	    if(resultatDelete != null){
@@ -474,6 +477,14 @@ public class RasterTreatment {
 
     public void setNbWrongOccurrences(int nbWrongOccurrences) {
         this.nbWrongOccurrences = nbWrongOccurrences;
+    }
+
+    public String getRESSOURCES_PATH() {
+        return RESSOURCES_PATH;
+    }
+
+    public void setRESSOURCES_PATH(String rESSOURCES_PATH) {
+        RESSOURCES_PATH = rESSOURCES_PATH;
     }
     
     

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 
@@ -19,6 +20,7 @@ import java.util.List;
 public class DarwinCore extends CSVFile{
 
     private int idFile_;
+    private String nbSessionRandom;
     private HashMap<String, ArrayList<String>> idAssoData;
     private ArrayList<String> darwinLines;
     
@@ -41,10 +43,11 @@ public class DarwinCore extends CSVFile{
      * @param file
      * @param idFile
      */
-    public DarwinCore(File file, int idFile){
+    public DarwinCore(File file, int idFile, String nbSessionRandom){
 	super(file);
 	this.idFile_ = idFile;
 	this.darwinLines = super.getLines();
+	this.nbSessionRandom = nbSessionRandom;
     }
 
     /**
@@ -60,11 +63,11 @@ public class DarwinCore extends CSVFile{
 	ArrayList<String> messages = new ArrayList<String>();
 	messages.add("\n--- Select id line from clean ---\n");
 
-	String sqlID= "SELECT * FROM Workflow.Clean;";
+	String sqlID= "SELECT * FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE UUID_=\"" + this.getNbSessionRandom() + "\";";
 	
 	messages.addAll(newConnection.newConnection("executeQuery", sqlID));
 	ArrayList<String> resultats = newConnection.getResultatSelect();
-
+	System.out.println(sqlID + "\n" + resultats);
 	for(int i = 0 ; i < resultats.size() ; i++){
 	    String id_ = resultats.get(i).split(",")[0];
 	    String line [] = resultats.get(i).split(",");
@@ -94,7 +97,7 @@ public class DarwinCore extends CSVFile{
 	    firstNewLine += newTag;
 	}
 
-	firstNewLine += "idFile_,id_";
+	firstNewLine += "idFile_,id_,UUID_";
 	darwinLines.set(0, firstNewLine);
 
 	// don't add number file for the first line
@@ -104,7 +107,7 @@ public class DarwinCore extends CSVFile{
 	    for(int j = 0 ; j < line.length ; j++){
 		newLine += "\"" + line[j] + "\",";
 	    }
-	    newLine += Integer.toString(idFile_) + ",0," + "";
+	    newLine += Integer.toString(idFile_) + ",0," + this.getNbSessionRandom() ;
 	    darwinLines.set(l, newLine);
 	}
 
@@ -121,7 +124,7 @@ public class DarwinCore extends CSVFile{
 	ArrayList<String> messages = new ArrayList<String>();
 	messages.add("\n--- Select decimal latitude from coordinates ---");
 
-	String sqlLatitude = "SELECT decimalLatitude_ FROM Workflow.Clean;";
+	String sqlLatitude = "SELECT decimalLatitude_ FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE UUID_=\"" + this.getNbSessionRandom() + "\";";
 
 	messages.addAll(newConnection.newConnection("executeQuery", sqlLatitude));
 	ArrayList<String> resultatLatitude = newConnection.getResultatSelect();
@@ -140,7 +143,7 @@ public class DarwinCore extends CSVFile{
 	ArrayList<String> messages = new ArrayList<String>();
 	messages.add("\n--- Select decimal longitude from coordinates ---");
 
-	String sqlLongitude = "SELECT decimalLongitude_ FROM Workflow.Clean;";
+	String sqlLongitude = "SELECT decimalLongitude_ FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE UUID_=\"" + this.getNbSessionRandom() + "\";";
 
 	messages.addAll(newConnection.newConnection("executeQuery", sqlLongitude));
 	ArrayList<String> resultatLongitude = newConnection.getResultatSelect();
@@ -158,7 +161,7 @@ public class DarwinCore extends CSVFile{
 	ArrayList<String> messages = new ArrayList<String>();
 	messages.add("\n--- Select id line from clean ---\n");
 
-	String sqlID= "SELECT id_ FROM Workflow.Clean;";
+	String sqlID= "SELECT id_ FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE UUID_=\"" + this.getNbSessionRandom() + "\";";
 
 	messages.addAll(newConnection.newConnection("executeQuery", sqlID));
 	ArrayList<String> resultatID = newConnection.getResultatSelect();
@@ -177,7 +180,7 @@ public class DarwinCore extends CSVFile{
 	ArrayList<String> messages = new ArrayList<String>();
 	messages.add("\n--- Select id line from clean ---\n");
 
-	String sqlID= "SELECT gbifID_ FROM Workflow.Clean;";
+	String sqlID= "SELECT gbifID_ FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE=UUID_=\"" + this.getNbSessionRandom() + "\";";
 
 	messages.addAll(newConnection.newConnection("executeQuery", sqlID));
 	ArrayList<String> resultatGbifID = newConnection.getResultatSelect();
@@ -196,7 +199,7 @@ public class DarwinCore extends CSVFile{
 	ArrayList<String> messages = new ArrayList<String>();
 	messages.add("\n--- Select id line from DarwinCoreInput ---\n");
 
-	String sqlID= "SELECT id_ FROM Workflow.DarwinCoreInput;";
+	String sqlID= "SELECT id_ FROM Workflow.DarwinCoreInput WHERE=UUID_=\"" + this.getNbSessionRandom() + "\";";
 
 	messages.addAll(newConnection.newConnection("executeQuery", sqlID));
 	ArrayList<String> resultatID = newConnection.getResultatSelect();
@@ -215,7 +218,7 @@ public class DarwinCore extends CSVFile{
 	ArrayList<String> messages = new ArrayList<String>();
 	messages.add("\n--- Select iso2 code ---");
 
-	String sqlISO2 = "SELECT countryCode_ FROM Workflow.Clean;";
+	String sqlISO2 = "SELECT countryCode_ FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE=UUID_=\"" + this.getNbSessionRandom() + "\";";
 
 	messages.addAll(newConnection.newConnection("executeQuery", sqlISO2));
 	ArrayList<String> resultatISO2 = newConnection.getResultatSelect();
@@ -273,6 +276,14 @@ public class DarwinCore extends CSVFile{
      */
     public void setDarwinLines(ArrayList<String> darwinLines) {
         this.darwinLines = darwinLines;
+    }
+
+    public String getNbSessionRandom() {
+        return nbSessionRandom;
+    }
+
+    public void setNbSessionRandom(String nbSessionRandom) {
+        this.nbSessionRandom = nbSessionRandom;
     }
     
 }

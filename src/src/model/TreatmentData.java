@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import src.model.RasterTreatment;
 
@@ -28,8 +29,9 @@ public class TreatmentData {
     private DarwinCore fileDarwinCore;
     private ArrayList<File> rasterFiles;
     private HashMap<Integer, HashMap<String, Boolean>> hashMapValidOrNot;
-    private int nbFileRandom;
-    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/";
+    private String nbSessionRandom;
+    private String DIRECTORY_PATH = "";
+    private String RESSOURCES_PATH = "";
     private int nbWrongCoordinates = 0;
     private int nbWrongGeospatialIssues = 0;
     private int nbSynonymInvolved = 0;
@@ -42,11 +44,11 @@ public class TreatmentData {
      * TreatmentData
      */
     public TreatmentData(){
-
+	
     }
 
     /**
-     * Drop Clean and temp tables. 
+     * Delete Clean and temp tables. 
      * Delete DarwinCoreInput table.
      * 
      * @return void
@@ -55,25 +57,27 @@ public class TreatmentData {
 	ConnectionDatabase newConnectionDeleteClean = new ConnectionDatabase();
 	ArrayList<String> messagesClean = new ArrayList<String>();
 	messagesClean.add("\n--- Delete Clean table ---");
-	messagesClean.addAll(newConnectionDeleteClean.dropTable("Workflow.Clean"));
+	messagesClean.addAll(newConnectionDeleteClean.dropTable("Workflow.Clean_" + this.getNbSessionRandom()));
 
 	for(int i = 0 ; i < messagesClean.size() ; i++){
 	    System.out.println(messagesClean.get(i));
 	}
 
+	
 	ConnectionDatabase newConnectionDeleteDarwin = new ConnectionDatabase();
 	ArrayList<String> messagesDarwin = new ArrayList<String>();
 	messagesDarwin.add("\n--- Delete DarwinCoreInput table ---");
-	messagesDarwin.addAll(newConnectionDeleteDarwin.deleteTable("Workflow.DarwinCoreInput"));
+	messagesDarwin.addAll(newConnectionDeleteDarwin.deleteTable("Workflow.DarwinCoreInput", this.getNbSessionRandom()));
 
 	for(int i = 0 ; i < messagesDarwin.size() ; i++){
 	    System.out.println(messagesDarwin.get(i));
 	}
-
+	 
+	
 	ConnectionDatabase newConnectionDeleteTemp = new ConnectionDatabase();
 	ArrayList<String> messagesTemp = new ArrayList<String>();
 	messagesTemp.add("\n--- Delete temp table ---");
-	messagesTemp.addAll(newConnectionDeleteTemp.dropTable("Workflow.temp"));
+	messagesTemp.addAll(newConnectionDeleteTemp.dropTable("Workflow.temp_" + this.getNbSessionRandom()));
 
 	for(int i = 0 ; i < messagesTemp.size() ; i++){
 	    System.out.println(messagesTemp.get(i));
@@ -91,7 +95,7 @@ public class TreatmentData {
      */
     public void mappingDwC(MappingDwC mappingDWC) throws IOException{
 	mappingDWC.setConnectionValuesTags(mappingDWC.doConnectionValuesTags());
-	File mappedFile = mappingDWC.createNewDwcFile(this.getNbFileRandom());
+	File mappedFile = mappingDWC.createNewDwcFile(this.getNbSessionRandom());
 	mappingDWC.setMappedFile(mappedFile);
     }
 
@@ -106,7 +110,7 @@ public class TreatmentData {
      */
     public List <String> initialiseFile(File inputFile, int nbFile) throws IOException{
 
-	fileDarwinCore = new DarwinCore(inputFile, nbFile);
+	fileDarwinCore = new DarwinCore(inputFile, nbFile, this.getNbSessionRandom());
 	fileDarwinCore.readDarwinCoreFile();
 	List<String> listLinesDarwinCore = fileDarwinCore.getDarwinLines();
 
@@ -190,7 +194,7 @@ public class TreatmentData {
 	ArrayList<String> messages = new ArrayList<String>();
 	String choiceStatement = "executeUpdate";
 	messages.add("\n--- Create temporary table with correct ISO2 ---");
-	String sqlCreateTemp = "CREATE TABLE Workflow.temp AS SELECT DarwinCoreInput.* FROM Workflow.DarwinCoreInput,Workflow.IsoCode WHERE countryCode_=IsoCode.iso2_;";
+	String sqlCreateTemp = "CREATE TABLE Workflow.temp_" + this.getNbSessionRandom() + " AS SELECT DarwinCoreInput.* FROM Workflow.DarwinCoreInput,Workflow.IsoCode WHERE countryCode_=IsoCode.iso2_;";
 
 	messages.addAll(newConnectionTemp.newConnection(choiceStatement, sqlCreateTemp));
 
@@ -216,7 +220,7 @@ public class TreatmentData {
 	ArrayList<String> messages = new ArrayList<String>();
 	String choiceStatement = "executeUpdate";
 	messages.add("\n--- Create Table Clean from temporary table ---");
-	String sqlCreateClean = "CREATE TABLE Workflow.Clean AS SELECT * FROM Workflow.temp WHERE " +
+	String sqlCreateClean = "CREATE TABLE Workflow.Clean_" + this.getNbSessionRandom() + " AS SELECT * FROM Workflow.temp_" + this.getNbSessionRandom() + " WHERE " +
 		"(decimalLatitude_!=0 AND decimalLatitude_<90 AND decimalLatitude_>-90 AND decimalLongitude_!=0 " +
 		"AND decimalLongitude_>-180 AND decimalLongitude_<180) AND (hasGeospatialIssues_='false');";
 	messages.addAll(newConnectionClean.newConnection(choiceStatement, sqlCreateClean));
@@ -239,7 +243,7 @@ public class TreatmentData {
 	ArrayList<String> messages = new ArrayList<String>();
 	messages.add("\n--- Select wrong coordinates ---");
 
-	String sqlRetrieveWrongCoord = "SELECT * FROM Workflow.DarwinCoreInput WHERE decimalLatitude_=0 OR decimalLatitude_>90 OR decimalLatitude_<-90 OR decimalLongitude_=0 OR decimalLongitude_>180 OR decimalLongitude_<-180;";
+	String sqlRetrieveWrongCoord = "SELECT * FROM Workflow.DarwinCoreInput WHERE (UUID_=\"" + this.getNbSessionRandom() + "\") AND (decimalLatitude_=0 OR decimalLatitude_>90 OR decimalLatitude_<-90 OR decimalLongitude_=0 OR decimalLongitude_>180 OR decimalLongitude_<-180);";
 	messages.addAll(newConnection.newConnection("executeQuery", sqlRetrieveWrongCoord));
 	ArrayList<String> resultatSelect = newConnection.getResultatSelect();
 	messages.add("nb lignes affectées :" + Integer.toString(resultatSelect.size() - 1));
@@ -251,7 +255,7 @@ public class TreatmentData {
 	    new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
 	}
 
-	File wrongCoor = this.createFileCsv(resultatSelect, "wrong/wrong_coordinates_" + this.getNbFileRandom() + ".csv");
+	File wrongCoor = this.createFileCsv(resultatSelect, "wrong/wrong_coordinates_" + this.getNbSessionRandom() + ".csv");
 
 
 	for(int j = 0 ; j < messages.size() ; j++){
@@ -291,7 +295,7 @@ public class TreatmentData {
 	    new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
 	}
 
-	File wrongGeo = this.createFileCsv(resultatSelect, "wrong/wrong_geospatialIssues_" + this.getNbFileRandom() + ".csv");
+	File wrongGeo = this.createFileCsv(resultatSelect, "wrong/wrong_geospatialIssues_" + this.getNbSessionRandom() + ".csv");
 
 	for(int j = 0 ; j < messages.size() ; j++){
 	    System.out.println(messages.get(j));
@@ -356,6 +360,9 @@ public class TreatmentData {
      */
     public File getPolygonTreatment(){
 	PolygonTreatment polygone = new PolygonTreatment();
+	polygone.setDIRECTORY_PATH(this.getDIRECTORY_PATH());
+	polygone.setRESSOURCES_PATH(this.getRESSOURCES_PATH());
+	
 	fileDarwinCore.associateIdData();
 
 	ArrayList<String> listToDelete = new ArrayList<>();
@@ -384,7 +391,7 @@ public class TreatmentData {
 		iso3 = this.convertIso2ToIso3(iso2);
 		gbifId_ = listInfos.get(iGbifID);
 
-		File geoJsonFile = new File(DIRECTORY_PATH + "src/ressources/gadm_json/" + iso3.toUpperCase() + "_adm0.json");
+		File geoJsonFile = new File(RESSOURCES_PATH + "gadm_json/" + iso3.toUpperCase() + "_adm0.json");
 		GeometryFactory geometryFactory = new GeometryFactory();
 		Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
 		System.out.println("--------------------------------------------------------------");
@@ -401,7 +408,7 @@ public class TreatmentData {
 		    nbWrongIso2 ++;
 		    ConnectionDatabase newConnectionSelectID = new ConnectionDatabase();
 		    ArrayList<String> messagesSelectID = new ArrayList<String>();
-		    String sqlSelectID = "SELECT * FROM Workflow.Clean WHERE Clean.id_=" + id_ + ";";
+		    String sqlSelectID = "SELECT * FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE Clean_" + this.getNbSessionRandom() + ".id_=" + id_ + ";";
 		    messagesSelectID.addAll(newConnectionSelectID.newConnection("executeQuery", sqlSelectID));
 		    ArrayList<String> selectIDResults = newConnectionSelectID.getResultatSelect();
 
@@ -418,7 +425,7 @@ public class TreatmentData {
 
 		    ConnectionDatabase newConnectionDeleteID = new ConnectionDatabase();
 		    ArrayList<String> messagesDeleteID = new ArrayList<String>();
-		    String sqlDeleteID = "DELETE FROM Workflow.Clean WHERE id_=" + id_ + ";";
+		    String sqlDeleteID = "DELETE FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE id_=" + id_ + ";";
 		    messagesDeleteID.addAll(newConnectionDeleteID.newConnection("executeUpdate", sqlDeleteID));
 
 		    for(int i = 0 ; i < messagesDeleteID.size() ; i++){
@@ -429,7 +436,7 @@ public class TreatmentData {
 	    }
 	}
 
-	File wrongPolygon = this.createFileCsv(listToDelete, "wrong/wrongPolygon_" + this.getNbFileRandom() + ".csv");
+	File wrongPolygon = this.createFileCsv(listToDelete, "wrong/wrong_polygon_" + this.getNbSessionRandom() + ".csv");
 	this.setNbWrongIso2(nbWrongIso2);
 	
 	return wrongPolygon;
@@ -533,7 +540,7 @@ public class TreatmentData {
 		System.out.print("iso2 : " + iso2);
 		String tdwg4Code = "";
 		try {
-		    tdwg4Code = tdwg4.tdwg4ContainedPoint(point, iso2);
+		    tdwg4Code = tdwg4.tdwg4ContainedPoint(point, iso2.replaceAll("\"", ""));
 		} catch (IOException e) {
 		    // TODO Auto-generated catch block
 		    e.printStackTrace();
@@ -542,10 +549,10 @@ public class TreatmentData {
 		System.out.println("--------------------------------------------------------------");
 
 		ConnectionDatabase newConnectionSelectID = new ConnectionDatabase();
-		String sqlSelectID = "SELECT locationID_ FROM Workflow.Clean WHERE Clean.id_=" + id_ + ";";
+		String sqlSelectID = "SELECT locationID_ FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE Clean_" + this.getNbSessionRandom() + ".id_=" + id_ + ";";
 		newConnectionSelectID.newConnection("executeQuery", sqlSelectID);
 		ArrayList<String> selectIDResults = newConnectionSelectID.getResultatSelect();
-		System.out.println(selectIDResults);
+		//System.out.println(selectIDResults);
 		String newLocationID = "";
 		if(selectIDResults.size() > 1 || !selectIDResults.get(1).replaceAll("\"", "").equals(" ")){
 		    newLocationID = selectIDResults.get(1).replaceAll("\"", "") + ";TDWG=" + tdwg4Code;
@@ -554,7 +561,7 @@ public class TreatmentData {
 		    newLocationID = "TDWG=" + tdwg4Code;
 		}
 		
-		String sqlUpdateTDWG = "UPDATE Workflow.Clean SET Clean.locationID_=\"" + newLocationID + "\" WHERE Clean.id_=" + id_ + ";";
+		String sqlUpdateTDWG = "UPDATE Workflow.Clean_" + this.getNbSessionRandom() + " SET Clean_" + this.getNbSessionRandom() + ".locationID_=\"" + newLocationID + "\" WHERE Clean_" + this.getNbSessionRandom() + ".id_=" + id_ + ";";
 		//System.out.println(sqlUpdateTDWG);
 		ConnectionDatabase newConnectionUpdateClean = new ConnectionDatabase();
 		newConnectionUpdateClean.newConnection("executeUpdate", sqlUpdateTDWG);
@@ -573,7 +580,8 @@ public class TreatmentData {
     public File checkWorldClimCell(ArrayList<File> rasterFiles) {
 
 	RasterTreatment rasterTreatment = new RasterTreatment(rasterFiles, this);
-
+	rasterTreatment.setDIRECTORY_PATH(this.getDIRECTORY_PATH());
+	rasterTreatment.setRESSOURCES_PATH(this.getRESSOURCES_PATH());
 	File matrixFileValidCells = rasterTreatment.treatmentRaster();
 
 	this.setNbWrongIso2(rasterTreatment.getNbWrongOccurrences());
@@ -623,7 +631,7 @@ public class TreatmentData {
 		ConnectionDatabase newConnectionOthers = new ConnectionDatabase();
 		ArrayList<String> messagesOthers = new ArrayList<String>();
 
-		String sqlOthers = "SELECT * FROM Workflow.Clean WHERE Clean.establishmentMeans_!=\"native\" && " +
+		String sqlOthers = "SELECT * FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE Clean_" + this.getNbSessionRandom() + ".establishmentMeans_!=\"native\" && " +
 			"Clean.establishmentMeans_!=\"introduced\" && " +
 			"Clean.establishmentMeans_!=\"naturalised\" && " +
 			"Clean.establishmentMeans_!=\"invasive\" && " +
@@ -650,7 +658,7 @@ public class TreatmentData {
 		ConnectionDatabase newConnectionSelect = new ConnectionDatabase();
 		ArrayList<String> messagesSelect = new ArrayList<String>();
 		messagesSelect.add("\n--- Select no establishment Means ---\n");
-		String sqlSelectNoEstablishment = "SELECT * FROM Workflow.Clean WHERE Clean.establishmentMeans_=\"" + establishmentList.get(i) + "\";";
+		String sqlSelectNoEstablishment = "SELECT * FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE Clean_" + this.getNbSessionRandom() + ".establishmentMeans_=\"" + establishmentList.get(i) + "\";";
 		messagesSelect.addAll(newConnectionSelect.newConnection("executeQuery", sqlSelectNoEstablishment));
 
 		ArrayList<String> establishmentResults = newConnectionSelect.getResultatSelect();
@@ -669,7 +677,7 @@ public class TreatmentData {
 		ConnectionDatabase newConnection = new ConnectionDatabase();
 		ArrayList<String> messagesDelete = new ArrayList<String>();
 		messagesDelete.add("\n--- establishment Means ---\n");
-		String sqlDeleteEstablishment = "DELETE FROM Workflow.Clean WHERE Clean.establishmentMeans_=\"" + establishmentList.get(i) + "\";";
+		String sqlDeleteEstablishment = "DELETE FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE Clean_" + this.getNbSessionRandom() + ".establishmentMeans_=\"" + establishmentList.get(i) + "\";";
 		messagesDelete.addAll(newConnection.newConnection("executeUpdate", sqlDeleteEstablishment));
 
 		for(int j = 0; j < messagesDelete.size() ; j++){
@@ -682,7 +690,7 @@ public class TreatmentData {
 	    System.out.println(noEstablishment.get(k));
 	}
 
-	File noEstablishmentFile = this.createFileCsv(noEstablishment, "wrong/noEstablishmentMeans_" + this.getNbFileRandom() + ".csv");
+	File noEstablishmentFile = this.createFileCsv(noEstablishment, "wrong/noEstablishmentMeans_" + this.getNbSessionRandom() + ".csv");
 
 	return noEstablishmentFile;
 
@@ -744,8 +752,8 @@ public class TreatmentData {
      * 
      * @return int
      */
-    public int getNbFileRandom() {
-	return nbFileRandom;
+    public String getNbSessionRandom() {
+	return nbSessionRandom;
     }
 
     /**
@@ -753,8 +761,8 @@ public class TreatmentData {
      * @param nbFileRandom
      * @return void
      */
-    public void setNbFileRandom(int nbFileRandom) {
-	this.nbFileRandom = nbFileRandom;
+    public void setNbSessionRandom(String nbFileRandom) {
+	this.nbSessionRandom = nbFileRandom;
     }
 
     public String getDIRECTORY_PATH() {
@@ -803,6 +811,14 @@ public class TreatmentData {
 
     public void setNbWrongRaster(int nbWrongRaster) {
         this.nbWrongRaster = nbWrongRaster;
+    }
+
+    public String getRESSOURCES_PATH() {
+        return RESSOURCES_PATH;
+    }
+
+    public void setRESSOURCES_PATH(String rESSOURCES_PATH) {
+        RESSOURCES_PATH = rESSOURCES_PATH;
     }
     
     

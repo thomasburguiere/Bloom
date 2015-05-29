@@ -14,8 +14,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/mhachet/workspace/WebWorkflowCleanData/WebContent/WEB-INF/lib/gt-opengis-12.2.jar"/>
-	<classpathentry kind="lib" path="/home/mhachet/workspace/workflow_cleanData/jar/gt-opengis-12.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
