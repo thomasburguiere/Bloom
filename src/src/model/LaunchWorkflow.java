@@ -30,7 +30,7 @@ import src.beans.Step8_CheckCoordinatesRaster;
  */
 public class LaunchWorkflow {
 
-    private TreatmentData dataTreatment;
+    private Treatment dataTreatment;
     private Initialise initialisation;
     private Finalisation finalisation;
     //private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/";
@@ -60,7 +60,7 @@ public class LaunchWorkflow {
      * @return void
      */
     public void initialiseLaunchWorkflow() throws IOException{
-	this.dataTreatment = new TreatmentData();
+	this.dataTreatment = new Treatment();
 	this.dataTreatment.setNbSessionRandom(initialisation.getNbSessionRandom());
 	this.dataTreatment.setDIRECTORY_PATH(initialisation.getDIRECTORY_PATH());
 	this.dataTreatment.setRESSOURCES_PATH(initialisation.getRESSOURCES_PATH());
@@ -90,7 +90,7 @@ public class LaunchWorkflow {
 	}
 
 	if(this.initialisation.isTdwg4Code()){
-	    dataTreatment.checkIsoTdwgCode();
+	    dataTreatment.tdwgCodeOption();
 	    step6.setInvolved(true);
 	}
 
@@ -160,23 +160,22 @@ public class LaunchWorkflow {
 	    this.dataTreatment.createTableDarwinCoreInput(sqlInsert);
 	}	
 
-	this.dataTreatment.deleteWrongIso2();
-	this.dataTreatment.createTableClean();
+	GeographicTreatment geoTreatment = this.dataTreatment.checkGeographicOption();
 	
-	File wrongCoordinatesFile = dataTreatment.deleteWrongCoordinates();
+	File wrongCoordinatesFile = geoTreatment.getWrongCoordinatesFile();
 	finalisation.setWrongCoordinatesFile(wrongCoordinatesFile);
 	finalisation.setPathWrongCoordinatesFile(wrongCoordinatesFile.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));	
-	step2.setNbFound(this.dataTreatment.getNbWrongCoordinates());
+	step2.setNbFound(geoTreatment.getNbWrongCoordinates());
 	
-	File wrongGeospatial = dataTreatment.deleteWrongGeospatial();
+	File wrongGeospatial = geoTreatment.getWrongGeoFile();
 	finalisation.setWrongGeospatial(wrongGeospatial);
 	finalisation.setPathWrongGeospatial(wrongGeospatial.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
-	step3.setNbFound(this.dataTreatment.getNbSynonymInvolved());
+	step3.setNbFound(geoTreatment.getNbWrongGeospatialIssues());
 	
-	File wrongPolygon = this.dataTreatment.getPolygonTreatment();
+	File wrongPolygon = geoTreatment.getWrongPolygonFile();
 	finalisation.setWrongPolygon(wrongPolygon);
 	finalisation.setPathWrongPolygon(wrongPolygon.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
-	step7.setNbFound(this.dataTreatment.getNbWrongIso2());
+	step7.setNbFound(geoTreatment.getNbWrongIso2());
 	
     }
 
@@ -221,7 +220,7 @@ public class LaunchWorkflow {
 	for(int i = 0 ; i < this.initialisation.getInputRastersList().size() ; i++){
 	    File raster = this.initialisation.getInputRastersList().get(i);
 	    String extensionRaster = raster.getName().substring(raster.getName().lastIndexOf("."));
-	    String [] extensionsRaster = {".bil", ".grd", ".asc", ".sdat", ".rsc", ".nc", ".cdf", ".bsq", ".bip"};
+	    String [] extensionsRaster = {".bil", ".grd", ".asc", ".sdat", ".rsc", ".nc", ".cdf", ".bsq", ".bip", ".adf"};
 	    ArrayList<String> extensionsRasterList = new ArrayList(Arrays.asList(extensionsRaster));
 	    
 	    if(!extensionsRasterList.contains(extensionRaster)){
@@ -232,14 +231,22 @@ public class LaunchWorkflow {
 	for(int i = 0 ; i < this.initialisation.getHeaderRasterList().size() ; i++){
 	    File header = this.initialisation.getHeaderRasterList().get(i);
 	    String extensionHeader = header.getName().substring(header.getName().lastIndexOf("."));
-	    if(!extensionHeader.equals(".hdr")){
+	    String headerName = header.getName();
+	    
+	    /*if(!headerName.contains("hdr")){
+		System.out.println("false 2 " + headerName);
 		isValid = false;
 	    }
+	    else if(!extensionHeader.equals(".hdr")){
+		System.out.println("false 3");
+		isValid = false;
+	    }*/
+	    
 	    
 	    
 	}
 	
-
+	//System.out.println("raster valid : " + isValid);
 	return isValid;
     }
 
@@ -282,10 +289,10 @@ public class LaunchWorkflow {
      */
     public void launchRasterOption(){
 
-	File matrixFileValidCells = this.dataTreatment.checkWorldClimCell(this.initialisation.getInputRastersList());
-	finalisation.setMatrixFileValidCells(matrixFileValidCells);
-	finalisation.setPathMatrixFile(matrixFileValidCells.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
-	step8.setNbFound(this.dataTreatment.getNbWrongRaster());
+	RasterTreatment rasterTreatment = this.dataTreatment.checkWorldClimCell(this.initialisation.getInputRastersList());
+	finalisation.setMatrixFileValidCells(rasterTreatment.getMatrixFileValidCells());
+	finalisation.setPathMatrixFile(rasterTreatment.getMatrixFileValidCells().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
+	step8.setNbFound(rasterTreatment.getNbWrongOccurrences());
     }
 
     /**
@@ -295,38 +302,13 @@ public class LaunchWorkflow {
      */
     public void launchEstablishmentMeansOption(){
 	if(this.initialisation.getEstablishmentList().size() != 0){
-	    this.inverseEstablishmentList();
 	    File wrongEstablishmentMeans = this.dataTreatment.establishmentMeansOption(this.initialisation.getEstablishmentList());
 	    finalisation.setWrongEstablishmentMeans(wrongEstablishmentMeans);
 	    finalisation.setPathWrongEstablishmentMeans(wrongEstablishmentMeans.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
 	}
     }
 
-    /**
-     * Retrieve establishmentMeans to delete
-     * 
-     * @return void
-     */
-    public void inverseEstablishmentList(){
-	ArrayList<String> allEstablishmentMeans = new ArrayList<>();
-	allEstablishmentMeans.add("native");
-	allEstablishmentMeans.add("introduced");
-	allEstablishmentMeans.add("naturalised");
-	allEstablishmentMeans.add("invasive");
-	allEstablishmentMeans.add("managed");
-	allEstablishmentMeans.add("uncertain");
-	allEstablishmentMeans.add("others");
-
-	ArrayList<String> inverseEstablishmentList = new ArrayList<>();
-	for(int i = 0 ; i < allEstablishmentMeans.size() ; i++){
-	    if(!this.initialisation.getEstablishmentList().contains(allEstablishmentMeans.get(i))){
-		inverseEstablishmentList.add(allEstablishmentMeans.get(i));
-	    }
-	}
-	//this.initialisation.getEstablishmentList().removeAll(this.initialisation.getEstablishmentList());
-	this.initialisation.setEstablishmentList(inverseEstablishmentList);
-    }
-
+   
     public void writeFinalOutput(){
 	ArrayList<File> listFinalOutput = new ArrayList<>();
 	ArrayList<String> listPathsOutput = new ArrayList<>();
@@ -359,7 +341,7 @@ public class LaunchWorkflow {
      *  
      * @return TreatmentData
      */
-    public TreatmentData getDataTreatment() {
+    public Treatment getDataTreatment() {
 	return dataTreatment;
     }
 
@@ -368,7 +350,7 @@ public class LaunchWorkflow {
      * @param dataTreatment
      * @return void
      */
-    public void setDataTreatment(TreatmentData dataTreatment) {
+    public void setDataTreatment(Treatment dataTreatment) {
 	this.dataTreatment = dataTreatment;
     }
 

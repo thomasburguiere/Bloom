@@ -20,9 +20,11 @@ import java.util.Arrays;
 public class SynonymsTreatment {
 
     private File synonymsFile;
+    private String DIRECTORY_PATH = "";
+    private String RESSOURCES_PATH = "";
     private ArrayList<String> tagsList;
     private int nbSynonymInvolved;
-    
+    private String nbSessionRandom;
     
     public SynonymsTreatment (File fileSynonyms){
 	this.synonymsFile = fileSynonyms;
@@ -74,9 +76,9 @@ public class SynonymsTreatment {
 	ArrayList<String> messages = new ArrayList<String>();
 	messages.add("\n--- Select to include synonyms ---");
 
-	String sqlRetrieveSynonyms = "SELECT Clean.*,Taxon.taxonID_ ,Taxon.acceptedNameUsageID_,Taxon.acceptedNameUsage_," +
+	String sqlRetrieveSynonyms = "SELECT Clean_" + this.getNbSessionRandom() + ".*,Taxon.taxonID_ ,Taxon.acceptedNameUsageID_,Taxon.acceptedNameUsage_," +
 		"Taxon.taxonomicStatus_,Taxon.scientificNameProper_ " +
-		"FROM Workflow.Clean,Workflow.Taxon WHERE Clean.scientificName_=Taxon.scientificNameProper_"; 
+		"FROM Workflow.Clean_" + this.getNbSessionRandom() + ",Workflow.Taxon WHERE Clean_" + this.getNbSessionRandom() + ".scientificName_=Taxon.scientificNameProper_"; 
 	messages.addAll(newConnection.newConnection("executeQuery", sqlRetrieveSynonyms));
 	ArrayList<String> resultatSelect = newConnection.getResultatSelect();
 	if(resultatSelect != null){
@@ -101,8 +103,8 @@ public class SynonymsTreatment {
 	    String acceptedNameUsage_ = data[275];
 	    String taxonomicStatus_ = data[276];
 
-	    String sqlUpdateClean = "UPDATE Workflow.Clean SET Clean.taxonID_=" + taxonID_ + ",Clean.acceptedNameUsageID_=" 
-		    + acceptedNameUsageID_ + ",Clean.acceptedNameUsage_=" + acceptedNameUsage_ + ",Clean.taxonomicStatus_=" + taxonomicStatus_ 
+	    String sqlUpdateClean = "UPDATE Workflow.Clean_" + this.getNbSessionRandom() + " SET Clean_" + this.getNbSessionRandom() + ".taxonID_=" + taxonID_ + ",Clean_" + this.getNbSessionRandom() + ".acceptedNameUsageID_=" 
+		    + acceptedNameUsageID_ + ",Clean_" + this.getNbSessionRandom() + ".acceptedNameUsage_=" + acceptedNameUsage_ + ",Clean_" + this.getNbSessionRandom() + ".taxonomicStatus_=" + taxonomicStatus_ 
 		    + " WHERE Clean.id_=" + id_ + ";"; 
 	    messagesUpdate.add(sqlUpdateClean);
 	    messagesUpdate.addAll(newConnectionUpdate.newConnection("executeUpdate", sqlUpdateClean));
@@ -125,8 +127,8 @@ public class SynonymsTreatment {
 	ArrayList<String> messages = new ArrayList<String>();
 	messages.add("\n--- Select to include synonyms ---");
 
-	String sqlRetrieveSynonyms = "SELECT Clean.*,SynonymTemp.* " +
-		"FROM Workflow.Clean,Workflow.SynonymTemp WHERE Clean.scientificName_=SynonymTemp.scientificNameProper_"; 
+	String sqlRetrieveSynonyms = "SELECT Clean_" + this.getNbSessionRandom() + ".*,SynonymTemp_" + this.getNbSessionRandom() + ".* " +
+		"FROM Workflow.Clean_" + this.getNbSessionRandom() + ",Workflow.SynonymTemp_" + this.getNbSessionRandom() + " WHERE Clean_" + this.getNbSessionRandom() + ".scientificName_=SynonymTemp_" + this.getNbSessionRandom() + ".scientificNameProper_"; 
 	messages.addAll(newConnection.newConnection("executeQuery", sqlRetrieveSynonyms));
 	ArrayList<String> resultatSelect = newConnection.getResultatSelect();
 	if(resultatSelect != null){
@@ -167,7 +169,7 @@ public class SynonymsTreatment {
 
 	for(int i = 0 ; i < tags.length ; i++){
 	    if(i == 0){
-		sqlCreateSynonymTemp += "CREATE TABLE Workflow.SynonymTemp (id_ BIGINT NOT NULL AUTO_INCREMENT PRIMARY_KEY,";
+		sqlCreateSynonymTemp += "CREATE TABLE Workflow.SynonymTemp_" + this.getNbSessionRandom() + " (id_ BIGINT NOT NULL AUTO_INCREMENT PRIMARY_KEY,";
 	    }
 	    else if(i < tags.length - 1){
 		sqlCreateSynonymTemp += tags[i] + " " + type + ",";
@@ -212,6 +214,30 @@ public class SynonymsTreatment {
 
     public void setNbSynonymInvolved(int nbSynonymInvolved) {
         this.nbSynonymInvolved = nbSynonymInvolved;
+    }
+
+    public String getNbSessionRandom() {
+        return nbSessionRandom;
+    }
+
+    public void setNbSessionRandom(String nbSessionRandom) {
+        this.nbSessionRandom = nbSessionRandom;
+    }
+
+    public String getDIRECTORY_PATH() {
+        return DIRECTORY_PATH;
+    }
+
+    public void setDIRECTORY_PATH(String dIRECTORY_PATH) {
+        DIRECTORY_PATH = dIRECTORY_PATH;
+    }
+
+    public String getRESSOURCES_PATH() {
+        return RESSOURCES_PATH;
+    }
+
+    public void setRESSOURCES_PATH(String rESSOURCES_PATH) {
+        RESSOURCES_PATH = rESSOURCES_PATH;
     }
     
     

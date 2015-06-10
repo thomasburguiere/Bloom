@@ -74,9 +74,10 @@ public class MappingDwC {
 	String firstNewLine = "";
 	int nbCol = connectionTags.size();
 	int countCol = 1;
-
+	System.out.println("value " + connectionTags);
 	for(Entry<String, String> entryDwC : connectionTags.entrySet()){
 	    String valueNoMapped = entryDwC.getValue();
+	    
 	    if(countCol < nbCol){
 		firstNewLine += valueNoMapped + ",";
 	    }
@@ -86,6 +87,7 @@ public class MappingDwC {
 	    countCol ++;
 	}
 	writerMappedFile.write(firstNewLine);
+	System.out.println("line : " + firstNewLine);
 	int countLines = 0;
 	int nbLines = noMappedFile.getLines().size();
 	countCol = 1;
@@ -228,7 +230,7 @@ public class MappingDwC {
 	catch(Exception e){
 	    System.err.println(e);
 	}
-	System.out.println(connectionValuesTags);
+	//System.out.println(connectionValuesTags);
 	return connectionValuesTags;
     }
     

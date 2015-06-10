@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import src.model.TreatmentData;
+import src.model.Treatment;
 
 /**
  * model
@@ -31,13 +31,13 @@ public class RasterTreatment {
 
     private ArrayList<File> rasterFiles;
     private HashMap<Integer, HashMap<String, Boolean>> hashMapValidOrNot;
-    private TreatmentData dataTreatment;
+    private Treatment dataTreatment;
     private String DIRECTORY_PATH = "";
     private String RESSOURCES_PATH = "";
     private int nbWrongOccurrences;
+    private File matrixFileValidCells;
     
-    
-    public RasterTreatment(ArrayList<File> rasterFiles, TreatmentData dataTreatment){
+    public RasterTreatment(ArrayList<File> rasterFiles, Treatment dataTreatment){
 	this.rasterFiles = rasterFiles;
 	this.dataTreatment = dataTreatment;
     }
@@ -455,11 +455,11 @@ public class RasterTreatment {
         this.hashMapValidOrNot = hashMapValidOrNot;
     }
 
-    public TreatmentData getDataTreatment() {
+    public Treatment getDataTreatment() {
         return dataTreatment;
     }
 
-    public void setDataTreatment(TreatmentData dataTreatment) {
+    public void setDataTreatment(Treatment dataTreatment) {
         this.dataTreatment = dataTreatment;
     }
 
@@ -485,6 +485,14 @@ public class RasterTreatment {
 
     public void setRESSOURCES_PATH(String rESSOURCES_PATH) {
         RESSOURCES_PATH = rESSOURCES_PATH;
+    }
+
+    public File getMatrixFileValidCells() {
+	return matrixFileValidCells;
+    }
+
+    public void setMatrixFileValidCells(File matrixFileValidCells) {
+	this.matrixFileValidCells = matrixFileValidCells;
     }
     
     

@@ -226,6 +226,30 @@ public class DarwinCore extends CSVFile{
 	return resultatISO2;
     }
 
+    
+    /**
+     * Found indice corresponding to tag name
+     * 
+     * @param tagName
+     * @return int
+     */
+    public int getIndiceFromTag(String tagName){
+
+	HashMap<String, ArrayList<String>> idAssoData = this.getIdAssoData();
+
+	for(String id_ : idAssoData.keySet()){
+	    if(id_.equals("id_")){
+		ArrayList<String> tagsList = idAssoData.get(id_);
+		for(int i = 0 ; i < tagsList.size() ; i++){
+		    if(tagsList.get(i).equals(tagName)){
+			return i;
+		    }
+		}
+	    }
+	}
+	return 0;
+    }
+
     /**
      * Get file id
      * 

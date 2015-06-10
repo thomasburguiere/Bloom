@@ -222,6 +222,7 @@ public class Controler extends HttpServlet {
 		for(int i = 0 ; i < tagsNoMapped.size() ; i++){
 		    connectionTags.put(tagsNoMapped.get(i) + "_" + i, "");
 		}
+		System.out.println("connectionTagsControler : " + connectionTags);
 		newMappingDWC.setConnectionTags(connectionTags);
 		newMappingDWC.getNoMappedFile().setCsvName(file.getName());
 		//initialisation.getInputFilesList().add(csvFile.getCsvFile());
@@ -282,7 +283,7 @@ public class Controler extends HttpServlet {
 			    connectionTags.put(entry.getKey(), valueDropdown);
 			}    
 		    }
-		    System.out.println(connectionTags);
+		    System.out.println("connectionTags : " + connectionTags);
 		}
 		
 	    }

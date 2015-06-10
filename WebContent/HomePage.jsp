@@ -27,9 +27,13 @@
 			</div>
 			<div class="col-lg-8">
 				<form action="controler" method="post" enctype="multipart/form-data"
-					name="formulaire" id="formulaire" accept-charset=utf-8>				
+					name="formulaire" id="formulaire" accept-charset=utf-8>		
+					<div class="bloc" id="bloc-intro" style="text-align:center">
+						<p>Workflow begining</p>
+					</div>		
 					<div class="bloc" id="bloc-inputs">
 						<div class="row">
+							<p> Select inputs files </p>
 							<input id="compteur_inp" type="hidden" name="compteur_inp" value=1 />
 							<div class="col-lg-3">
 								<input id="addFile" type="button" name="addFile" value="Add a new file"
