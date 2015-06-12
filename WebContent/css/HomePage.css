@@ -21,12 +21,31 @@
   }
 }
 
-col-lg-12{
-	height:100%;
+
+.col-lg-6{
+	padding-top:2px;
+ 	padding-bottom:2px;
+ 	margin-top:2px;
+ 	margin-bottom:2px;
 }
 
-.col-lg-offset-1 {
-  margin-left: 50%;
+.addLoad{
+	border-width: 1px 0px 0px 0px;
+	border-radius:0px;
+	border-style: solid;
+	border-color: #BAC8C7;
+	padding-top:10px;
+	margin-top:10px;
+}
+
+.mapping{
+	padding-top:10px;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.submitMapping{
+	margin-bottom: 10px;
 }
 
 body {
@@ -41,10 +60,6 @@ body {
 	margin-bottom:5px;
 	background-color:white;
 	border-radius: 10px;
-}
-
-[class*="col-"], footer {
-  border-radius: 5px;
 }
 
 .bloc{
@@ -76,15 +91,22 @@ body {
 	padding-left:0px;
 	margin-left:0px;
 }
-.mapping{
-	margin-left:40px;
-	margin-bottom:10px;
-}
 
 #rasterTable{
 	background-color:white;
 	text-align:center;
 }
+.tableMapping{
+	margin-left:auto;
+	margin-right:auto;
+	width:100%;
+}
+
+td {
+	padding:5px;
+	text-align:left;
+}
+
 .foot{
 	background-color:white;
 	border-radius:10px;

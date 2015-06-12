@@ -10,32 +10,49 @@ function addField(compteur, idAdd, typeInput){
 	//count inputs number
 	var nb_inp = document.getElementById(compteur).value;
 
-	//Create a new input file
-	var divInputRow = document.createElement("div");
-	//divInputRow.setAttribute("class", "row");
-	divInputRow.setAttribute("id", "divInput_" + nb_inp);
+	var divAddLoad = document.createElement('div');
+	divAddLoad.setAttribute('id', "divAddLoad_" + nb_inp);
+	divAddLoad.setAttribute("class", "col-lg-12 addLoad");
 	
+	//Create a new input file
 	var inp = document.createElement('input');
 	inp.setAttribute('type', 'file');
 	inp.setAttribute('id', typeInput + "_" + nb_inp);
 	inp.setAttribute('name', typeInput + "_" + nb_inp);
-	//inp.setAttribute("class", "row");
-	//inp.setAttribute('style', 'color:rgb(51,153,255); border-color:rgb(255,255,255); border-style:solid;" size="100"');
 
 	if(typeInput == "inp"){
-		inp.setAttribute('onchange', 'loadInputFile('+nb_inp+')');
+		inp.setAttribute('onchange', 'loadInputFile('+nb_inp+',\"change\")');
 		
-		// add all new elements to the formulary
-		var inputs = document.getElementById("bloc-inputs");		
-		
-		divInputRow.appendChild(inp);
+		var divAdd = document.createElement('div');
+		divAdd.setAttribute('id', "divAdd_" + nb_inp);
+		divAdd.setAttribute('class', "col-lg-6");
 		
 		var divLoad = document.createElement('div');
-		divLoad.setAttribute('id', 'divLoad_' + nb_inp);
-		divLoad.setAttribute("class", "mapping");
-				
-		inputs.appendChild(divInputRow);
-		inputs.appendChild(divLoad);
+		divLoad.setAttribute('id', "divLoad_" + nb_inp);
+		divLoad.setAttribute('class', "col-lg-6");
+		
+		var bloc_inputs = document.getElementById('bloc-inputs');
+		
+		// add all new elements to the formulary
+		var divMapping = document.createElement('div');
+		//divMapping.setAttribute('class', 'row');
+		divMapping.setAttribute('id', "divMapping_" + nb_inp);
+		divMapping.setAttribute('class', "col-lg-12 mapping");
+		
+		var divSubmitMapping = document.createElement('div');
+		//divSubmitMapping.setAttribute('class', 'row');
+		divSubmitMapping.setAttribute('id', "divSubmitMapping_" + nb_inp);
+		divSubmitMapping.setAttribute('class', "col-lg-12 submitMapping");
+		
+		divAdd.appendChild(inp);
+		divAddLoad.appendChild(divAdd);
+		divAddLoad.appendChild(divLoad);
+		
+		bloc_inputs.appendChild(divAddLoad);
+		bloc_inputs.appendChild(divMapping);
+		bloc_inputs.appendChild(divSubmitMapping);
+		
+		
 	}
 	if(typeInput == "raster"){
 		//inp.setAttribute("class", "");
@@ -85,14 +102,18 @@ function deleteField(compteur, typeInput){
 		}
 		if(typeInput == 'inp'){
 			var bloc_inputs = document.getElementById("bloc-inputs");
-			var divInput = document.getElementById("divInput_" + id);
+			var divAddLoad = document.getElementById("divAddLoad_" + id);
+			var divAdd = document.getElementById("divAdd_" + id);
+			var divMapping = document.getElementById("divMapping_" + id);
+			var divSubmitMapping = document.getElementById("divSubmitMapping_" + id);
 			
-			divInput.removeChild(inp);
+			//divAdd.removeChild(inp);
+			//divAddLoad.removeChild(divAdd);
 			
-			bloc_inputs.removeChild(divInput);
+			bloc_inputs.removeChild(divAddLoad);
+			bloc_inputs.removeChild(divMapping);
+			bloc_inputs.removeChild(divSubmitMapping);
 			
-			var divLoad = document.getElementById('divLoad_' + id);
-			bloc_inputs.removeChild(divLoad);
 		}
 		//decrement input counter
 		document.getElementById(compteur).value --;
@@ -253,33 +274,50 @@ function addElement(id, typeElement, type, onclick, style, value, elementAfter){
 }
 
 //when click on "convert" checkbox
-function loadInputFile(counter){
-	var divLoadName = "divLoad_" + counter;
-	var divLoad = document.getElementById(divLoadName);
+function loadInputFile(counter, changeOrLoad){
+	var divAddLoad = document.getElementById("divAddLoad_" + counter);
 	var fileExist = document.getElementById('inp_' + counter);
 	var convertButton = document.getElementById('convert_'+ counter);
 	var buttonConvert = null;
-	var fileChanging = null;
 	if(fileExist.value != null){
 		if(!convertButton){
+			var divLoad = document.getElementById("divLoad_" + counter);
 			buttonConvert = document.createElement('input');
 			buttonConvert.type = "button";
 			buttonConvert.id = "convert_" + counter;
 			buttonConvert.name = "convert_" + counter;
 			buttonConvert.value = "Load file for mapping";
-			buttonConvert.setAttribute("onclick" , "loadInputFile(" + counter + ")");
-			fileChanging = "true";
+			buttonConvert.setAttribute("onclick" , "loadInputFile(" + counter + ",\"load\")");
 			divLoad.appendChild(buttonConvert);
+			divAddLoad.appendChild(divLoad);
 		}
 		else{
 			buttonConvert = document.getElementById("convert_" + counter);
+			var divMapping = document.getElementById("divMapping_" + counter);
+			var tableMapping = document.getElementById("mappingTable_" + counter);
+			var divSubmitMapping = document.getElementById("divSubmitMapping_" + counter);
+			var divSubmitMappingOK = document.getElementById("divSubmitMappingOK_" + counter);
+			var divSubmitMappingCancel = document.getElementById("divSubmitMappingCancel_" + counter);
+			var mappingActive = document.getElementById("mappingActive_" + counter);
+			
+			if(divMapping && changeOrLoad == "change"){
+				
+				divMapping.removeChild(tableMapping);
+				divMapping.removeChild(mappingActive);
+				divSubmitMapping.removeChild(divSubmitMappingOK);
+				divSubmitMapping.removeChild(divSubmitMappingCancel);
+			}
+			else if(divMapping && changeOrLoad == "load"){
+				divMapping.style.display = "block";
+				divSubmitMapping.style.display = "block";
+			}
 		}
 		
 		var fileInput = document.querySelector('#inp_' + counter);
 		buttonConvert.addEventListener('click', function() {
 			var reader = new FileReader();
 			reader.addEventListener('load', function() {
-				readInputFile(reader.result, counter, fileChanging);
+				readInputFile(reader.result, counter);
 			}, false);
 			reader.readAsText(fileInput.files[0]);
 		}, false);
@@ -288,10 +326,10 @@ function loadInputFile(counter){
 	}
 }
 
-function readInputFile(contentFile, nbInput, fileChanging){
+function readInputFile(contentFile, nbInput){
 	var length = contentFile.split('\n')[0].split(',').length;
 	var firstLine = contentFile.split('\n')[0].split(',');
-	console.log(firstLine);
+	//console.log(firstLine);
 	//console.log(contentFile.split('\n')[0].split(','));
 	//firstLine[length] = " ";
 	var dwcTags = [" ","abstract","acceptedNameUsage","acceptedNameUsageID","accessRights","accrualMethod","accrualPeriodicity","accrualPolicy","alternative","associatedMedia","associatedOccurrences","associatedOrganisms","associatedReferences","associatedSequences","associatedTaxa","audience","available","basisOfRecord","bed","behavior","bibliographicCitation","catalogNumber","class","classKey","collectionCode","collectionID","conformsTo","continent","contributor","coordinateAccuracy","coordinatePrecision","coordinateUncertaintyInMeters","country","countryCode","county","coverage","created","creator","dataGeneralizations","datasetID","datasetKey","datasetName","date","dateAccepted","dateCopyrighted","dateIdentified","dateSubmitted","day","decimalLatitude","decimalLongitude","depth","depthAccuracy","description","disposition","distanceAboveSurface","distanceAboveSurfaceAccuracy","dynamicProperties","earliestAgeOrLowestStage","earliestEonOrLowestEonothem","earliestEpochOrLowestSeries","earliestEraOrLowestErathem","earliestPeriodOrLowestSystem","educationLevel","elevation","elevationAccuracy","endDayOfYear","establishmentMeans","event","eventDate","eventID","eventRemarks","eventTime","extent","family","familyKey","fieldNotes","fieldNumber","footprintSpatialFit","footprintSRS","footprintWKT","format","formation","gbifID","genericName","genus","genusKey","geodeticDatum","geologicalContext","geologicalContextID","georeferencedBy","georeferencedDate","georeferenceProtocol","georeferenceRemarks","georeferenceSources","georeferenceVerificationStatus","group","habitat","hasCoordinate","hasFormat","hasGeospatialIssues","hasPart","hasVersion","higherClassification","higherGeography","higherGeographyID","highestBiostratigraphicZone","identification","identificationID","identificationQualifier","identificationReferences","identificationRemarks","identificationVerificationStatus","identifiedBy","identifier","idFile","individualCount","individualID","informationWithheld","infraspecificEpithet","institutionCode","institutionID","instructionalMethod","isFormatOf","island","islandGroup","isPartOf","isReferencedBy","isReplacedBy","isRequiredBy","issue","issued","isVersionOf","kingdom","kingdomKey","language","lastCrawled","lastInterpreted","lastParsed","latestAgeOrHighestStage","latestEonOrHighestEonothem","latestEpochOrHighestSeries","latestEraOrHighestErathem","latestPeriodOrHighestSystem","license","lifeStage","lithostratigraphicTerms","livingSpecimen","locality","locationAccordingTo","locationID","locationRemarks","lowestBiostratigraphicZone","machineObservation","materialSample","materialSampleID","maximumDepthinMeters","maximumDistanceAboveSurfaceInMeters","maximumElevationInMeters","measurementAccuracy","measurementDeterminedBy","measurementDeterminedDate","measurementID","measurementMethod","measurementOrFact","measurementRemarks","measurementType","measurementUnit","mediator","mediaType","medium","member","minimumDepthinMeters","minimumDistanceAboveSurfaceInMeters","minimumElevationInMeters","modified","month","municipality","nameAccordingTo","nameAccordingToID","namePublishedIn","namePublishedInID","namePublishedInYear","nomenclaturalCode","nomenclaturalStatus","occurrence","occurrenceDetails","occurrenceID","occurrenceRemarks","occurrenceStatus","order","orderKey","organism","organismID","organismName","organismRemarks","organismScope","originalNameUsage","originalNameUsageID","otherCatalogNumbers","ownerInstitutionCode","parentNameUsage","parentNameUsageID","phylum","phylumKey","pointRadiusSpatialFit","preparations","preservedSpecimen","previousIdentifications","protocol","provenance","publisher","publishingCountry","recordedBy","recordNumber","references","relatedResourceID","relationshipAccordingTo","relationshipEstablishedDate","relationshipRemarks","relation","replaces","reproductiveCondition","requires","resourceID","resourceRelationship","resourceRelationshipID","rights","rightsHolder","samplingEffort","samplingProtocol","scientificName","scientificNameAuthorship","scientificNameID","sex","source","spatial","species","speciesKey","specificEpithet","startDayOfYear","stateProvince","subgenus","subgenusKey","subject","tableOfContents","taxon","taxonConceptID","taxonID","taxonKey","taxonomicStatus","taxonRank","taxonRemarks","temporal","title","type","typeStatus","typifiedName","valid","verbatimCoordinates","verbatimCoordinateSystem","verbatimDate","verbatimDepth","verbatimElevation","verbatimEventDate","verbatimLatitude","verbatimLocality","verbatimLongitude","verbatimSRS","verbatimTaxonRank","vernacularName","waterBody","year"];
@@ -301,28 +339,25 @@ function readInputFile(contentFile, nbInput, fileChanging){
 			presentTags[presentTags.length] = firstLine[i];
 		}
 	}
-	console.log(presentTags);
-	createMapping(firstLine, dwcTags, presentTags, nbInput, fileChanging);
+	createMapping(firstLine, dwcTags, presentTags, nbInput);
 }
 
-function createMapping(firstLineInput, dwcTags, presentTags, nbInput, fileChanging){
-	var mappingTable = document.getElementById("divMapping_" + nbInput);
-
+function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
+	var mappingTable = document.getElementById("mappingTable_" + nbInput);
+	var divSubmitMapping = document.getElementById("divSubmitMapping_" + nbInput);
+	var divMapping = document.getElementById("divMapping_" + nbInput);
+	
 	if(mappingTable == null){
-
+		
 		var mappingTable = document.createElement("table");
 		mappingTable.id = "mappingTable_" + nbInput;
 		mappingTable.name = "mappingTable_" + nbInput;
 		mappingTable.border = "0";
-
-		var divLoad = document.getElementById("divLoad_"+nbInput);
-		var divMapping = document.createElement("div");
-		divMapping.id = "divMapping_" + nbInput;
-		divMapping.name = "divMapping_" + nbInput;
-		//console.log(firstLineInput);
+		mappingTable.setAttribute('class', "tableMapping");
+		
 		for(var i = 0 ; i < firstLineInput.length; i++){
 			var tagInput = firstLineInput[i];
-			console.log(tagInput);
+			//console.log(tagInput);
 			var row = mappingTable.insertRow(-1); // insert last line
 			row.id = "row_" + i;
 			row.name = "row_" + i;
@@ -355,11 +390,6 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput, fileChangi
 
 		divMapping.appendChild(mappingTable);
 
-		var brMapping = document.createElement('br');
-		brMapping.id = "brMapping_" + nbInput;
-		brMapping.name = "brMapping_" + nbInput;
-		divMapping.appendChild(brMapping);
-
 		var mapping = document.createElement("input");
 		mapping.id = "mappingActive_" + nbInput;
 		mapping.name = "mappingActive_" + nbInput;
@@ -382,93 +412,47 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput, fileChangi
 		buttonCancel.type = "button";
 		buttonCancel.setAttribute('onclick', "deleteMapping("+ nbInput +")");
 
-		divMapping.appendChild(buttonOK);
-		divMapping.appendChild(buttonCancel);
-
-		divLoad.appendChild(divMapping);
-	}
-	else{
-		if(fileChanging == "true"){
-			var divMapping = document.getElementById("divMapping_" + nbInput);
-			var divLoad = document.getElementById("divLoad_" + nbInput);
-			divLoad.removeChild(divMapping);
-		}
+		var divSubmitOK = document.createElement('div');
+		divSubmitOK.setAttribute('id', "divSubmitMappingOK_" + nbInput);
+		divSubmitOK.setAttribute('class', "col-lg-6");	
+		divSubmitOK.setAttribute('value', 'false');
+		divSubmitOK.appendChild(buttonOK);
+		
+		var divSubmitMappingCancel = document.createElement('div');
+		divSubmitMappingCancel.setAttribute('id', "divSubmitMappingCancel_" + nbInput);
+		divSubmitMappingCancel.setAttribute('class', "col-lg-6");
+		divSubmitMappingCancel.setAttribute('value', "false");
+		divSubmitMappingCancel.appendChild(buttonCancel);
+		
+		divSubmitMapping.appendChild(divSubmitOK);
+		divSubmitMapping.appendChild(divSubmitMappingCancel);
+		
 	}
 }
 
 function activeMapping(mappingIsActive, nbInput){
 	var mappingActive = document.getElementById("mappingActive_" + nbInput);
+	var divSubmitMappingOK = document.getElementById("divSubmitMappingOK_" + nbInput);
+	var divSubmitMappingCancel = document.getElementById("divSubmitMappingCancel_" + nbInput);
+	
 	if(mappingIsActive){
 		mappingActive.value = "true";
+		divSubmitMappingOK.value = "true";
+		divSubmitMappingCancel.value = "true";
 	}
 	else{
 		mappingActive.value = "false";
+		divSubmitMappingOK.value = "false";
+		divSubmitMappingCancel.value = "false";
 	}
 }
+
 function deleteMapping(nbInput){
 
 	var divMapping = document.getElementById("divMapping_" + nbInput);
 	divMapping.style.display="none";
+	
+	var divSubmitMapping = document.getElementById("divSubmitMapping_" + nbInput);
+	divSubmitMapping.style.display = "none";
 	activeMapping(false, nbInput);
 }
-
-/*
-function request() {
-	var jsonArray = {};
-	var xhr = getXMLHttpRequest();
-	xhr.open("GET", "inp0.json", true);
-	xhr.onreadystatechange = function () {
-		if (xhr.readyState == 4 && xhr.status == 200){
-			jsonArray = JSON.parse(xhr.responseText);
-			var presentTags = jsonArray.inp0[0].presentTags;
-			var DwCTags = jsonArray.inp0[1].DwCTags;
-			var noMappedTags = jsonArray.inp0[2].noMappedTags;
-
-		}
-	};
-	xhr.send(null); 
-
-}
-
-
-function getXMLHttpRequest() {
-	var xhr = null;
-
-	if (window.XMLHttpRequest || window.ActiveXObject) {
-		if (window.ActiveXObject) {
-			try {
-				xhr = new ActiveXObject("Msxml2.XMLHTTP");
-			} catch(e) {
-				xhr = new ActiveXObject("Microsoft.XMLHTTP");
-			}
-		} else {
-			xhr = new XMLHttpRequest(); 
-		}
-	} else {
-		alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
-		return null;
-	}
-
-	return xhr;
-}
-
-function request(nbInput){
-	var fileInput = document.querySelector('#inp' + nbInput);
-	var button = document.querySelector('#convert_' + nbInput);
-	button.addEventListener('click', function() {
-		var reader = new FileReader();
-		reader.addEventListener('load', function() {
-			alert('Contenu du fichier "' + fileInput.files[0].name + '" :\n\n' + reader.result);
-		}, false);
-		reader.readAsText(fileInput.files[0]);
-	}, false);
-
-
-	//var convertButton = document.getElementById(convert);
-	//var xhr = getXMLHttpRequest();
-	//xhr.addEventListener("readystatechange", stateChange, false);
-	//xhr.open("POST", "controler", true);	
-	//xhr.send(null);
-}
-
-*/
