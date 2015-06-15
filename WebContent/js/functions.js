@@ -25,11 +25,15 @@ function addField(compteur, idAdd, typeInput){
 		
 		var divAdd = document.createElement('div');
 		divAdd.setAttribute('id', "divAdd_" + nb_inp);
-		divAdd.setAttribute('class', "col-lg-6");
+		divAdd.setAttribute('class', "col-lg-4");
 		
 		var divLoad = document.createElement('div');
 		divLoad.setAttribute('id', "divLoad_" + nb_inp);
-		divLoad.setAttribute('class', "col-lg-6");
+		divLoad.setAttribute('class', "col-lg-4");
+		
+		var divReconcile = document.createElement('div');
+		divReconcile.setAttribute('id', "divReconcile_" + nb_inp);
+		divReconcile.setAttribute('class', "col-lg-4");
 		
 		var bloc_inputs = document.getElementById('bloc-inputs');
 		
@@ -47,6 +51,7 @@ function addField(compteur, idAdd, typeInput){
 		divAdd.appendChild(inp);
 		divAddLoad.appendChild(divAdd);
 		divAddLoad.appendChild(divLoad);
+		divAddLoad.appendChild(divReconcile);
 		
 		bloc_inputs.appendChild(divAddLoad);
 		bloc_inputs.appendChild(divMapping);
@@ -273,56 +278,103 @@ function addElement(id, typeElement, type, onclick, style, value, elementAfter){
 	formulaire.insertBefore(element, after);
 }
 
-//when click on "convert" checkbox
-function loadInputFile(counter, changeOrLoad){
-	var divAddLoad = document.getElementById("divAddLoad_" + counter);
-	var fileExist = document.getElementById('inp_' + counter);
+function mappingDWC(counter, change_load_reconcile){
 	var convertButton = document.getElementById('convert_'+ counter);
+	var divAddLoad = document.getElementById("divAddLoad_" + counter);
 	var buttonConvert = null;
-	if(fileExist.value != null){
-		if(!convertButton){
-			var divLoad = document.getElementById("divLoad_" + counter);
-			buttonConvert = document.createElement('input');
-			buttonConvert.type = "button";
-			buttonConvert.id = "convert_" + counter;
-			buttonConvert.name = "convert_" + counter;
-			buttonConvert.value = "Load file for mapping";
-			buttonConvert.setAttribute("onclick" , "loadInputFile(" + counter + ",\"load\")");
-			divLoad.appendChild(buttonConvert);
-			divAddLoad.appendChild(divLoad);
-		}
-		else{
-			buttonConvert = document.getElementById("convert_" + counter);
-			var divMapping = document.getElementById("divMapping_" + counter);
-			var tableMapping = document.getElementById("mappingTable_" + counter);
-			var divSubmitMapping = document.getElementById("divSubmitMapping_" + counter);
-			var divSubmitMappingOK = document.getElementById("divSubmitMappingOK_" + counter);
-			var divSubmitMappingCancel = document.getElementById("divSubmitMappingCancel_" + counter);
-			var mappingActive = document.getElementById("mappingActive_" + counter);
-			
-			if(divMapping && changeOrLoad == "change"){
-				
-				divMapping.removeChild(tableMapping);
-				divMapping.removeChild(mappingActive);
-				divSubmitMapping.removeChild(divSubmitMappingOK);
-				divSubmitMapping.removeChild(divSubmitMappingCancel);
-			}
-			else if(divMapping && changeOrLoad == "load"){
+	if(!convertButton){
+		var divLoad = document.getElementById("divLoad_" + counter);
+		buttonConvert = document.createElement('input');
+		buttonConvert.type = "button";
+		buttonConvert.id = "convert_" + counter;
+		buttonConvert.name = "convert_" + counter;
+		buttonConvert.value = "Load file for mapping";
+		buttonConvert.setAttribute("onclick" , "loadInputFile(" + counter + ",\"load\")");
+		divLoad.appendChild(buttonConvert);
+		divAddLoad.appendChild(divLoad);
+	}
+	else{
+		buttonConvert = document.getElementById("convert_" + counter);
+		var divMapping = document.getElementById("divMapping_" + counter);
+		var tableMapping = document.getElementById("mappingTable_" + counter);
+		var divSubmitMapping = document.getElementById("divSubmitMapping_" + counter);
+		var divSubmitMappingOK = document.getElementById("divSubmitMappingOK_" + counter);
+		var divSubmitMappingCancel = document.getElementById("divSubmitMappingCancel_" + counter);
+		var mappingActive = document.getElementById("mappingActive_" + counter);
+		var divMessageSaved = document.getElementById("divMessageSaved_" + counter);
+		var divMessagedCancelled = document.getElementById("divMessageCancelled_" + counter);
+		
+		if(change_load_reconcile == "load"){
+			if(tableMapping){
 				divMapping.style.display = "block";
+				tableMapping.style.display="block";
 				divSubmitMapping.style.display = "block";
+				divSubmitMappingOK.style.display = "block";
+				divSubmitMappingCancel.style.display ="block";
+				divMessageSaved.style.display = "none";
+				divMessagedCancelled.style.display = "none";
 			}
 		}
-		
-		var fileInput = document.querySelector('#inp_' + counter);
-		buttonConvert.addEventListener('click', function() {
-			var reader = new FileReader();
-			reader.addEventListener('load', function() {
-				readInputFile(reader.result, counter);
-			}, false);
-			reader.readAsText(fileInput.files[0]);
-		}, false);
-		
+		if(change_load_reconcile == "change"){
+			divMapping.removeChild(tableMapping);
+			divMapping.removeChild(mappingActive);
 
+			divSubmitMapping.removeChild(divSubmitMappingOK);
+			divSubmitMapping.removeChild(divSubmitMappingCancel);
+			divSubmitMapping.removeChild(divMessageSaved);
+			divSubmitMapping.removeChild(divMessagedCancelled);
+		}
+		
+	}
+	
+	var fileInput = document.querySelector('#inp_' + counter);
+	
+	buttonConvert.addEventListener('click', function() {
+		var reader = new FileReader();
+		reader.addEventListener('load', function() {
+			readInputFile(reader.result, counter);
+		}, false);
+		reader.readAsText(fileInput.files[0]);
+	}, false);
+}
+
+function taxonReconciliation(counter, changeOrLoad) {
+	var divAddLoad = document.getElementById("divAddLoad_" + counter);
+	var reconcileButton = document.getElementById("reconcileButton_" + counter);
+	var buttonReconcile = null;
+	if(!reconcileButton){
+		var divReconcile = document.getElementById("divReconcile_" + counter);
+		buttonReconcile = document.createElement('input');
+		buttonReconcile.type = "button";
+		buttonReconcile.id = "reconcileButton_" + counter;
+		buttonReconcile.name = "reconcileButton_" + counter;
+		buttonReconcile.value = "Taxonomic validation";
+		buttonReconcile.setAttribute("onclick" , "loadInputFile(" + counter + ",\"reconcile\")");
+		divReconcile.appendChild(buttonReconcile);
+		divAddLoad.appendChild(divReconcile);
+		/*
+		var testSelect = document.createElement('select');
+		testSelect.id = "testSelect";
+	    $('#testSelect').editable({
+	        type: 'select',
+	        title: 'Enter username'
+	    });
+		*/
+	}
+}
+
+//when click on "convert" checkbox
+function loadInputFile(counter, change_load_reconcile){
+	
+	var fileExist = document.getElementById('inp_' + counter);
+	
+	if(fileExist.value != null){
+			this.mappingDWC(counter, change_load_reconcile);
+		
+			this.taxonReconciliation(counter);
+		
+		
+		
 	}
 }
 
@@ -346,6 +398,7 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 	var mappingTable = document.getElementById("mappingTable_" + nbInput);
 	var divSubmitMapping = document.getElementById("divSubmitMapping_" + nbInput);
 	var divMapping = document.getElementById("divMapping_" + nbInput);
+	divMapping.style.display = "block";
 	
 	if(mappingTable == null){
 		
@@ -357,7 +410,6 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		
 		for(var i = 0 ; i < firstLineInput.length; i++){
 			var tagInput = firstLineInput[i];
-			//console.log(tagInput);
 			var row = mappingTable.insertRow(-1); // insert last line
 			row.id = "row_" + i;
 			row.name = "row_" + i;
@@ -424,8 +476,27 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		divSubmitMappingCancel.setAttribute('value', "false");
 		divSubmitMappingCancel.appendChild(buttonCancel);
 		
+		var divMessageSaved = document.createElement('div');
+		divMessageSaved.setAttribute('id', "divMessageSaved_" + nbInput);
+		divMessageSaved.setAttribute('class', "col-lg-12 text-success text-center");
+		divMessageSaved.style.display = "none";
+		var messageSaved = document.createElement('p');
+		messageSaved.innerHTML = "Mapping saved";
+		divMessageSaved.appendChild(messageSaved);
+		
+		var divMessageCancelled = document.createElement('div');
+		divMessageCancelled.setAttribute('id', "divMessageCancelled_" + nbInput);
+		divMessageCancelled.setAttribute('class', "col-lg-12 text-danger text-center");
+		divMessageCancelled.style.display = "none";
+		var messageCancelled = document.createElement('p');
+		//messageCancelled.setAttribute('class', "has-warning");
+		messageCancelled.innerHTML = "Mapping cancelled";
+		divMessageCancelled.appendChild(messageCancelled);
+		
 		divSubmitMapping.appendChild(divSubmitOK);
 		divSubmitMapping.appendChild(divSubmitMappingCancel);
+		divSubmitMapping.appendChild(divMessageSaved);
+		divSubmitMapping.appendChild(divMessageCancelled);
 		
 	}
 }
@@ -434,16 +505,28 @@ function activeMapping(mappingIsActive, nbInput){
 	var mappingActive = document.getElementById("mappingActive_" + nbInput);
 	var divSubmitMappingOK = document.getElementById("divSubmitMappingOK_" + nbInput);
 	var divSubmitMappingCancel = document.getElementById("divSubmitMappingCancel_" + nbInput);
+	var divMessageSaved = document.getElementById("divMessageSaved_" + nbInput);
+	var divMessageCancelled = document.getElementById("divMessageCancelled_" + nbInput);
+	var divMapping = document.getElementById("divMapping_" + nbInput);
 	
 	if(mappingIsActive){
 		mappingActive.value = "true";
 		divSubmitMappingOK.value = "true";
 		divSubmitMappingCancel.value = "true";
+		divMessageSaved.style.display = "block";
+		divMessageCancelled.style.display = "none";
+		divMapping.style.display = "none";
+		divSubmitMappingCancel.style.display = "none";
+		divSubmitMappingOK.style.display = "none";
 	}
 	else{
 		mappingActive.value = "false";
 		divSubmitMappingOK.value = "false";
 		divSubmitMappingCancel.value = "false";
+		divMessageSaved.style.display = "none";
+		divMessageCancelled.style.display = "block";
+		divSubmitMappingCancel.style.display = "none";
+		divSubmitMappingOK.style.display = "none";
 	}
 }
 
@@ -453,6 +536,12 @@ function deleteMapping(nbInput){
 	divMapping.style.display="none";
 	
 	var divSubmitMapping = document.getElementById("divSubmitMapping_" + nbInput);
-	divSubmitMapping.style.display = "none";
+	var divSubmitMappingOK = document.getElementById("divSubmitMappingOK_" + nbInput);
+	var divSubmitMappingCancel = document.getElementById("divSubmitMappingCancel_" + nbInput);
+	var divMessageCancelled = document.getElementById("divMessageCancelled_" + nbInput);
+	//divSubmitMapping.style.display = "none";
+	divSubmitMappingOK.style.display = "none";
+	divSubmitMappingCancel.style.display = "none";
+	divMessageCancelled.style.display = "block";
 	activeMapping(false, nbInput);
 }
