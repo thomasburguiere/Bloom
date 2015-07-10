@@ -169,7 +169,8 @@ public class Controler extends HttpServlet {
     public void initialiseParameters(List<FileItem> items, HttpServletResponse response) throws IOException{
 
 	response.setContentType("text/html");
-
+	response.addHeader("Access-Control-Allow-Origin", "*");
+	
 	Iterator<FileItem> iterator = (Iterator<FileItem>)items.iterator();
 	ArrayList<MappingDwC> listDwcFiles = new ArrayList<>();
 
@@ -196,7 +197,7 @@ public class Controler extends HttpServlet {
 	    String mapping = "mappingActive_";
 
 	    String fieldName = item.getFieldName();
-	    System.out.println("fieldName : " + fieldName);
+	    //System.out.println("fieldName : " + fieldName);
 	    if(fieldName.equals(input)){
 		DiskFileItem itemFile = (DiskFileItem) item;
 		String fileExtensionName = itemFile.getName();
@@ -222,7 +223,7 @@ public class Controler extends HttpServlet {
 		for(int i = 0 ; i < tagsNoMapped.size() ; i++){
 		    connectionTags.put(tagsNoMapped.get(i) + "_" + i, "");
 		}
-		System.out.println("connectionTagsControler : " + connectionTags);
+		//System.out.println("connectionTagsControler : " + connectionTags);
 		newMappingDWC.setConnectionTags(connectionTags);
 		newMappingDWC.getNoMappedFile().setCsvName(file.getName());
 		//initialisation.getInputFilesList().add(csvFile.getCsvFile());
@@ -283,19 +284,18 @@ public class Controler extends HttpServlet {
 			    connectionTags.put(entry.getKey(), valueDropdown);
 			}    
 		    }
-		    System.out.println("connectionTags : " + connectionTags);
+		    //System.out.println("connectionTags : " + connectionTags);
 		}
 		
 	    }
 	    else if(fieldName.contains(mapping)){
-		System.out.println("if mapping : " + fieldName);
+		
 		int idMapping = Integer.parseInt(fieldName.split("_")[1]);
 		if(item.getString().equals("true")){
 		    for(int i = 0 ; i < listDwcFiles.size() ; i++ ){
 			int idFile = listDwcFiles.get(i).getCounterID();
-			
 			if(idFile == (idMapping)){
-			    System.out.println("idMapping : " + idMapping + "  idFile : " + idFile);
+			    
 			    MappingDwC mappingDWC = listDwcFiles.get(i);
 			    mappingDWC.setMapping(true);
 			}

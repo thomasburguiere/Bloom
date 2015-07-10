@@ -6,10 +6,13 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
 	<link href="css/HomePage.css" rel="stylesheet">
-	<link href="bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+	<link rel="Stylesheet" href="css/watable.css" />
 	<title>Insert title here</title>
 </head>
 <body onload="javascript:initialise()">
@@ -26,7 +29,7 @@
 			<div class="col-lg-4">
 				<img src="images/colibri_bis.jpg"/>
 			</div>
-			<div class="col-lg-8">
+			<div class="col-lg-7">
 				<form action="controler" method="post" enctype="multipart/form-data"
 					name="formulaire" id="formulaire" accept-charset=utf-8>		
 					<div class="bloc" id="bloc-intro" style="text-align:center">
@@ -35,11 +38,11 @@
 					<div class="bloc col-lg-12" id="bloc-inputs">
 						<p> Select inputs files </p>
 						<input id="compteur_inp" type="hidden" name="compteur_inp" value=1 />
-						<div class="col-lg-6">
+						<div class="col-lg-3">
 							<input id="addFile" type="button" name="addFile" value="Add a new file"
 								onclick="javascript:addField('compteur_inp', 'synonyms', 'inp')"/>
 						</div>
-						<div class="col-lg-6">
+						<div class="col-lg-3">
 							<input id="delFile" name="delFile" type="button" value="Delete file"
 								onclick="javascript:deleteField('compteur_inp', 'inp')"/>
 						</div>
@@ -55,7 +58,14 @@
 						<div id="divMapping_0" class="col-lg-12 mapping">
 						</div>
 						<div id="divSubmitMapping_0" class="col-lg-12 submitMapping">
+						</div>
+						<div id="divReconciliationCheck_0" class="col-lg-12">
+						</div>
+						<div id="divTableReconcile_0" class="col-lg-12" style="width:auto">
 							
+						</div>
+						
+						<div id="divSubmitReconcile_0" class="col-lg-12">
 						</div>
 					</div>
 					<div class="row">
@@ -119,11 +129,21 @@
 				</form>
 			</div>
 		</div>
+		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script src="bootstrap/js/bootstrap.min.js"></script>
+		<script src="js/jquery.watable.js"></script>
+		<script type="text/javascript" src="js/ReconciliationFunctions.js"></script>
 		<script type="text/javascript" src="js/functions.js"></script>
+		
+		<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
 	  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-	  	<script src="bootstrap-editable/js/bootstrap-editable.js"></script>
+	  	<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+		<script type="text/javascript">
+			
+			
+			
+		</script>
 	</div>
 </body>
 </html>

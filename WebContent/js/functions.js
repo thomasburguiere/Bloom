@@ -13,7 +13,7 @@ function addField(compteur, idAdd, typeInput){
 	var divAddLoad = document.createElement('div');
 	divAddLoad.setAttribute('id', "divAddLoad_" + nb_inp);
 	divAddLoad.setAttribute("class", "col-lg-12 addLoad");
-	
+
 	//Create a new input file
 	var inp = document.createElement('input');
 	inp.setAttribute('type', 'file');
@@ -22,42 +22,57 @@ function addField(compteur, idAdd, typeInput){
 
 	if(typeInput == "inp"){
 		inp.setAttribute('onchange', 'loadInputFile('+nb_inp+',\"change\")');
-		
+
 		var divAdd = document.createElement('div');
 		divAdd.setAttribute('id', "divAdd_" + nb_inp);
 		divAdd.setAttribute('class', "col-lg-4");
-		
+
 		var divLoad = document.createElement('div');
 		divLoad.setAttribute('id', "divLoad_" + nb_inp);
 		divLoad.setAttribute('class', "col-lg-4");
-		
+
 		var divReconcile = document.createElement('div');
 		divReconcile.setAttribute('id', "divReconcile_" + nb_inp);
 		divReconcile.setAttribute('class', "col-lg-4");
-		
+
 		var bloc_inputs = document.getElementById('bloc-inputs');
-		
+
 		// add all new elements to the formulary
 		var divMapping = document.createElement('div');
-		//divMapping.setAttribute('class', 'row');
 		divMapping.setAttribute('id', "divMapping_" + nb_inp);
 		divMapping.setAttribute('class', "col-lg-12 mapping");
-		
+
 		var divSubmitMapping = document.createElement('div');
-		//divSubmitMapping.setAttribute('class', 'row');
 		divSubmitMapping.setAttribute('id', "divSubmitMapping_" + nb_inp);
 		divSubmitMapping.setAttribute('class', "col-lg-12 submitMapping");
+		
+		var divReconciliationCheck = document.createElement('div');
+		divReconciliationCheck.setAttribute('id', "divReconciliationCheck_" + nb_inp);
+		divReconciliationCheck.setAttribute('class', "col-lg-12");
+		
+		var divSubmitReconcile = document.createElement('div');
+		divSubmitReconcile.setAttribute('id', "divSubmitReconcile_" + nb_inp);
+		divSubmitReconcile.setAttribute('class', "col-lg-12");
+		
+		var divTableReconcile = document.createElement('div');
+		divTableReconcile.setAttribute('id', "divTableReconcile_" + nb_inp);
+		divTableReconcile.setAttribute('class', "col-lg-12");
+		divTableReconcile.style.display = "inline-block";
+		//divTableReconcile.style="width:auto";
 		
 		divAdd.appendChild(inp);
 		divAddLoad.appendChild(divAdd);
 		divAddLoad.appendChild(divLoad);
 		divAddLoad.appendChild(divReconcile);
-		
+
 		bloc_inputs.appendChild(divAddLoad);
 		bloc_inputs.appendChild(divMapping);
 		bloc_inputs.appendChild(divSubmitMapping);
+		bloc_inputs.appendChild(divReconciliationCheck);
+		bloc_inputs.appendChild(divSubmitReconcile);
+		bloc_inputs.appendChild(divTableReconcile);
 		
-		
+
 	}
 	if(typeInput == "raster"){
 		//inp.setAttribute("class", "");
@@ -99,7 +114,7 @@ function deleteField(compteur, typeInput){
 	if(nb_inp > min){
 		var id = nb_inp - 1;
 		var inp = document.getElementById(typeInput + "_" + id);
-		
+
 		if(typeInput == 'raster'){
 			var tableRaster = document.getElementById("rasterTable");
 			tableRaster.deleteRow(-1);
@@ -111,14 +126,14 @@ function deleteField(compteur, typeInput){
 			var divAdd = document.getElementById("divAdd_" + id);
 			var divMapping = document.getElementById("divMapping_" + id);
 			var divSubmitMapping = document.getElementById("divSubmitMapping_" + id);
-			
+
 			//divAdd.removeChild(inp);
 			//divAddLoad.removeChild(divAdd);
-			
+
 			bloc_inputs.removeChild(divAddLoad);
 			bloc_inputs.removeChild(divMapping);
 			bloc_inputs.removeChild(divSubmitMapping);
-			
+
 		}
 		//decrement input counter
 		document.getElementById(compteur).value --;
@@ -135,9 +150,9 @@ function addDeleteRasterFile(){
 		divRasterFiles.style.display = "block";
 		if(nb_raster == 0){
 			var tableRaster = document.getElementById("rasterTable");
-			
+
 			if(tableRaster == null){
-				
+
 				//divRasterFiles.id = "divRasterFiles";
 				var addRasterButton = document.createElement("input");
 				addRasterButton.id = "addRaster";
@@ -163,11 +178,11 @@ function addDeleteRasterFile(){
 				tableRaster.name = "rasterTable";
 				tableRaster.setAttribute("class", "table table-striped");
 				divRasterFiles.appendChild(tableRaster);
-				
+
 				this.addLine(addRasterButton,delRasterButton, "row_raster_0");
 				this.addLine("Raster file","Header file","row_raster_1");				
-				
-				
+
+
 			}
 		}
 	}
@@ -177,57 +192,57 @@ function addDeleteRasterFile(){
 }
 
 function addLine(val1,val2, idLine){
-	
-    // On créé le corps du tableau
-    TBODY = document.createElement ("tbody");
+
+	// On créé le corps du tableau
+	TBODY = document.createElement ("tbody");
 	THEAD = document.createElement('thead');
-	
-    // On créé la ligne
-    TR = document.createElement ("tr");
+
+	// On créé la ligne
+	TR = document.createElement ("tr");
 	TR.setAttribute("id", idLine);
-	
-    // On créé la premiere cellule
-    TD1  = document.createElement ("td");
-    if(idLine == "row_raster_1"){
-    	TXT1 = document.createTextNode (val1);
-    	TD1.appendChild (TXT1);
-    }
-    else{
-    	TD1.appendChild(val1);
-    }
-    
-	
-    // On créé la deuxieme cellule
-    TD2  = document.createElement ("td");
-    if(idLine == "row_raster_1"){
-    	TXT2 = document.createTextNode (val2);
-    	TD2.appendChild (TXT2);
-    }
-    else{
-    	TD2.appendChild(val2);
-    }
-    
-	
-    // On assemble les cellules a la ligne
-    TR.appendChild(TD1);
-    TR.appendChild(TD2);
-    
-    if(idLine != "row_raster_0"){
-    	 // On assemble la ligne au corps du tableau
-        TBODY.appendChild(TR);
-        
-        // On assemble le corps du tableau au tableau
-        document.getElementById ('rasterTable').appendChild (TBODY);
-    }
-    else{
-    	THEAD.appendChild(TR);
-    	
-    	// On assemble le corps du tableau au tableau
-        document.getElementById ('rasterTable').appendChild (THEAD);
-    }
-   
-	
-    
+
+	// On créé la premiere cellule
+	TD1  = document.createElement ("td");
+	if(idLine == "row_raster_1"){
+		TXT1 = document.createTextNode (val1);
+		TD1.appendChild (TXT1);
+	}
+	else{
+		TD1.appendChild(val1);
+	}
+
+
+	// On créé la deuxieme cellule
+	TD2  = document.createElement ("td");
+	if(idLine == "row_raster_1"){
+		TXT2 = document.createTextNode (val2);
+		TD2.appendChild (TXT2);
+	}
+	else{
+		TD2.appendChild(val2);
+	}
+
+
+	// On assemble les cellules a la ligne
+	TR.appendChild(TD1);
+	TR.appendChild(TD2);
+
+	if(idLine != "row_raster_0"){
+		// On assemble la ligne au corps du tableau
+		TBODY.appendChild(TR);
+
+		// On assemble le corps du tableau au tableau
+		document.getElementById ('rasterTable').appendChild (TBODY);
+	}
+	else{
+		THEAD.appendChild(TR);
+
+		// On assemble le corps du tableau au tableau
+		document.getElementById ('rasterTable').appendChild (THEAD);
+	}
+
+
+
 }
 
 //initialise all establishmentMeans option to "false" if main checkbox doesn't checked
@@ -277,7 +292,7 @@ function addElement(id, typeElement, type, onclick, style, value, elementAfter){
 	var formulaire = document.getElementById('formulaire');
 	formulaire.insertBefore(element, after);
 }
-
+var columns = "";
 function mappingDWC(counter, change_load_reconcile){
 	var convertButton = document.getElementById('convert_'+ counter);
 	var divAddLoad = document.getElementById("divAddLoad_" + counter);
@@ -304,6 +319,18 @@ function mappingDWC(counter, change_load_reconcile){
 		var divMessageSaved = document.getElementById("divMessageSaved_" + counter);
 		var divMessagedCancelled = document.getElementById("divMessageCancelled_" + counter);
 		
+		var divReconciliationCheck = document.getElementById("divReconciliationCheck_" + counter);
+		var divSubmitReconcile = document.getElementById("divSubmitReconcile_" + counter);
+		
+		var divButtonStartReconciliation = document.getElementById("divButtonStartReconciliation_" + counter);
+		var divButtonCancelReconciliation = document.getElementById("divButtonCancelReconciliation_" + counter);
+		var divButtonValidReconciliation = document.getElementById("divButtonValidReconciliation_" + counter);
+		
+		
+		var divTableReconcile = document.getElementById("divTableReconcile_" + counter);
+		var tableReconcile = document.getElementById("tableReconcile_" + counter);
+		var tablePreparationReconcile = document.getElementById("tablePreparationReconcile_" + counter);
+		
 		if(change_load_reconcile == "load"){
 			if(tableMapping){
 				divMapping.style.display = "block";
@@ -323,59 +350,38 @@ function mappingDWC(counter, change_load_reconcile){
 			divSubmitMapping.removeChild(divSubmitMappingCancel);
 			divSubmitMapping.removeChild(divMessageSaved);
 			divSubmitMapping.removeChild(divMessagedCancelled);
+			
+			divReconciliationCheck.removeChild(tablePreparationReconcile);
+			divSubmitReconcile.removeChild(divButtonCancelReconciliation);
+			divSubmitReconcile.removeChild(divButtonStartReconciliation);
+			divSubmitReconcile.removeChild(divButtonValidReconciliation);
+			
+			divTableReconcile.removeChild(tableReconcile);
 		}
-		
+
 	}
-	
+
 	var fileInput = document.querySelector('#inp_' + counter);
-	
+
 	buttonConvert.addEventListener('click', function() {
 		var reader = new FileReader();
 		reader.addEventListener('load', function() {
 			readInputFile(reader.result, counter);
 		}, false);
 		reader.readAsText(fileInput.files[0]);
-	}, false);
-}
 
-function taxonReconciliation(counter, changeOrLoad) {
-	var divAddLoad = document.getElementById("divAddLoad_" + counter);
-	var reconcileButton = document.getElementById("reconcileButton_" + counter);
-	var buttonReconcile = null;
-	if(!reconcileButton){
-		var divReconcile = document.getElementById("divReconcile_" + counter);
-		buttonReconcile = document.createElement('input');
-		buttonReconcile.type = "button";
-		buttonReconcile.id = "reconcileButton_" + counter;
-		buttonReconcile.name = "reconcileButton_" + counter;
-		buttonReconcile.value = "Taxonomic validation";
-		buttonReconcile.setAttribute("onclick" , "loadInputFile(" + counter + ",\"reconcile\")");
-		divReconcile.appendChild(buttonReconcile);
-		divAddLoad.appendChild(divReconcile);
-		/*
-		var testSelect = document.createElement('select');
-		testSelect.id = "testSelect";
-	    $('#testSelect').editable({
-	        type: 'select',
-	        title: 'Enter username'
-	    });
-		*/
-	}
+	}, false);	
 }
 
 //when click on "convert" checkbox
 function loadInputFile(counter, change_load_reconcile){
-	
+
 	var fileExist = document.getElementById('inp_' + counter);
-	
+
 	if(fileExist.value != null){
-			this.mappingDWC(counter, change_load_reconcile);
-		
-			this.taxonReconciliation(counter);
-		
-		
-		
-	}
+		var columns = this.mappingDWC(counter, change_load_reconcile);
+		taxonReconciliation(columns, counter, change_load_reconcile);
+	}	
 }
 
 function readInputFile(contentFile, nbInput){
@@ -391,23 +397,29 @@ function readInputFile(contentFile, nbInput){
 			presentTags[presentTags.length] = firstLine[i];
 		}
 	}
+	
 	createMapping(firstLine, dwcTags, presentTags, nbInput);
+		
+	
+
+	return firstLine;
 }
+
 
 function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 	var mappingTable = document.getElementById("mappingTable_" + nbInput);
 	var divSubmitMapping = document.getElementById("divSubmitMapping_" + nbInput);
 	var divMapping = document.getElementById("divMapping_" + nbInput);
 	divMapping.style.display = "block";
-	
+
 	if(mappingTable == null){
-		
+
 		var mappingTable = document.createElement("table");
 		mappingTable.id = "mappingTable_" + nbInput;
 		mappingTable.name = "mappingTable_" + nbInput;
 		mappingTable.border = "0";
 		mappingTable.setAttribute('class', "tableMapping");
-		
+
 		for(var i = 0 ; i < firstLineInput.length; i++){
 			var tagInput = firstLineInput[i];
 			var row = mappingTable.insertRow(-1); // insert last line
@@ -469,13 +481,13 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		divSubmitOK.setAttribute('class', "col-lg-6");	
 		divSubmitOK.setAttribute('value', 'false');
 		divSubmitOK.appendChild(buttonOK);
-		
+
 		var divSubmitMappingCancel = document.createElement('div');
 		divSubmitMappingCancel.setAttribute('id', "divSubmitMappingCancel_" + nbInput);
 		divSubmitMappingCancel.setAttribute('class', "col-lg-6");
 		divSubmitMappingCancel.setAttribute('value', "false");
 		divSubmitMappingCancel.appendChild(buttonCancel);
-		
+
 		var divMessageSaved = document.createElement('div');
 		divMessageSaved.setAttribute('id', "divMessageSaved_" + nbInput);
 		divMessageSaved.setAttribute('class', "col-lg-12 text-success text-center");
@@ -483,7 +495,7 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		var messageSaved = document.createElement('p');
 		messageSaved.innerHTML = "Mapping saved";
 		divMessageSaved.appendChild(messageSaved);
-		
+
 		var divMessageCancelled = document.createElement('div');
 		divMessageCancelled.setAttribute('id', "divMessageCancelled_" + nbInput);
 		divMessageCancelled.setAttribute('class', "col-lg-12 text-danger text-center");
@@ -492,12 +504,12 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		//messageCancelled.setAttribute('class', "has-warning");
 		messageCancelled.innerHTML = "Mapping cancelled";
 		divMessageCancelled.appendChild(messageCancelled);
-		
+
 		divSubmitMapping.appendChild(divSubmitOK);
 		divSubmitMapping.appendChild(divSubmitMappingCancel);
 		divSubmitMapping.appendChild(divMessageSaved);
 		divSubmitMapping.appendChild(divMessageCancelled);
-		
+
 	}
 }
 
@@ -508,7 +520,7 @@ function activeMapping(mappingIsActive, nbInput){
 	var divMessageSaved = document.getElementById("divMessageSaved_" + nbInput);
 	var divMessageCancelled = document.getElementById("divMessageCancelled_" + nbInput);
 	var divMapping = document.getElementById("divMapping_" + nbInput);
-	
+
 	if(mappingIsActive){
 		mappingActive.value = "true";
 		divSubmitMappingOK.value = "true";
@@ -534,7 +546,7 @@ function deleteMapping(nbInput){
 
 	var divMapping = document.getElementById("divMapping_" + nbInput);
 	divMapping.style.display="none";
-	
+
 	var divSubmitMapping = document.getElementById("divSubmitMapping_" + nbInput);
 	var divSubmitMappingOK = document.getElementById("divSubmitMappingOK_" + nbInput);
 	var divSubmitMappingCancel = document.getElementById("divSubmitMappingCancel_" + nbInput);
