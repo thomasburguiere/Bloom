@@ -43,7 +43,7 @@ function totalRecord(){
             var response = JSON.parse(xhr.responseText);
             //totalRecord = lisibilite_nombre(response.totalRecords);
            // $('#totalRecord').text(totalRecord);
-            alert(response);
+            //alert(response);
         }
     }, false);
     xhr.send(null);

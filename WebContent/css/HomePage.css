@@ -4,8 +4,9 @@
   margin-right: 30px;
   margin-left: 30px;
   padding-bottom:30px;
-  display:inline;
+  display:block;
 }
+
 /*
 @media (min-width: 768px) {
   .container {
@@ -39,6 +40,10 @@
  	margin-bottom:2px;
 }
 
+.col-lg-7{
+	display:inline-block;
+}
+
 .addLoad{
 	border-width: 1px 0px 0px 0px;
 	border-radius:0px;
@@ -66,7 +71,7 @@
 
 body {
     margin-left: 10px;
-    background-color:#E9E9E9;
+    background-color:white;
 }
 
 #divBody{
@@ -111,6 +116,20 @@ body {
 	display:inline-block;
 }
 
+td.details-control {
+    background: url('../images/add_icon.png') no-repeat center center;
+    cursor: pointer;
+}
+
+th.details-control{
+	 cursor: pointer;	
+}
+
+tr.shown td.details-control {
+    background: url('../images/details_close.png') no-repeat center center;
+    cursor: pointer;
+}
+
 #rasterTable{
 	background-color:white;
 	text-align:center;
@@ -137,4 +156,11 @@ td {
 	padding-right:15px;
   	padding-left:15px;
   	display: inline-block;
+}
+#dataTables_wrapper{
+	display:compact;
+}
+
+#rowHide{
+    display:inline-block;
 }

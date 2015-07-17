@@ -56,9 +56,16 @@ function addField(compteur, idAdd, typeInput){
 		
 		var divTableReconcile = document.createElement('div');
 		divTableReconcile.setAttribute('id', "divTableReconcile_" + nb_inp);
-		divTableReconcile.setAttribute('class', "col-lg-12");
+		divTableReconcile.setAttribute('class', "col-lg-12 dataTable");
 		divTableReconcile.style.display = "inline-block";
 		//divTableReconcile.style="width:auto";
+		
+		var reconcile = document.createElement("input");
+		reconcile.id = "reconcileActive_" + nb_inp;
+		reconcile.name = "reconcileActive_" + nb_inp;
+		reconcile.value = "false";
+		reconcile.type = "hidden";
+		divTableReconcile.appendChild(reconcile);
 		
 		divAdd.appendChild(inp);
 		divAddLoad.appendChild(divAdd);
@@ -69,8 +76,9 @@ function addField(compteur, idAdd, typeInput){
 		bloc_inputs.appendChild(divMapping);
 		bloc_inputs.appendChild(divSubmitMapping);
 		bloc_inputs.appendChild(divReconciliationCheck);
-		bloc_inputs.appendChild(divSubmitReconcile);
 		bloc_inputs.appendChild(divTableReconcile);
+		bloc_inputs.appendChild(divSubmitReconcile);
+		
 		
 
 	}
@@ -127,6 +135,10 @@ function deleteField(compteur, typeInput){
 			var divMapping = document.getElementById("divMapping_" + id);
 			var divSubmitMapping = document.getElementById("divSubmitMapping_" + id);
 
+			var divReconciliationCheck = document.getElementById("divReconciliationCheck_" + id);
+			var divTableReconcile = document.getElementById("divTableReconcile_" + id);
+			var divSubmitReconcile = document.getElementById("divSubmitReconcile_" + id);
+			
 			//divAdd.removeChild(inp);
 			//divAddLoad.removeChild(divAdd);
 
@@ -134,6 +146,9 @@ function deleteField(compteur, typeInput){
 			bloc_inputs.removeChild(divMapping);
 			bloc_inputs.removeChild(divSubmitMapping);
 
+			bloc_inputs.removeChild(divReconciliationCheck);
+			bloc_inputs.removeChild(divTableReconcile);
+			bloc_inputs.removeChild(divSubmitReconcile);
 		}
 		//decrement input counter
 		document.getElementById(compteur).value --;
@@ -292,7 +307,9 @@ function addElement(id, typeElement, type, onclick, style, value, elementAfter){
 	var formulaire = document.getElementById('formulaire');
 	formulaire.insertBefore(element, after);
 }
+
 var columns = "";
+
 function mappingDWC(counter, change_load_reconcile){
 	var convertButton = document.getElementById('convert_'+ counter);
 	var divAddLoad = document.getElementById("divAddLoad_" + counter);
@@ -312,6 +329,7 @@ function mappingDWC(counter, change_load_reconcile){
 		buttonConvert = document.getElementById("convert_" + counter);
 		var divMapping = document.getElementById("divMapping_" + counter);
 		var tableMapping = document.getElementById("mappingTable_" + counter);
+		var divTableReconcile = document.getElementById("divTableReconcile_" + counter);
 		var divSubmitMapping = document.getElementById("divSubmitMapping_" + counter);
 		var divSubmitMappingOK = document.getElementById("divSubmitMappingOK_" + counter);
 		var divSubmitMappingCancel = document.getElementById("divSubmitMappingCancel_" + counter);
@@ -328,9 +346,13 @@ function mappingDWC(counter, change_load_reconcile){
 		
 		
 		var divTableReconcile = document.getElementById("divTableReconcile_" + counter);
-		var tableReconcile = document.getElementById("tableReconcile_" + counter);
-		var tablePreparationReconcile = document.getElementById("tablePreparationReconcile_" + counter);
+		var tableReconcile = document.getElementById("tableReconcile_" + counter + "_wrapper");
+		var tablePrepareReconcile = document.getElementById("tablePrepareReconcile_" + counter);
+		var urlAPItaxo = document.getElementById("urlAPItaxo_" + counter);
 		
+		var divMessageReconcileCancelled  = document.getElementById("divMessageReconcileCancelled_" + counter);
+		var divMessageReconcileSaved = document.getElementById("divMessageReconcileSaved_" + counter);
+	
 		if(change_load_reconcile == "load"){
 			if(tableMapping){
 				divMapping.style.display = "block";
@@ -343,20 +365,38 @@ function mappingDWC(counter, change_load_reconcile){
 			}
 		}
 		if(change_load_reconcile == "change"){
-			divMapping.removeChild(tableMapping);
-			divMapping.removeChild(mappingActive);
+			if(tableMapping){
+			    divMapping.removeChild(tableMapping);
+			    divMapping.removeChild(mappingActive);
 
-			divSubmitMapping.removeChild(divSubmitMappingOK);
-			divSubmitMapping.removeChild(divSubmitMappingCancel);
-			divSubmitMapping.removeChild(divMessageSaved);
-			divSubmitMapping.removeChild(divMessagedCancelled);
+				divSubmitMapping.removeChild(divSubmitMappingOK);
+				divSubmitMapping.removeChild(divSubmitMappingCancel);
+				divSubmitMapping.removeChild(divMessageSaved);
+				divSubmitMapping.removeChild(divMessagedCancelled);
+			}
+			   
+			if(tablePrepareReconcile){
+				divReconciliationCheck.removeChild(tablePrepareReconcile);
+				divReconciliationCheck.removeChild(urlAPItaxo);
+			}
 			
-			divReconciliationCheck.removeChild(tablePreparationReconcile);
-			divSubmitReconcile.removeChild(divButtonCancelReconciliation);
-			divSubmitReconcile.removeChild(divButtonStartReconciliation);
-			divSubmitReconcile.removeChild(divButtonValidReconciliation);
+			if(divTableReconcile){
+				divMessageReconcileSaved.style.display = "none";
+				divMessageReconcileCancelled.style.display = "none";
+			}
 			
-			divTableReconcile.removeChild(tableReconcile);
+			//if(divButtonStartReconciliation){
+				divSubmitReconcile.removeChild(divButtonCancelReconciliation);
+				//alert("supprime : " + divButtonStartReconciliation.id);
+				divSubmitReconcile.removeChild(divButtonStartReconciliation);
+				divSubmitReconcile.removeChild(divButtonValidReconciliation);
+			//}
+			
+			
+			
+			if(tableReconcile){
+			    divTableReconcile.removeChild(tableReconcile);
+			}
 		}
 
 	}

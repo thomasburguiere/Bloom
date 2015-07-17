@@ -61,7 +61,7 @@
 						</div>
 						<div id="divReconciliationCheck_0" class="col-lg-12">
 						</div>
-						<div id="divTableReconcile_0" class="col-lg-12" style="width:auto">
+						<div id="divTableReconcile_0" class="col-lg-12 dataTable" style="width:auto">
 							
 						</div>
 						
