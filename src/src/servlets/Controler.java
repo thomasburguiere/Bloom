@@ -41,6 +41,7 @@ import src.beans.Step8_CheckCoordinatesRaster;
 import src.model.CSVFile;
 import src.model.LaunchWorkflow;
 import src.model.MappingDwC;
+import ucar.nc2.dt.radial.RadialCoordSys;
 
 /**
  * src.servlets
@@ -195,7 +196,10 @@ public class Controler extends HttpServlet {
 	    String headerRaster = "header_" + nbFilesHeader;
 	    String synonyms = "synonyms";
 	    String mapping = "mappingActive_";
-
+	    String reconcileTable = "reconcileTable_";
+	    String reconcileActive = "reconcileActive_";
+	    String tableReconcile = "tableReconcile_";
+	    	
 	    String fieldName = item.getFieldName();
 	    //System.out.println("fieldName : " + fieldName);
 	    if(fieldName.equals(input)){
@@ -303,6 +307,12 @@ public class Controler extends HttpServlet {
 		}
 
 		nbMappingInput ++;
+	    }
+	    else if(fieldName.contains(reconcileActive)){
+		System.out.println("fieldName : " + fieldName);
+	    }
+	    else if(fieldName.equals(tableReconcile + "_0")){
+		System.out.println("fieldName : " + fieldName);
 	    }
 	    
 

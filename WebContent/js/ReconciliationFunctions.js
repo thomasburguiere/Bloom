@@ -402,13 +402,17 @@ function startReconciliation(nbInput){
 		var row = table.row(tr);
 		rowIndex = row.index();
 
-		//var id = "tableInput_" + nbInput + "_row_" + rowIndex;
-		if (row.child.isShown() ) {
-			//var tableDetailsControl = document.getElementById(id);
+		var id = "tableInput_" + nbInput + "_row_" + rowIndex;
+		var child = row.child();
+		//if (row.child.isShown() ) {
+		
+		if(child){
+			var tableDetailsControl = document.getElementById(id);
 			// This row is already open - close it
-			row.child.hide();
-
-			//tableDetailsControl.style.display = "none";
+			console.log(child);
+			//row.child.hide();
+			
+			console.log(tableDetailsControl.style);// = "none";
 			tr.removeClass('shown');
 			//row.addClass("rowHide");
 		}
@@ -417,7 +421,7 @@ function startReconciliation(nbInput){
 			// Open this row
 			console.log("create child");
 			addTableForReconcile(nbInput, columnCheck, row);
-			
+			console.log(row.child.length);
 			//var tableDetailsControl = document.getElementById(id);
 			tr.addClass('shown');
 			//alert(id);
@@ -477,7 +481,7 @@ function adjustJSON(nbInput){
 
 function createTableReconciliationService(resultsReconcile, nbInput, row){
 	var indexRow = row.index();
-	var subTableReconcile = '<table class="" id=tableInput_' + nbInput + '_row_' + indexRow + ' cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+	var subTableReconcile = '<table class="" id=tableInput_' + nbInput + '_row_' + indexRow + ' cellpadding="5" cellspacing="0" border="0" style="display:block; padding-left:50px;" >';
 	var size = 0;
 	for(i in resultsReconcile){
 		size ++;
@@ -495,9 +499,9 @@ function createTableReconciliationService(resultsReconcile, nbInput, row){
 			var score = result[1];
 			subTableReconcile += 
 				'<tr>'+
-				'<td><INPUT type="radio" name="radio" value=""</td>' +
-				'<td>' + name +'</td>' +
-				'<td>' + score +'</td>' +
+					'<td><INPUT type="radio" name="radio" value="" id="radio_"' + nbInput + '_' + indexRow + '_' + i + '</td>' +
+					'<td>' + name +'</td>' +
+					'<td>' + score +'</td>' +
 				'</tr>';
 		}
 
@@ -547,9 +551,12 @@ function callRestService(urlAPI, scientificName, nbInput, row){
 			}
 			htmlResult = createTableReconciliationService(result, nbInput, row);
 			row.child(htmlResult).show();
+			//row.add(htmlResult);
 			var indexRow = row.index();
-			var tableResult = document.getElementById("tableInput_" + nbInput + "_row_" + indexRow);
-			tableResult.style.display = "block";
+			//var tableResult = document.getElementById("tableInput_" + nbInput + "_row_" + indexRow);
+			//tableResult.style.display = "block";
+			var child = row.child();
+			console.log(child.length);
 		},
 		error: function(xhr, sts, err) {
 			console.log('Erreur !!');
