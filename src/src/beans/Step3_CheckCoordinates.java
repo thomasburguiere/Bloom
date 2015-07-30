@@ -1,6 +1,6 @@
 /**
  * src.beans
- * Step2_CheckCoordinates
+ * Step3_CheckCoordinates
  */
 package src.beans;
 
@@ -8,20 +8,20 @@ package src.beans;
 /**
  * src.beans
  * 
- * Step2_CheckCoordinates.java
- * Step2_CheckCoordinates
+ * Step3_CheckCoordinates.java
+ * Step3_CheckCoordinates
  */
-public class Step2_CheckCoordinates {
-    private boolean step2_ok = true;
+public class Step3_CheckCoordinates {
+    private boolean step3_ok = true;
     private int nbFound = 0;
     private boolean involved = true;
     private String pathWrongCoordinates = "";
     
     /**
      * src.beans
-     * Step2_CheckCoordinates
+     * Step3_CheckCoordinates
      */
-    public Step2_CheckCoordinates() {
+    public Step3_CheckCoordinates() {
 
     }
 
@@ -33,12 +33,12 @@ public class Step2_CheckCoordinates {
         this.involved = involved;
     }
 
-    public boolean isStep2_ok() {
-        return step2_ok;
+    public boolean isStep3_ok() {
+        return step3_ok;
     }
 
-    public void setStep2_ok(boolean step2_ok) {
-        this.step2_ok = step2_ok;
+    public void setStep3_ok(boolean step3_ok) {
+        this.step3_ok = step3_ok;
     }
 
     public int getNbFound() {

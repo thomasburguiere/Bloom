@@ -5,11 +5,6 @@ function initialiseFinalPage(){
 		this.initialiseStep1();
 	}
 
-	var step2_involved = document.getElementById("step2_involved").value;
-	if(step2_involved == "true"){
-		this.initialiseStep2();
-	}
-
 	var step3_involved = document.getElementById("step3_involved").value;
 	if(step3_involved == "true"){
 		this.initialiseStep3();
@@ -39,6 +34,11 @@ function initialiseFinalPage(){
 	if(step8_involved == "true"){
 		this.initialiseStep8();
 	}
+
+	var step9_involved = document.getElementById("step9_involved").value;
+	if(step9_involved == "true"){
+		this.initialiseStep9();
+	}
 }
 
 function checkErrorOk(step_ok, p_ok){
@@ -62,20 +62,10 @@ function initialiseStep1(){
 	divStep1.setAttribute('style', "margin-left: 40px; visibility: visible");
 }
 
-function initialiseStep2(){
-	var divStep2 = document.getElementById("divStep2");
-	var step2_ok = document.getElementById("step2_ok").value;
-	var p_ok = document.getElementById("p_ok2");
-	
-	this.checkErrorOk(step2_ok, p_ok);
-	
-	divStep2.setAttribute('style', "margin-left: 40px; visibility: visible");
-}
-
 function initialiseStep3(){
 	var divStep3 = document.getElementById("divStep3");
 	var step3_ok = document.getElementById("step3_ok").value;
-	var p_ok = document.getElementById("p_ok3");
+	var p_ok = document.getElementById("p_ok2");
 	
 	this.checkErrorOk(step3_ok, p_ok);
 	
@@ -85,7 +75,7 @@ function initialiseStep3(){
 function initialiseStep4(){
 	var divStep4 = document.getElementById("divStep4");
 	var step4_ok = document.getElementById("step4_ok").value;
-	var p_ok = document.getElementById("p_ok4");
+	var p_ok = document.getElementById("p_ok3");
 	
 	this.checkErrorOk(step4_ok, p_ok);
 	
@@ -95,7 +85,7 @@ function initialiseStep4(){
 function initialiseStep5(){
 	var divStep5 = document.getElementById("divStep5");
 	var step5_ok = document.getElementById("step5_ok").value;
-	var p_ok = document.getElementById("p_ok5");
+	var p_ok = document.getElementById("p_ok4");
 	
 	this.checkErrorOk(step5_ok, p_ok);
 	
@@ -105,7 +95,7 @@ function initialiseStep5(){
 function initialiseStep6(){
 	var divStep6 = document.getElementById("divStep6");
 	var step6_ok = document.getElementById("step6_ok").value;
-	var p_ok = document.getElementById("p_ok6");
+	var p_ok = document.getElementById("p_ok5");
 	
 	this.checkErrorOk(step6_ok, p_ok);
 	
@@ -115,7 +105,7 @@ function initialiseStep6(){
 function initialiseStep7(){
 	var divStep7 = document.getElementById("divStep7");
 	var step7_ok = document.getElementById("step7_ok").value;
-	var p_ok = document.getElementById("p_ok7");
+	var p_ok = document.getElementById("p_ok6");
 	
 	this.checkErrorOk(step7_ok, p_ok);
 	
@@ -125,9 +115,19 @@ function initialiseStep7(){
 function initialiseStep8(){
 	var divStep8 = document.getElementById("divStep8");
 	var step8_ok = document.getElementById("step8_ok").value;
-	var p_ok = document.getElementById("p_ok8");
-	console.log(step8_ok);
+	var p_ok = document.getElementById("p_ok7");
+	
 	this.checkErrorOk(step8_ok, p_ok);
 	
 	divStep8.setAttribute('style', "margin-left: 40px; visibility: visible");
+}
+
+function initialiseStep9(){
+	var divStep9 = document.getElementById("divStep9");
+	var step9_ok = document.getElementById("step9_ok").value;
+	var p_ok = document.getElementById("p_ok8");
+	console.log(step9_ok);
+	this.checkErrorOk(step9_ok, p_ok);
+	
+	divStep9.setAttribute('style', "margin-left: 40px; visibility: visible");
 }

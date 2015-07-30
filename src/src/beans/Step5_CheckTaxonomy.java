@@ -1,27 +1,27 @@
 /**
  * src.beans
- * Step5_IncludeSynonym
+ * Step5_CheckTaxonomy
  */
 package src.beans;
 
 /**
  * src.beans
  * 
- * Step5_IncludeSynonym.java
- * Step5_IncludeSynonym
+ * Step5_CheckTaxonomy.java
+ * Step5_CheckTaxonomy
  */
-public class Step5_IncludeSynonym {
+public class Step5_CheckTaxonomy {
 
     private boolean step5_ok = true;
-    private int nbFound = 0;
     private boolean involved = false;
+    private int nbSynonymsInvolved;
     
     /**
      * 
      * src.beans
-     * Step5_IncludeSynonym
+     * Step5_CheckTaxonomy
      */
-    public Step5_IncludeSynonym(){
+    public Step5_CheckTaxonomy(){
 	
     }
 
@@ -33,14 +33,6 @@ public class Step5_IncludeSynonym {
         this.step5_ok = step5_ok;
     }
 
-    public int getNbFound() {
-        return nbFound;
-    }
-
-    public void setNbFound(int nbFound) {
-        this.nbFound = nbFound;
-    }
-
     public boolean isInvolved() {
         return involved;
     }
@@ -48,7 +40,5 @@ public class Step5_IncludeSynonym {
     public void setInvolved(boolean involved) {
         this.involved = involved;
     }
-
-    
-    
+ 
 }

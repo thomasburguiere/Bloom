@@ -1,17 +1,17 @@
 /**
  * src.beans
- * Step3_CheckGeoIssue
+ * Step4_CheckGeoIssue
  */
 package src.beans;
 
 /**
  * src.beans
  * 
- * Step3_CheckGeoIssue.java
- * Step3_CheckGeoIssue
+ * Step4_CheckGeoIssue.java
+ * Step4_CheckGeoIssue
  */
-public class Step3_CheckGeoIssue {
-    private boolean step3_ok = true;
+public class Step4_CheckGeoIssue {
+    private boolean step4_ok = true;
     private int nbFound = 0;
     private boolean involved = true;
     private String pathWrongGeoIssue= "";
@@ -19,9 +19,9 @@ public class Step3_CheckGeoIssue {
     /**
      * 
      * src.beans
-     * Step3_CheckGeoIssue
+     * Step4_CheckGeoIssue
      */
-    public Step3_CheckGeoIssue(){
+    public Step4_CheckGeoIssue(){
 	
     }
 
@@ -34,12 +34,12 @@ public class Step3_CheckGeoIssue {
         this.involved = involved;
     }
 
-    public boolean isStep3_ok() {
-        return step3_ok;
+    public boolean isStep4_ok() {
+        return step4_ok;
     }
 
-    public void setStep3_ok(boolean step3_ok) {
-        this.step3_ok = step3_ok;
+    public void setStep4_ok(boolean step4_ok) {
+        this.step4_ok = step4_ok;
     }
 
     public int getNbFound() {

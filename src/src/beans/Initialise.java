@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import src.model.MappingDwC;
+import src.model.ReconciliationService;
 
 /**
  * src.beans
@@ -21,6 +22,7 @@ public class Initialise {
     private ArrayList<File> inputSynonymsList = new ArrayList<>();
     private ArrayList<String> establishmentList = new ArrayList<>();
     private ArrayList<MappingDwC> listDwcFiles = new ArrayList<>();
+    private ArrayList<ReconciliationService> listReconciliationService = new ArrayList<>();
     
     private String DIRECTORY_PATH = "";
     private String RESSOURCES_PATH = "";
@@ -39,7 +41,24 @@ public class Initialise {
     public Initialise(){
 	
     }
-    
+    /**
+     * 
+     * @return ArrayList<ReconciliationService>
+     */
+    public ArrayList<ReconciliationService> getListReconciliationService() {
+        return listReconciliationService;
+    }
+
+    /**
+     * 
+     * @param listReconciliationService
+     * @return void
+     */
+    public void setListReconciliationService(
+    	ArrayList<ReconciliationService> listReconciliationService) {
+        this.listReconciliationService = listReconciliationService;
+    }
+
     /**
      * 
      * @return ArrayList<MappingDwC>

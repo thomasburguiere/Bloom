@@ -6,7 +6,7 @@
 <%@page import="src.beans.*"%>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W4C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -22,30 +22,30 @@
 		<input type="hidden" id="step1_ok" value="${step1.step1_ok}" />
 		<!--<input type="hidden" id="step1_filesDwc" value="${step1.mappedFilesAssociatedPath}"/>  -->
 
-		<input type="hidden" id="step2_involved" value="${step2.involved}" />
-		<input type="hidden" id="step2_ok" value="${step2.step2_ok}" /> <input
-			type="hidden" id="step2_nbFound" value="${step2.nbFound}" /> <input
-			type="hidden" id="step2_path" value="${step2.pathWrongCoordinates}" />
-
 		<input type="hidden" id="step3_involved" value="${step3.involved}" />
 		<input type="hidden" id="step3_ok" value="${step3.step3_ok}" /> <input
 			type="hidden" id="step3_nbFound" value="${step3.nbFound}" /> <input
-			type="hidden" id="step3_path" value="${step3.pathWrongGeoIssue}" />
+			type="hidden" id="step3_path" value="${step3.pathWrongCoordinates}" />
+
 		<input type="hidden" id="step4_involved" value="${step4.involved}" />
 		<input type="hidden" id="step4_ok" value="${step4.step4_ok}" /> <input
-			type="hidden" id="step5_involved" value="${step5.involved}" /> <input
-			type="hidden" id="step5_ok" value="${step5.step5_ok}" /> <input
-			type="hidden" id="step5_nbFound" value="${step5.nbFound}" /> <input
+			type="hidden" id="step4_nbFound" value="${step4.nbFound}" /> <input
+			type="hidden" id="step4_path" value="${step4.pathWrongGeoIssue}" />
+		<input type="hidden" id="step5_involved" value="${step5.involved}" />
+		<input type="hidden" id="step5_ok" value="${step5.step5_ok}" /> <input
 			type="hidden" id="step6_involved" value="${step6.involved}" /> <input
 			type="hidden" id="step6_ok" value="${step6.step6_ok}" /> <input
+			type="hidden" id="step6_nbFound" value="${step6.nbFound}" /> <input
 			type="hidden" id="step7_involved" value="${step7.involved}" /> <input
 			type="hidden" id="step7_ok" value="${step7.step7_ok}" /> <input
-			type="hidden" id="step7_nbFound" value="${step7.nbFound}" /> <input
-			type="hidden" id="step7_path" value="${step7.pathWrongIso2}" /> <input
 			type="hidden" id="step8_involved" value="${step8.involved}" /> <input
 			type="hidden" id="step8_ok" value="${step8.step8_ok}" /> <input
 			type="hidden" id="step8_nbFound" value="${step8.nbFound}" /> <input
-			type="hidden" id="step8_path" value="${step8.pathWrongRaster}" />
+			type="hidden" id="step8_path" value="${step8.pathWrongIso2}" /> <input
+			type="hidden" id="step9_involved" value="${step9.involved}" /> <input
+			type="hidden" id="step9_ok" value="${step9.step9_ok}" /> <input
+			type="hidden" id="step9_nbFound" value="${step9.nbFound}" /> <input
+			type="hidden" id="step9_path" value="${step9.pathWrongRaster}" />
 	</div>
 
 	<div id=divStep1 style="display: none">
@@ -56,32 +56,31 @@
 			<br>
 		</c:forEach>
 	</div>
-	<div id=divStep2 style="display: none">
-		<p id="p_ok2">Step 2 : Check coordinates</p>
-		Number of occurrences found : ${step2.nbFound}
-	</div>
 	<div id=divStep3 style="display: none">
-		<p id="p_ok3">Step 3 : Check geospatial issue</p>
+		<p id="p_ok3">Step 3 : Check coordinates</p>
 		Number of occurrences found : ${step3.nbFound}
 	</div>
 	<div id=divStep4 style="display: none">
-		<p id="p_ok4">Step 4 : Check taxonomy (KEW API)</p>
+		<p id="p_ok4">Step 4 : Check geospatial issue</p>
+		Number of occurrences found : ${step4.nbFound}
 	</div>
 	<div id=divStep5 style="display: none">
-		<p id="p_ok5">Step 5 : Add synonyms</p>
-		Number of occurrences involved : ${step5.nbFound}
+		<p id="p_ok5">Step 5 : Check taxonomy (KEW API)</p>
 	</div>
 	<div id=divStep6 style="display: none">
-		<p id="p_ok6">Step 6 : Check TDWG code</p>
+		<p id="p_ok6">Step 6 : Add synonyms</p>
+		Number of occurrences involved : ${step6.nbFound}
 	</div>
 	<div id=divStep7 style="display: none">
-		<p id="p_ok7">Step 7 : Check if coordinates are equivalent to ISO2
-			code</p>
-		Number of wrong occurrences : ${step7.nbFound}
+		<p id="p_ok7">Step 7 : Check TDWG code</p>
 	</div>
 	<div id=divStep8 style="display: none">
-		<p id="p_ok8">Step 8 :Check coordinates in raster cells</p>
-		Number of occurrences found : "${step8.nbFound}"
+		<p id="p_ok8">Step 8 : Check if coordinates are equivalent to ISO2 code</p>
+		Number of wrong occurrences : ${step8.nbFound}
+	</div>
+	<div id=divStep9 style="display: none">
+		<p id="p_ok9">Step 9 :Check coordinates in raster cells</p>
+		Number of occurrences found : "${step9.nbFound}"
 	</div>
 	<br>
 	<div id="downloadFinalFiles">

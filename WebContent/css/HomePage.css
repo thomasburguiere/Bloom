@@ -145,6 +145,14 @@ td {
 	text-align:left;
 }
 
+tr{
+	padding: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	
+}
+
 .foot{
 	background-color:white;
 	border-radius:10px;

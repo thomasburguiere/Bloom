@@ -59,10 +59,10 @@
 						</div>
 						<div id="divSubmitMapping_0" class="col-lg-12 submitMapping">
 						</div>
-						<div id="divReconciliationCheck_0" class="col-lg-12">
-						</div>
 						<div id="divTableReconcile_0" class="col-lg-12 dataTable" style="width:auto">
-							
+							<!--  <input name="reconcileActive_0" id="reconcileActive_0" type="hidden" value="">-->
+						</div>
+						<div id="divReconciliationCheck_0" class="col-lg-12">
 						</div>
 						
 						<div id="divSubmitReconcile_0" class="col-lg-12">

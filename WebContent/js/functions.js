@@ -60,13 +60,13 @@ function addField(compteur, idAdd, typeInput){
 		divTableReconcile.style.display = "inline-block";
 		//divTableReconcile.style="width:auto";
 		
-		var reconcile = document.createElement("input");
+		/*var reconcile = document.createElement("input");
 		reconcile.id = "reconcileActive_" + nb_inp;
 		reconcile.name = "reconcileActive_" + nb_inp;
 		reconcile.value = "false";
 		reconcile.type = "hidden";
 		divTableReconcile.appendChild(reconcile);
-		
+		*/
 		divAdd.appendChild(inp);
 		divAddLoad.appendChild(divAdd);
 		divAddLoad.appendChild(divLoad);
@@ -75,8 +75,8 @@ function addField(compteur, idAdd, typeInput){
 		bloc_inputs.appendChild(divAddLoad);
 		bloc_inputs.appendChild(divMapping);
 		bloc_inputs.appendChild(divSubmitMapping);
-		bloc_inputs.appendChild(divReconciliationCheck);
 		bloc_inputs.appendChild(divTableReconcile);
+		bloc_inputs.appendChild(divReconciliationCheck);
 		bloc_inputs.appendChild(divSubmitReconcile);
 		
 		
@@ -362,6 +362,7 @@ function mappingDWC(counter, change_load_reconcile){
 				divSubmitMappingCancel.style.display ="block";
 				divMessageSaved.style.display = "none";
 				divMessagedCancelled.style.display = "none";
+				mappingActive.value = "false";
 			}
 		}
 		if(change_load_reconcile == "change"){
@@ -385,14 +386,17 @@ function mappingDWC(counter, change_load_reconcile){
 				divMessageReconcileCancelled.style.display = "none";
 			}
 			
-			//if(divButtonStartReconciliation){
-				divSubmitReconcile.removeChild(divButtonCancelReconciliation);
-				//alert("supprime : " + divButtonStartReconciliation.id);
+			if(divButtonCancelReconciliation){
+			    divSubmitReconcile.removeChild(divButtonCancelReconciliation);
+			}
+			    
+			if(divButtonStartReconciliation){
 				divSubmitReconcile.removeChild(divButtonStartReconciliation);
-				divSubmitReconcile.removeChild(divButtonValidReconciliation);
-			//}
+			}
 			
-			
+			if(divButtonValidReconciliation){
+			    divSubmitReconcile.removeChild(divButtonValidReconciliation);
+			}
 			
 			if(tableReconcile){
 			    divTableReconcile.removeChild(tableReconcile);

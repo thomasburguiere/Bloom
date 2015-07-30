@@ -8,6 +8,7 @@ package src.servlets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,16 +32,18 @@ import org.apache.commons.io.FilenameUtils;
 import src.beans.Finalisation;
 import src.beans.Initialise;
 import src.beans.Step1_MappingDwc;
-import src.beans.Step2_CheckCoordinates;
-import src.beans.Step3_CheckGeoIssue;
-import src.beans.Step4_CheckTaxonomy;
-import src.beans.Step5_IncludeSynonym;
-import src.beans.Step6_CheckTDWG;
-import src.beans.Step7_CheckISo2Coordinates;
-import src.beans.Step8_CheckCoordinatesRaster;
+import src.beans.Step2_ReconciliationService;
+import src.beans.Step3_CheckCoordinates;
+import src.beans.Step4_CheckGeoIssue;
+import src.beans.Step5_CheckTaxonomy;
+import src.beans.Step6_IncludeSynonym;
+import src.beans.Step7_CheckTDWG;
+import src.beans.Step8_CheckISo2Coordinates;
+import src.beans.Step9_CheckCoordinatesRaster;
 import src.model.CSVFile;
 import src.model.LaunchWorkflow;
 import src.model.MappingDwC;
+import src.model.ReconciliationService;
 import ucar.nc2.dt.radial.RadialCoordSys;
 
 /**
@@ -60,13 +63,14 @@ public class Controler extends HttpServlet {
     private Finalisation finalisation;
     
     private Step1_MappingDwc step1;
-    private Step2_CheckCoordinates step2;
-    private Step3_CheckGeoIssue step3;
-    private Step4_CheckTaxonomy step4;
-    private Step5_IncludeSynonym step5;
-    private Step6_CheckTDWG step6;
-    private Step7_CheckISo2Coordinates step7;
-    private Step8_CheckCoordinatesRaster step8;
+    private Step2_ReconciliationService step2;
+    private Step3_CheckCoordinates step3;
+    private Step4_CheckGeoIssue step4;
+    private Step5_CheckTaxonomy step5;
+    private Step6_IncludeSynonym step6;
+    private Step7_CheckTDWG step7;
+    private Step8_CheckISo2Coordinates step8;
+    private Step9_CheckCoordinatesRaster step9;
     
     /**
      * 
@@ -105,8 +109,9 @@ public class Controler extends HttpServlet {
 	this.setNbSessionRandom(this.generateRandomKey());
 	this.initialisation.setNbSessionRandom(this.getNbSessionRandom());
 	
-	List<FileItem> listFileItems = this.initialiseRequest(request);
-	this.initialiseParameters(listFileItems, response);
+	List<FileItem> listFileItems = this.initialiseRequest(request);	
+	
+	this.initialiseParameters(listFileItems, response, request);
 	request.setAttribute("initialise", initialisation);	
 
 	LaunchWorkflow newLaunch = new LaunchWorkflow(this.initialisation);
@@ -132,9 +137,10 @@ public class Controler extends HttpServlet {
 	request.setAttribute("step7", step7);
 	step8 = newLaunch.getStep8();
 	request.setAttribute("step8", step8);
+	step9 = newLaunch.getStep9();
+	request.setAttribute("step9", step9);
 	
 	this.getServletContext().getRequestDispatcher("/finalWorkflow.jsp").forward(request, response);
-
 	
     }
 
@@ -145,11 +151,10 @@ public class Controler extends HttpServlet {
      * @return List<FileItem>
      */
     public List<FileItem> initialiseRequest(HttpServletRequest request){
-
 	DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
 	ServletFileUpload uploadHandler = new ServletFileUpload(fileItemFactory);
 	List<FileItem> items = null;
-	try {
+	try {	    
 	    items = (List<FileItem>)uploadHandler.parseRequest(request);
 	} catch (FileUploadException e) {
 	    // TODO Auto-generated catch block
@@ -167,14 +172,15 @@ public class Controler extends HttpServlet {
      * @throws IOException
      * @return void
      */
-    public void initialiseParameters(List<FileItem> items, HttpServletResponse response) throws IOException{
+    public void initialiseParameters(List<FileItem> items, HttpServletResponse response, HttpServletRequest request) throws IOException{
 
 	response.setContentType("text/html");
 	response.addHeader("Access-Control-Allow-Origin", "*");
 	
 	Iterator<FileItem> iterator = (Iterator<FileItem>)items.iterator();
 	ArrayList<MappingDwC> listDwcFiles = new ArrayList<>();
-
+	ArrayList<ReconciliationService> listReconcileFiles = new ArrayList<>();
+	
 	int nbFilesInput = 0;
 	int nbFilesRaster = 0;
 	int nbFilesHeader = 0;
@@ -231,6 +237,8 @@ public class Controler extends HttpServlet {
 		newMappingDWC.setConnectionTags(connectionTags);
 		newMappingDWC.getNoMappedFile().setCsvName(file.getName());
 		//initialisation.getInputFilesList().add(csvFile.getCsvFile());
+		
+		
 		nbFilesInput ++;
 	    }
 	    else if(fieldName.equals(raster)){
@@ -309,10 +317,36 @@ public class Controler extends HttpServlet {
 		nbMappingInput ++;
 	    }
 	    else if(fieldName.contains(reconcileActive)){
-		System.out.println("fieldName : " + fieldName);
+		String [] tableauField =  fieldName.split("_");
+		int idFile = Integer.parseInt(tableauField[tableauField.length-1]);
+		System.out.println("idFileReconcile : " + idFile);
+		ReconciliationService reconciliationService = new ReconciliationService(idFile);
+		reconciliationService.setReconcile(true);
+		HashMap<Integer, String> linesConnectedNewName = new HashMap<>();
+		reconciliationService.setLineConnectedNewName(linesConnectedNewName);
+		listReconcileFiles.add(reconciliationService);
 	    }
-	    else if(fieldName.equals(tableReconcile + "_0")){
-		System.out.println("fieldName : " + fieldName);
+	    else if(fieldName.contains("dropdownReconcile_")){
+		
+		String [] tableauField =  fieldName.split("_");
+		
+		int idDropdown = Integer.parseInt(tableauField[tableauField.length-1]);
+		int idFile = Integer.parseInt(tableauField[tableauField.length-2]);
+		System.out.println("dropdownReconcile : " + fieldName + "  " + idFile + "  " + listReconcileFiles.size());
+		ReconciliationService reconciliationService = listReconcileFiles.get(idFile);
+		if(idDropdown == 0){
+		    String tag = item.getString();
+		    reconciliationService.setReconcileTagBased(tag);
+		}
+	    }
+	    else if(fieldName.contains("radio_")){
+		String [] tableauField =  fieldName.split("_");
+		String value = item.getString();
+		int idFile = Integer.parseInt(tableauField[tableauField.length-2]);
+		int idLine = Integer.parseInt(tableauField[tableauField.length-1]);
+		ReconciliationService reconciliationService = listReconcileFiles.get(idFile);
+		HashMap<Integer, String> linesConnnectedNewName = reconciliationService.getLineConnectedNewName();
+		linesConnnectedNewName.put(idLine, value);
 	    }
 	    
 
@@ -341,7 +375,8 @@ public class Controler extends HttpServlet {
 	}
 	
 	this.initialisation.setListDwcFiles(listDwcFiles);
-
+	this.initialisation.setListReconciliationService(listReconcileFiles);
+	
     }
 
     /**

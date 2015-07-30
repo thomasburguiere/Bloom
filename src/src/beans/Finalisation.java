@@ -30,13 +30,14 @@ public class Finalisation {
     private ArrayList<String> listPathsOutputFiles = new ArrayList<>();
     
     private String step1_resultMappingDwC = "";
-    private String step2_checkCoordinates = "";
-    private String step3_checkGeospatialIssue = "";
-    private String step4_checkTaxonomy = "";
-    private String step5_checkSynonym = "";
-    private String step6_checkTDWG = "";
-    private String step7_checkPolygonIso2 = "";
-    private String step8_checkRaster = "";
+    private String step2_reconciliationService = "";
+    private String step3_checkCoordinates = "";
+    private String step4_checkGeospatialIssue = "";
+    private String step5_checkTaxonomy = "";
+    private String step6_checkSynonym = "";
+    private String step7_checkTDWG = "";
+    private String step8_checkPolygonIso2 = "";
+    private String step9_checkRaster = "";
     
     public Finalisation(){
 	
@@ -49,61 +50,69 @@ public class Finalisation {
     public void setStep1_resultMappingDwC(String step1_resultMappingDwC) {
         this.step1_resultMappingDwC = step1_resultMappingDwC;
     }
-
-    public String getStep2_checkCoordinates() {
-        return step2_checkCoordinates;
+    
+    public String getStep2_reconciliationService() {
+        return step2_reconciliationService;
     }
 
-    public void setStep2_checkCoordinates(String step2_checkCoordinates) {
-        this.step2_checkCoordinates = step2_checkCoordinates;
+    public void setStep2_reconciliationService(String step2_reconciliationService) {
+        this.step2_reconciliationService = step2_reconciliationService;
     }
 
-    public String getStep3_checkGeospatialIssue() {
-        return step3_checkGeospatialIssue;
+    public String getStep3_checkCoordinates() {
+        return step3_checkCoordinates;
     }
 
-    public void setStep3_checkGeospatialIssue(String step3_checkGeospatialIssue) {
-        this.step3_checkGeospatialIssue = step3_checkGeospatialIssue;
+    public void setStep3_checkCoordinates(String step3_checkCoordinates) {
+        this.step3_checkCoordinates = step3_checkCoordinates;
     }
 
-    public String getStep4_checkTaxonomy() {
-        return step4_checkTaxonomy;
+    public String getStep4_checkGeospatialIssue() {
+        return step4_checkGeospatialIssue;
     }
 
-    public void setStep4_checkTaxonomy(String step4_checkTaxonomy) {
-        this.step4_checkTaxonomy = step4_checkTaxonomy;
+    public void setStep4_checkGeospatialIssue(String step4_checkGeospatialIssue) {
+        this.step4_checkGeospatialIssue = step4_checkGeospatialIssue;
     }
 
-    public String getStep5_checkSynonym() {
-        return step5_checkSynonym;
+    public String getStep5_checkTaxonomy() {
+        return step5_checkTaxonomy;
     }
 
-    public void setStep5_checkSynonym(String step5_checkSynonym) {
-        this.step5_checkSynonym = step5_checkSynonym;
+    public void setStep5_checkTaxonomy(String step5_checkTaxonomy) {
+        this.step5_checkTaxonomy = step5_checkTaxonomy;
     }
 
-    public String getStep6_checkTDWG() {
-        return step6_checkTDWG;
+    public String getStep6_checkSynonym() {
+        return step6_checkSynonym;
     }
 
-    public void setStep6_checkTDWG(String step6_checkTDWG) {
-        this.step6_checkTDWG = step6_checkTDWG;
+    public void setStep6_checkSynonym(String step6_checkSynonym) {
+        this.step6_checkSynonym = step6_checkSynonym;
     }
 
-    public String getStep7_checkPolygonIso2() {
-        return step7_checkPolygonIso2;
+    public String getStep7_checkTDWG() {
+        return step7_checkTDWG;
     }
 
-    public void setStep7_checkPolygonIso2(String step7_checkPolygonIso2) {
-        this.step7_checkPolygonIso2 = step7_checkPolygonIso2;
+    public void setStep7_checkTDWG(String step7_checkTDWG) {
+        this.step7_checkTDWG = step7_checkTDWG;
     }
 
-    public String getStep8_checkRaster() {
-        return step8_checkRaster;
+    public String getStep8_checkPolygonIso2() {
+        return step8_checkPolygonIso2;
     }
 
-    public void setStep8_checkRaster(String step8_checkRaster) {
-        this.step8_checkRaster = step8_checkRaster;
+    public void setStep8_checkPolygonIso2(String step8_checkPolygonIso2) {
+        this.step8_checkPolygonIso2 = step8_checkPolygonIso2;
+    }
+
+    public String getStep9_checkRaster() {
+        return step9_checkRaster;
+    }
+
+    public void setStep9_checkRaster(String step9_checkRaster) {
+        this.step9_checkRaster = step9_checkRaster;
     }
 
     public String getPathWrongCoordinatesFile() {

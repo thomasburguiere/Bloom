@@ -126,33 +126,41 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 
 			divSubmitReconcile.appendChild(divMessageReconcileCancelled);
 			divSubmitReconcile.appendChild(divMessageReconcileSaved);
-
+			/*
 			var reconcile = document.createElement("input");
 			reconcile.id = "reconcileActive_" + counter;
 			reconcile.name = "reconcileActive_" + counter;
 			reconcile.value = "false";
 			reconcile.type = "hidden";
-			divTableReconcile.appendChild(reconcile);
+			divTableReconcile.appendChild(reconcile);*/
 		}
 		else{
+			console.log("changeOrLoad : " + changeOrLoad);
+			var reconcileActive = document.getElementById("reconcileActive_" + counter);
+			if(reconcileActive){
+				var reconcileActiveValue = document.getElementById("reconcileActive_" + counter).getAttribute("value");
+				console.log("value reconcileActive : " + reconcileActiveValue);
+				if(reconcileActiveValue == "false"){
+					var divReconciliationCheck = document.getElementById("divReconciliationCheck_" + counter);
+					divReconciliationCheck.style.display =" block";
 
-			var reconcileActive = document.getElementById("reconcileActive_" + counter).getAttribute("value");
-			console.log(reconcileActive);
-			if(reconcileActive == "false"){
-				var divReconciliationCheck = document.getElementById("divReconciliationCheck_" + counter);
-				divReconciliationCheck.style.display =" block";
 
+					divSubmitReconcile.style.display = "block";
 
-				divSubmitReconcile.style.display = "block";
+					divTableReconcile.style.display = "none";
 
-				divTableReconcile.style.display = "none";
-
-				var tableReconcile = document.getElementById("tableReconcile_" + counter + "_wrapper");
-				if(tableReconcile != null){
-					//alert(tableReconcile.id);
-					divTableReconcile.removeChild(tableReconcile);
+					var tableReconcile = document.getElementById("tableReconcile_" + counter + "_wrapper");
+					if(tableReconcile != null){
+						//alert(tableReconcile.id);
+						divTableReconcile.removeChild(tableReconcile);
+					}
+				}	
+				else{
+					reconcileActive.value = "false";
+					console.log("new value : " + reconcileActive.value);
 				}
-			}	
+			}
+			
 
 		}
 
@@ -179,11 +187,6 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 				reader.readAsText(fileInput.files[0]);
 			}
 			else if(changeOrLoad == "reconcile"){
-				var divButtonStartReconciliation = document.getElementById("divButtonStartReconciliation_" + counter);
-				divButtonStartReconciliation.style.display = "block";
-
-				var divButtonValidReconciliation = document.getElementById("divButtonValidReconciliation_" + counter);
-				divButtonValidReconciliation.style.display = "none";
 
 				var divMessageReconcileCancelled  = document.getElementById("divMessageReconcileCancelled_" + counter);
 				var divMessageReconcileSaved = document.getElementById("divMessageReconcileSaved_" + counter);
@@ -197,9 +200,11 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 				divReconciliationCheck.style.display = "block";
 				divMessageReconcileCancelled.style.display = "none";
 				divMessageReconcileSaved.style.display = "none";
-				divButtonStartReconciliation.style.display ="block";
-				divButtonCancelReconciliation.style.display = "block";
-				divButtonValidReconciliation.style.display ="none";
+				if(divButtonStartReconciliation){
+					divButtonStartReconciliation.style.display ="block";
+					divButtonCancelReconciliation.style.display = "block";
+					divButtonValidReconciliation.style.display ="none";
+				}
 
 			}
 		}, false);
@@ -343,9 +348,37 @@ function startReconciliation(nbInput){
 
 	var divTableReconcile = document.getElementById("divTableReconcile_" + nbInput);
 	var tableReconcile = document.getElementById("tableReconcile_" + nbInput);
-
-	if(tableReconcile == null){
+	var tableReconcileWrapper = document.getElementById("tableReconcile_" + nbInput + "_wrapper");
+	
+	
+	if(tableReconcile == null && tableReconcileWrapper == null){
+		console.log("tableReconcile and wrapper are null");
 		//var tableReconcile = document.createElement("div");
+		var tableReconcile = document.createElement("table");
+		tableReconcile.id = "tableReconcile_" + nbInput;
+		tableReconcile.name = "tableReconcile_" + nbInput;
+		tableReconcile.border = "0";
+		tableReconcile.setAttribute("class", "tableMapping");
+		
+		var reconcile = $("#reconcileActive_" + nbInput);
+		if(reconcile.length != 1){
+			var reconcileNew = document.createElement("input");
+			reconcileNew.id = "reconcileActive_" + nbInput;
+			reconcileNew.name = "reconcileActive_" + nbInput;
+			reconcileNew.value = "false";
+			reconcileNew.type = "hidden";
+			divTableReconcile.appendChild(reconcileNew);
+		}
+		
+		
+		divTableReconcile.appendChild(tableReconcile);
+		divTableReconcile.style.display = "inline-block";
+	}
+	else if(tableReconcileWrapper != null){
+		console.log("already table reconcile exist and must be deleted");
+		//var reconcileOld = document.getElementById("reconcileActive_" + nbInput);
+		divTableReconcile.removeChild(tableReconcileWrapper);
+		//divTableReconcile.removeChild(reconcileOld);
 		var tableReconcile = document.createElement("table");
 		tableReconcile.id = "tableReconcile_" + nbInput;
 		tableReconcile.name = "tableReconcile_" + nbInput;
@@ -354,9 +387,7 @@ function startReconciliation(nbInput){
 
 		divTableReconcile.appendChild(tableReconcile);
 		divTableReconcile.style.display = "inline-block";
-
 	}
-
 	var tagsReconcile = this.getTagsReconcileFromTable(nbInput);
 	var columnCheck = this.getColumChecked(nbInput);
 	var inputObj = this.getInput(nbInput);
@@ -391,41 +422,33 @@ function startReconciliation(nbInput){
 		$(tableReconcile).fnAdjustColumnSizing();
 	} );
 
-	//Add event listener for show all or mask all reconciliation details
-	$('#tableReconcile_' + nbInput + ' thead').on('click', 'th.details-control', function(){
-		console.log("magna");
-	});
-
 	// Add event listener for opening and closing details
 	$('#tableReconcile_' + nbInput + ' tbody').on('click', 'td.details-control', function () {
 		var tr = $(this).closest('tr');
+		var td = $(this).closest('td');
 		var row = table.row(tr);
 		rowIndex = row.index();
 
 		var id = "tableInput_" + nbInput + "_row_" + rowIndex;
 		var child = row.child();
-		//if (row.child.isShown() ) {
 		
 		if(child){
 			var tableDetailsControl = document.getElementById(id);
 			// This row is already open - close it
-			console.log(child);
-			//row.child.hide();
-			
-			console.log(tableDetailsControl.style);// = "none";
-			tr.removeClass('shown');
-			//row.addClass("rowHide");
+			if($('#' + id).css('display') == 'none'){ 
+			   $('#' + id).css("display", "block"); 
+			   tr.addClass('shown');
+			} else { 
+			   $('#' + id).css("display", "none");
+			   tr.removeClass('shown');
+			}
 		}
 		else {
 
 			// Open this row
 			console.log("create child");
 			addTableForReconcile(nbInput, columnCheck, row);
-			console.log(row.child.length);
-			//var tableDetailsControl = document.getElementById(id);
 			tr.addClass('shown');
-			//alert(id);
-			//tableDetailsControl.style.display = "block";
 		}
 		
 
@@ -497,9 +520,11 @@ function createTableReconciliationService(resultsReconcile, nbInput, row){
 			var result = resultsReconcile[i];
 			var name = result[0];
 			var score = result[1];
+			var nameRadio = "radio_" + nbInput + "_" + indexRow;
+			var idRadio = "radio_" + nbInput + "_" + indexRow + "_" + i;
 			subTableReconcile += 
 				'<tr>'+
-					'<td><INPUT type="radio" name="radio" value="" id="radio_"' + nbInput + '_' + indexRow + '_' + i + '</td>' +
+					'<td><INPUT type="radio" name="' + nameRadio + '" value="' + name + '" id="' + idRadio + '" ></td>' +
 					'<td>' + name +'</td>' +
 					'<td>' + score +'</td>' +
 				'</tr>';
@@ -507,7 +532,7 @@ function createTableReconciliationService(resultsReconcile, nbInput, row){
 
 	}
 	else{
-		subTableReconcile += '<tr>No match found</tr>';
+		subTableReconcile += '<tr><td>No match found</td></tr>';
 	}
 	subTableReconcile += '</table>';
 	return subTableReconcile;
@@ -551,12 +576,6 @@ function callRestService(urlAPI, scientificName, nbInput, row){
 			}
 			htmlResult = createTableReconciliationService(result, nbInput, row);
 			row.child(htmlResult).show();
-			//row.add(htmlResult);
-			var indexRow = row.index();
-			//var tableResult = document.getElementById("tableInput_" + nbInput + "_row_" + indexRow);
-			//tableResult.style.display = "block";
-			var child = row.child();
-			console.log(child.length);
 		},
 		error: function(xhr, sts, err) {
 			console.log('Erreur !!');
@@ -615,7 +634,11 @@ function setReconciliation(reconcileActive, nbInput){
 		divButtonValidReconciliation.style.display = "none";
 		divReconciliationCheck.style.display = "none";
 
-		reconcileActive.value = "true";
+		var idReconcileActive = "#reconcileActive_" + nbInput;
+	    var reconcileActiveJquery = $(idReconcileActive),val = reconcileActiveJquery.val();
+	    reconcileActiveJquery.val(val === "true" ? "false" : "true");
+		console.log("reconcileActive value :" );
+		console.log(reconcileActiveJquery.val());
 
 	}
 	else{

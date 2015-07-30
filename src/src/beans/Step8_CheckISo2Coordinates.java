@@ -1,32 +1,32 @@
 /**
  * src.beans
- * Step7_CheckISo2Coordinates
+ * Step8_CheckISo2Coordinates
  */
 package src.beans;
 
 /**
  * src.beans
  * 
- * Step7_CheckISo2Coordinates.java
- * Step7_CheckISo2Coordinates
+ * Step8_CheckISo2Coordinates.java
+ * Step8_CheckISo2Coordinates
  */
-public class Step7_CheckISo2Coordinates {
+public class Step8_CheckISo2Coordinates {
 
-    private boolean step7_ok = true;
+    private boolean step8_ok = true;
     private String pathWrongIso2 = "";
     private int nbFound = 0;
     private boolean involved = true;
     
-    public Step7_CheckISo2Coordinates(){
+    public Step8_CheckISo2Coordinates(){
 	
     }
 
-    public boolean isStep7_ok() {
-        return step7_ok;
+    public boolean isStep8_ok() {
+        return step8_ok;
     }
 
-    public void setStep7_ok(boolean step7_ok) {
-        this.step7_ok = step7_ok;
+    public void setStep8_ok(boolean step8_ok) {
+        this.step8_ok = step8_ok;
     }
 
     public String getPathWrongIso2() {

@@ -1,18 +1,18 @@
 /**
  * src.beans
- * Step6_CheckTDWG
+ * Step7_CheckTDWG
  */
 package src.beans;
 
 /**
  * src.beans
  * 
- * Step6_CheckTDWG.java
- * Step6_CheckTDWG
+ * Step7_CheckTDWG.java
+ * Step7_CheckTDWG
  */
-public class Step6_CheckTDWG {
+public class Step7_CheckTDWG {
 
-    private boolean step6_ok = true;
+    private boolean step7_ok = true;
     private boolean involved = false;
     
     /**
@@ -20,16 +20,16 @@ public class Step6_CheckTDWG {
      * src.beans
      * Step6_CheckTDWG
      */
-    public Step6_CheckTDWG(){
+    public Step7_CheckTDWG(){
 	
     }
 
-    public boolean isStep6_ok() {
-        return step6_ok;
+    public boolean isStep7_ok() {
+        return step7_ok;
     }
 
-    public void setStep6_ok(boolean step6_ok) {
-        this.step6_ok = step6_ok;
+    public void setStep7_ok(boolean step7_ok) {
+        this.step7_ok = step7_ok;
     }
 
     public boolean isInvolved() {

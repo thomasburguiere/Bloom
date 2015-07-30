@@ -15,13 +15,14 @@ import java.util.List;
 import src.beans.Finalisation;
 import src.beans.Initialise;
 import src.beans.Step1_MappingDwc;
-import src.beans.Step2_CheckCoordinates;
-import src.beans.Step3_CheckGeoIssue;
-import src.beans.Step4_CheckTaxonomy;
-import src.beans.Step5_IncludeSynonym;
-import src.beans.Step6_CheckTDWG;
-import src.beans.Step7_CheckISo2Coordinates;
-import src.beans.Step8_CheckCoordinatesRaster;
+import src.beans.Step2_ReconciliationService;
+import src.beans.Step3_CheckCoordinates;
+import src.beans.Step4_CheckGeoIssue;
+import src.beans.Step5_CheckTaxonomy;
+import src.beans.Step6_IncludeSynonym;
+import src.beans.Step7_CheckTDWG;
+import src.beans.Step8_CheckISo2Coordinates;
+import src.beans.Step9_CheckCoordinatesRaster;
 
 /**
  * src.model
@@ -36,13 +37,14 @@ public class LaunchWorkflow {
     //private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/";
     
     private Step1_MappingDwc step1;
-    private Step2_CheckCoordinates step2;
-    private Step3_CheckGeoIssue step3;
-    private Step4_CheckTaxonomy step4;
-    private Step5_IncludeSynonym step5;
-    private Step6_CheckTDWG step6;
-    private Step7_CheckISo2Coordinates step7;
-    private Step8_CheckCoordinatesRaster step8;
+    private Step2_ReconciliationService step2;
+    private Step3_CheckCoordinates step3;
+    private Step4_CheckGeoIssue step4;
+    private Step5_CheckTaxonomy step5;
+    private Step6_IncludeSynonym step6;
+    private Step7_CheckTDWG step7;
+    private Step8_CheckISo2Coordinates step8;
+    private Step9_CheckCoordinatesRaster step9;
     
     /**
      * 
@@ -67,13 +69,14 @@ public class LaunchWorkflow {
 	
 	finalisation = new Finalisation();
 	step1 = new Step1_MappingDwc();
-	step2 = new Step2_CheckCoordinates();
-	step3 = new Step3_CheckGeoIssue();
-	step4 = new Step4_CheckTaxonomy();
-	step5 = new Step5_IncludeSynonym();
-	step6 = new Step6_CheckTDWG();
-	step7 = new Step7_CheckISo2Coordinates();
-	step8 = new Step8_CheckCoordinatesRaster();
+	step2 = new Step2_ReconciliationService();
+	step3 = new Step3_CheckCoordinates();
+	step4 = new Step4_CheckGeoIssue();
+	step5 = new Step5_CheckTaxonomy();
+	step6 = new Step6_IncludeSynonym();
+	step7 = new Step7_CheckTDWG();
+	step8 = new Step8_CheckISo2Coordinates();
+	step9 = new Step9_CheckCoordinatesRaster();
 	
 	boolean inputFilesIsValid = this.isValidInputFiles();
 	
@@ -86,23 +89,23 @@ public class LaunchWorkflow {
 
 	    boolean synonymFileIsValid = this.isValidSynonymFile();
 	    this.launchSynonymOption(synonymFileIsValid);
-	    step5.setInvolved(true);
+	    step6.setInvolved(true);
 	}
 
 	if(this.initialisation.isTdwg4Code()){
 	    dataTreatment.tdwgCodeOption();
-	    step6.setInvolved(true);
+	    step7.setInvolved(true);
 	}
 
 	if(this.initialisation.isRaster()){
-	    step8.setInvolved(true);
+	    step9.setInvolved(true);
 	    boolean rasterFilesIsValid = this.isValidRasterFiles();
 	    if(rasterFilesIsValid){
 		this.launchRasterOption();	
-		step8.setStep8_ok(true);
+		step9.setStep9_ok(true);
 	    }
 	    else{
-		step8.setStep8_ok(false);
+		step9.setStep9_ok(false);
 	    }
 	}
 
@@ -165,17 +168,17 @@ public class LaunchWorkflow {
 	File wrongCoordinatesFile = geoTreatment.getWrongCoordinatesFile();
 	finalisation.setWrongCoordinatesFile(wrongCoordinatesFile);
 	finalisation.setPathWrongCoordinatesFile(wrongCoordinatesFile.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));	
-	step2.setNbFound(geoTreatment.getNbWrongCoordinates());
+	step3.setNbFound(geoTreatment.getNbWrongCoordinates());
 	
 	File wrongGeospatial = geoTreatment.getWrongGeoFile();
 	finalisation.setWrongGeospatial(wrongGeospatial);
 	finalisation.setPathWrongGeospatial(wrongGeospatial.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
-	step3.setNbFound(geoTreatment.getNbWrongGeospatialIssues());
+	step4.setNbFound(geoTreatment.getNbWrongGeospatialIssues());
 	
 	File wrongPolygon = geoTreatment.getWrongPolygonFile();
 	finalisation.setWrongPolygon(wrongPolygon);
 	finalisation.setPathWrongPolygon(wrongPolygon.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
-	step7.setNbFound(geoTreatment.getNbWrongIso2());
+	step8.setNbFound(geoTreatment.getNbWrongIso2());
 	
     }
 
@@ -279,7 +282,7 @@ public class LaunchWorkflow {
 	    this.dataTreatment.includeSynonyms(null);
 	}
 	
-	step5.setNbFound(this.dataTreatment.getNbSynonymInvolved());
+	step6.setNbFound(this.dataTreatment.getNbSynonymInvolved());
     }
 
     /**
@@ -292,7 +295,7 @@ public class LaunchWorkflow {
 	RasterTreatment rasterTreatment = this.dataTreatment.checkWorldClimCell(this.initialisation.getInputRastersList());
 	finalisation.setMatrixFileValidCells(rasterTreatment.getMatrixFileValidCells());
 	finalisation.setPathMatrixFile(rasterTreatment.getMatrixFileValidCells().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
-	step8.setNbFound(rasterTreatment.getNbWrongOccurrences());
+	step9.setNbFound(rasterTreatment.getNbWrongOccurrences());
     }
 
     /**
@@ -386,61 +389,69 @@ public class LaunchWorkflow {
     public void setStep1(Step1_MappingDwc step1) {
         this.step1 = step1;
     }
-
-    public Step2_CheckCoordinates getStep2() {
+    
+    public Step2_ReconciliationService getStep2() {
         return step2;
     }
 
-    public void setStep2(Step2_CheckCoordinates step2) {
+    public void setStep2(Step2_ReconciliationService step2) {
         this.step2 = step2;
     }
 
-    public Step3_CheckGeoIssue getStep3() {
+    public Step3_CheckCoordinates getStep3() {
         return step3;
     }
 
-    public void setStep3(Step3_CheckGeoIssue step3) {
+    public void setStep2(Step3_CheckCoordinates step3) {
         this.step3 = step3;
     }
 
-    public Step4_CheckTaxonomy getStep4() {
+    public Step4_CheckGeoIssue getStep4() {
         return step4;
     }
 
-    public void setStep4(Step4_CheckTaxonomy step4) {
-        this.step4 = step4;
+    public void setStep3(Step4_CheckGeoIssue step3) {
+        this.step4 = step3;
     }
 
-    public Step5_IncludeSynonym getStep5() {
+    public Step5_CheckTaxonomy getStep5() {
         return step5;
     }
 
-    public void setStep5(Step5_IncludeSynonym step5) {
-        this.step5 = step5;
+    public void setStep4(Step5_CheckTaxonomy step4) {
+        this.step5 = step4;
     }
 
-    public Step6_CheckTDWG getStep6() {
+    public Step6_IncludeSynonym getStep6() {
         return step6;
     }
 
-    public void setStep6(Step6_CheckTDWG step6) {
-        this.step6 = step6;
+    public void setStep5(Step6_IncludeSynonym step5) {
+        this.step6 = step5;
     }
 
-    public Step7_CheckISo2Coordinates getStep7() {
+    public Step7_CheckTDWG getStep7() {
         return step7;
     }
 
-    public void setStep7(Step7_CheckISo2Coordinates step7) {
-        this.step7 = step7;
+    public void setStep6(Step7_CheckTDWG step6) {
+        this.step7 = step6;
     }
 
-    public Step8_CheckCoordinatesRaster getStep8() {
+    public Step8_CheckISo2Coordinates getStep8() {
         return step8;
     }
 
-    public void setStep8(Step8_CheckCoordinatesRaster step8) {
-        this.step8 = step8;
+    public void setStep7(Step8_CheckISo2Coordinates step7) {
+        this.step8 = step7;
+    }
+
+    public Step9_CheckCoordinatesRaster getStep9() {
+        return step9;
+    }
+
+    public void setStep8(Step9_CheckCoordinatesRaster step8) {
+        this.step9 = step8;
     }  
     
 }
