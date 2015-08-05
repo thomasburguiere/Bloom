@@ -4,6 +4,11 @@
  */
 package src.beans;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import src.model.DarwinCore;
+
 
 /**
  * src.beans
@@ -15,7 +20,7 @@ public class Step3_CheckCoordinates {
     private boolean step3_ok = true;
     private int nbFound = 0;
     private boolean involved = true;
-    private String pathWrongCoordinates = "";
+    private String pathWrongCoordinates = "";   
     
     /**
      * src.beans
@@ -55,7 +60,5 @@ public class Step3_CheckCoordinates {
 
     public void setPathWrongCoordinates(String pathWrongCoordinates) {
         this.pathWrongCoordinates = pathWrongCoordinates;
-    }
-    
-    
+    }    
 }

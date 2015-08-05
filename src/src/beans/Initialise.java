@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import src.model.MappingDwC;
+import src.model.MappingReconcilePreparation;
 import src.model.ReconciliationService;
 
 /**
@@ -21,8 +22,7 @@ public class Initialise {
     private ArrayList<File> headerRasterList = new ArrayList<>();
     private ArrayList<File> inputSynonymsList = new ArrayList<>();
     private ArrayList<String> establishmentList = new ArrayList<>();
-    private ArrayList<MappingDwC> listDwcFiles = new ArrayList<>();
-    private ArrayList<ReconciliationService> listReconciliationService = new ArrayList<>();
+    private ArrayList<MappingReconcilePreparation> listMappingReconcileFiles = new ArrayList<>();
     
     private String DIRECTORY_PATH = "";
     private String RESSOURCES_PATH = "";
@@ -41,39 +41,23 @@ public class Initialise {
     public Initialise(){
 	
     }
+    
     /**
      * 
-     * @return ArrayList<ReconciliationService>
+     * @return ArrayList<MappingReconcilePreparation>
      */
-    public ArrayList<ReconciliationService> getListReconciliationService() {
-        return listReconciliationService;
+    public ArrayList<MappingReconcilePreparation> getListMappingReconcileFiles() {
+        return listMappingReconcileFiles;
     }
 
     /**
      * 
-     * @param listReconciliationService
+     * @param listMappingReconcileFiles
      * @return void
      */
-    public void setListReconciliationService(
-    	ArrayList<ReconciliationService> listReconciliationService) {
-        this.listReconciliationService = listReconciliationService;
-    }
-
-    /**
-     * 
-     * @return ArrayList<MappingDwC>
-     */
-    public ArrayList<MappingDwC> getListDwcFiles() {
-        return listDwcFiles;
-    }
-
-    /**
-     * 
-     * @param listDwcFiles
-     * @return void
-     */
-    public void setListDwcFiles(ArrayList<MappingDwC> listDwcFiles) {
-        this.listDwcFiles = listDwcFiles;
+    public void setListMappingReconcileFiles(
+    	ArrayList<MappingReconcilePreparation> listMappingReconcileFiles) {
+        this.listMappingReconcileFiles = listMappingReconcileFiles;
     }
 
     /**
@@ -247,7 +231,7 @@ public class Initialise {
     }
     
     public int getNbFiles(){
-	int nbFiles = this.getListDwcFiles().size();
+	int nbFiles = this.getListMappingReconcileFiles().size();
 	
 	return nbFiles;
     }

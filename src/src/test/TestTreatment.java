@@ -26,8 +26,8 @@ import junitx.framework.FileAssert;
  */
 public class TestTreatment {
 
-    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/test/";
-    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/";
+    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/resources/test/";
+    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/resources/";
     private static Treatment treatment;
     private static PrepareTests prepareTest;
     private static String nbSessionRandom;
@@ -51,8 +51,8 @@ public class TestTreatment {
 	    MappingDwC mappingDwc = listMappingDWC.get(i);
 	    boolean mapping = mappingDwc.isMapping();
 	    if(mapping){		
-		try {
-		    treatment.mappingDwC(mappingDwc);
+		/*try {
+		    treatment.mappingDwC(mappingDwc, );
 		    File mappedFile = mappingDwc.getMappedFile();
 		    HashMap<String, ArrayList<String>> testConnectionTagsValues = mappingDwc.getConnectionValuesTags();
 		    HashMap<String, String> connectionTags = mappingDwc.getConnectionTags();
@@ -61,7 +61,7 @@ public class TestTreatment {
 		} catch (IOException e) {
 		    // TODO Auto-generated catch block
 		    e.printStackTrace();
-		}
+		}*/
 	    }
 	}
 	    

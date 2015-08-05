@@ -13,25 +13,24 @@ import java.util.HashMap;
  * ReconciliationService.java
  * ReconciliationService
  */
-public class ReconciliationService {
+public class ReconciliationService{
 
-    private File mappedFile;
+    private File reconcileFile;
     private boolean reconcile;
     private String reconcileTagBased;
     private HashMap<Integer, String> linesConnectedNewName;
-    private int counterID;
+    private String filename;
     
-    public ReconciliationService(int idFile){
-	this.counterID = idFile;
+    public ReconciliationService(){
 
     }
 
-    public File getMappedFile() {
-        return mappedFile;
+    public File getReconcileFile() {
+        return reconcileFile;
     }
 
-    public void setMappedFile(File mappedFile) {
-        this.mappedFile = mappedFile;
+    public void setReconcileFile(File reconcileFile) {
+        this.reconcileFile = reconcileFile;
     }
 
     public boolean isReconcile() {
@@ -68,12 +67,12 @@ public class ReconciliationService {
         this.linesConnectedNewName = linesConnectedNewName;
     }
 
-    public int getCounterID() {
-        return counterID;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setCounterID(int counterID) {
-        this.counterID = counterID;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
     
 }

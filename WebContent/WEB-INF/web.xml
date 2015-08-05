@@ -60,27 +60,27 @@
 		<url-pattern>/step1</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>Step2_CheckCoordinates</servlet-name>
-		<servlet-class>src.beans.Step2_CheckCoordinates</servlet-class>
+		<servlet-name>Step2_ReconciliationService</servlet-name>
+		<servlet-class>src.beans.Step2_ReconciliationService</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>Step2_CheckCoordinates</servlet-name>
+		<servlet-name>Step2_ReconciliationService</servlet-name>
 		<url-pattern>/step2</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>Step3_CheckGeoIssue</servlet-name>
-		<servlet-class>src.beans.Step3_CheckGeoIssue</servlet-class>
+		<servlet-name>Step3_CheckCoordinates</servlet-name>
+		<servlet-class>src.beans.Step3_CheckCoordinates</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>Step3_CheckGeoIssue</servlet-name>
+		<servlet-name>Step3_CheckCoordinates</servlet-name>
 		<url-pattern>/step3</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>Step4_CheckTaxonomy</servlet-name>
-		<servlet-class>src.beans.Step4_CheckTaxonomy</servlet-class>
+		<servlet-name>Step4_CheckGeoIssue</servlet-name>
+		<servlet-class>src.beans.Step4_CheckGeoIssue</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>Step4_CheckTaxonomy</servlet-name>
+		<servlet-name>Step4_CheckGeoIssue</servlet-name>
 		<url-pattern>/step4</url-pattern>
 	</servlet-mapping>
 	<servlet>

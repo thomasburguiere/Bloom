@@ -20,7 +20,7 @@ import java.util.Map.Entry;
  * 
  * MappingDwC.java
  */
-public class MappingDwC {
+public class MappingDwC{
 
     private CSVFile noMappedFile;
     private File mappedFile;
@@ -30,10 +30,7 @@ public class MappingDwC {
     private HashMap<String, String> connectionTags;
     private HashMap<String, ArrayList<String>> connectionValuesTags;
     private boolean mapping;
-    private int counterID;
-    private String originalName = "";
-    private String originalExtension = "";
-    
+    private String filename;    
     /**
      * 
      * src.model
@@ -60,13 +57,13 @@ public class MappingDwC {
 
     /**
      * Create the mapped DwC file
-     * 
+     * noMappedDWC_
      * @param nbFileRandom
      * @throws IOException
      * @return File
      */
-    public File createNewDwcFile(String nbFileRandom) throws IOException{
-	String mappedFilename = noMappedFile.getCsvFile().getParent() + "/mappedDWC_" + nbFileRandom + "_" + this.getCounterID() +".csv";
+    public File createNewDwcFile(String nbFileRandom, int idFile) throws IOException{
+	String mappedFilename = noMappedFile.getCsvFile().getParent() + "/mappedDWC_" + nbFileRandom + "_" + idFile +".csv";
 	File mappedFile = new File(mappedFilename);
 	FileWriter writerMappedFile = new FileWriter (mappedFile);
 	HashMap<String, String> connectionTags = this.getConnectionTags();
@@ -253,40 +250,6 @@ public class MappingDwC {
 	
 	return false;
     }
-    
-    /**
-     * 
-     * @return String
-     */
-    public String getOriginalName() {
-        return originalName;
-    }
-
-    /**
-     * 
-     * @param originalName
-     * @return void
-     */
-    public void setOriginalName(String originalName) {
-        this.originalName = originalName;
-    }   
-
-    /**
-     * 
-     * @return String
-     */
-    public String getOriginalExtension() {
-        return originalExtension;
-    }
-
-    /**
-     * 
-     * @param originalExtension
-     * @return void
-     */
-    public void setOriginalExtension(String originalExtension) {
-        this.originalExtension = originalExtension;
-    }
 
     /**
      * 
@@ -322,22 +285,6 @@ public class MappingDwC {
 	this.mappedFile = mappedFile;
     }
 
-    /**
-     * 
-     * @return int
-     */
-    public int getCounterID() {
-	return counterID;
-    }
-
-    /**
-     * 
-     * @param counterID
-     * @return void
-     */
-    public void setCounterID(int counterID) {
-	this.counterID = counterID;
-    }
 
     /**
      * 
@@ -440,4 +387,13 @@ public class MappingDwC {
     public void setConnectionValuesTags(HashMap<String, ArrayList<String>> connectionValuesTags) {
 	this.connectionValuesTags = connectionValuesTags;
     }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+    
 }

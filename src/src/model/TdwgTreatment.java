@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.Point;
 public class TdwgTreatment {
 
     private String DIRECTORY_PATH = "";
-    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/";
+    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/resources/";
     private String nbSessionRandom;
     
     

@@ -3,19 +3,19 @@
  */
 package src.model;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map.Entry;
 
-import src.model.RasterTreatment;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -34,16 +34,16 @@ public class Treatment {
     private String RESSOURCES_PATH = "";
     private int nbSynonymInvolved = 0;
 
-    
+
     /**
      * 
      * package model
      * TreatmentData
      */
     public Treatment(){
-	
+
     }
-    
+
     /**
      * Delete Clean and temp tables. 
      * Delete DarwinCoreInput table.
@@ -60,7 +60,7 @@ public class Treatment {
 	    System.out.println(messagesClean.get(i));
 	}
 
-	
+
 	ConnectionDatabase newConnectionDeleteDarwin = new ConnectionDatabase();
 	ArrayList<String> messagesDarwin = new ArrayList<String>();
 	messagesDarwin.add("\n--- Delete DarwinCoreInput table ---");
@@ -69,8 +69,8 @@ public class Treatment {
 	for(int i = 0 ; i < messagesDarwin.size() ; i++){
 	    System.out.println(messagesDarwin.get(i));
 	}
-	 
-	
+
+
 	ConnectionDatabase newConnectionDeleteTemp = new ConnectionDatabase();
 	ArrayList<String> messagesTemp = new ArrayList<String>();
 	messagesTemp.add("\n--- Delete temp table ---");
@@ -90,10 +90,54 @@ public class Treatment {
      * @throws IOException
      * @return void
      */
-    public void mappingDwC(MappingDwC mappingDWC) throws IOException{
+    public void mappingDwC(MappingDwC mappingDWC, int idFile) throws IOException{
 	mappingDWC.setConnectionValuesTags(mappingDWC.doConnectionValuesTags());
-	File mappedFile = mappingDWC.createNewDwcFile(this.getNbSessionRandom());
+	File mappedFile = mappingDWC.createNewDwcFile(this.getNbSessionRandom(), idFile);
 	mappingDWC.setMappedFile(mappedFile);
+    }
+
+    public void reconcileService(ReconciliationService reconcileService, CSVFile referenceFileReconcile, int idFile){
+	
+	String tagReconcile = reconcileService.getReconcileTagBased();
+	int tagReconcileColumn = 0;
+	HashMap<Integer, String> linesConnectedNewName = reconcileService.getLineConnectedNewName();
+	ArrayList<String> listLinesReconciled = new ArrayList<>();
+	try{
+	    InputStream inputStreamReference = new FileInputStream(referenceFileReconcile.getCsvFile()); 
+	    InputStreamReader inputStreamReaderReference = new InputStreamReader(inputStreamReference);
+	    BufferedReader readerReference = new BufferedReader(inputStreamReaderReference);
+	    String line = "";
+	    int countLine = 0;
+	    while ((line = readerReference.readLine()) != null){
+		String [] lineSplit = line.split(referenceFileReconcile.getSeparator(), -1);
+
+		if(countLine == 0){
+		    for(int i = 0; i < lineSplit.length; i++){
+			if(lineSplit[i].equals(tagReconcile)){
+			    tagReconcileColumn = i;
+			}
+		    }
+
+		}
+		else{
+		    for(Entry<Integer, String> entry : linesConnectedNewName.entrySet()){
+			if(entry.getKey() + 1 == countLine){
+			    lineSplit[tagReconcileColumn] = entry.getValue();
+			}
+
+		    }
+		}
+		String newLine = StringUtils.join(lineSplit, ",");
+		listLinesReconciled.add(newLine);
+		countLine++;
+	    }
+	    
+	}
+	catch(Exception e){
+	    System.err.println(e);
+	}
+	File reconcileFile = this.createFileCsv(listLinesReconciled, "data/reconcile_" + this.getNbSessionRandom() + "_" + idFile + ".csv");
+	reconcileService.setReconcileFile(reconcileFile);
     }
 
     /**
@@ -186,7 +230,7 @@ public class Treatment {
      */
     public void includeSynonyms(File includeSynonyms){
 	SynonymsTreatment treatmentSynonyms = null;
-	
+
 	if(includeSynonyms != null){
 	    treatmentSynonyms = new SynonymsTreatment(includeSynonyms);
 	    treatmentSynonyms.setNbSessionRandom(this.getNbSessionRandom());
@@ -212,32 +256,32 @@ public class Treatment {
 	tdwg4Treatment.setDIRECTORY_PATH(this.getDIRECTORY_PATH());
 	tdwg4Treatment.setRESSOURCES_PATH(this.getRESSOURCES_PATH());
 	tdwg4Treatment.setNbSessionRandom(this.getNbSessionRandom());
-	
+
 	tdwg4Treatment.checkIsoTdwgCode(fileDarwinCore);
     }
 
     public GeographicTreatment checkGeographicOption(){
 	GeographicTreatment geoTreatment = new GeographicTreatment(this.getFileDarwinCore());
-	
+
 	geoTreatment.setDIRECTORY_PATH(this.getDIRECTORY_PATH());
 	geoTreatment.setRESSOURCES_PATH(this.getRESSOURCES_PATH());
 	geoTreatment.setNbSessionRandom(this.getNbSessionRandom());
-	
+
 	geoTreatment.geoGraphicTreatment();
-	
+
 	File wrongGeo = this.createFileCsv(geoTreatment.getWrongGeoList(), "wrong/wrong_geospatialIssues_" + this.getNbSessionRandom() + ".csv");
 	geoTreatment.setWrongGeoFile(wrongGeo);
-	
+
 	File wrongCoord = this.createFileCsv(geoTreatment.getWrongCoordinatesList(), "wrong/wrong_coordinates_" + this.getNbSessionRandom() + ".csv");
 	geoTreatment.setWrongCoordinatesFile(wrongCoord);
-	
+
 	File wrongPolygon = this.createFileCsv(geoTreatment.getWrongPolygonList(), "wrong/wrong_polygon_" + this.getNbSessionRandom() + ".csv");
 	geoTreatment.setWrongPolygonFile(wrongPolygon);
-		
+
 	return geoTreatment;
     }
 
- 
+
     /**
      * 
      * Check if coordinates are included in raster cells
@@ -250,28 +294,28 @@ public class Treatment {
 	RasterTreatment rasterTreatment = new RasterTreatment(rasterFiles, this);
 	rasterTreatment.setDIRECTORY_PATH(this.getDIRECTORY_PATH());
 	rasterTreatment.setRESSOURCES_PATH(this.getRESSOURCES_PATH());
-	
+
 	File matrixFileValidCells = rasterTreatment.treatmentRaster();
 	rasterTreatment.setMatrixFileValidCells(matrixFileValidCells);
-	
+
 	return rasterTreatment;
     }
 
-    
+
     public File establishmentMeansOption(ArrayList<String> listEstablishmentChecked){
 	EstablishmentTreatment establishTreatment = new EstablishmentTreatment(listEstablishmentChecked);
 	establishTreatment.setDIRECTORY_PATH(this.getDIRECTORY_PATH());
 	establishTreatment.setRESSOURCES_PATH(this.getRESSOURCES_PATH());
 	establishTreatment.setNbSessionRandom(this.getNbSessionRandom());
-	
+
 	establishTreatment.establishmentMeansTreatment();
 	ArrayList<String> noEstablishment = establishTreatment.getNoEstablishmentList();
-	
+
 	File noEstablishmentFile = this.createFileCsv(noEstablishment, "wrong/noEstablishmentMeans_" + this.getNbSessionRandom() + ".csv");
-	
+
 	return noEstablishmentFile;
     }
-    
+
     /**
      * Create a new csv file from lines 
      * 
@@ -406,19 +450,19 @@ public class Treatment {
     }
 
     public String getDIRECTORY_PATH() {
-        return DIRECTORY_PATH;
+	return DIRECTORY_PATH;
     }
 
     public void setDIRECTORY_PATH(String dIRECTORY_PATH) {
-        DIRECTORY_PATH = dIRECTORY_PATH;
+	DIRECTORY_PATH = dIRECTORY_PATH;
     }
 
     public String getRESSOURCES_PATH() {
-        return RESSOURCES_PATH;
+	return RESSOURCES_PATH;
     }
 
     public void setRESSOURCES_PATH(String rESSOURCES_PATH) {
-        RESSOURCES_PATH = rESSOURCES_PATH;
+	RESSOURCES_PATH = rESSOURCES_PATH;
     }
 
     public int getNbSynonymInvolved() {
@@ -428,7 +472,7 @@ public class Treatment {
     public void setNbSynonymInvolved(int nbSynonymInvolved) {
 	this.nbSynonymInvolved = nbSynonymInvolved;
     }
-    
-    
+
+
 }
 

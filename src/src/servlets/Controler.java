@@ -8,12 +8,10 @@ package src.servlets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -35,16 +33,15 @@ import src.beans.Step1_MappingDwc;
 import src.beans.Step2_ReconciliationService;
 import src.beans.Step3_CheckCoordinates;
 import src.beans.Step4_CheckGeoIssue;
-import src.beans.Step5_CheckTaxonomy;
-import src.beans.Step6_IncludeSynonym;
-import src.beans.Step7_CheckTDWG;
-import src.beans.Step8_CheckISo2Coordinates;
-import src.beans.Step9_CheckCoordinatesRaster;
+import src.beans.Step5_IncludeSynonym;
+import src.beans.Step6_CheckTDWG;
+import src.beans.Step7_CheckISo2Coordinates;
+import src.beans.Step8_CheckCoordinatesRaster;
 import src.model.CSVFile;
 import src.model.LaunchWorkflow;
 import src.model.MappingDwC;
+import src.model.MappingReconcilePreparation;
 import src.model.ReconciliationService;
-import ucar.nc2.dt.radial.RadialCoordSys;
 
 /**
  * src.servlets
@@ -56,7 +53,7 @@ import ucar.nc2.dt.radial.RadialCoordSys;
 public class Controler extends HttpServlet {
 
     private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/"; 
-    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/";
+    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/resources/";
     
     private Initialise initialisation;
     private String nbSessionRandom;
@@ -66,11 +63,10 @@ public class Controler extends HttpServlet {
     private Step2_ReconciliationService step2;
     private Step3_CheckCoordinates step3;
     private Step4_CheckGeoIssue step4;
-    private Step5_CheckTaxonomy step5;
-    private Step6_IncludeSynonym step6;
-    private Step7_CheckTDWG step7;
-    private Step8_CheckISo2Coordinates step8;
-    private Step9_CheckCoordinatesRaster step9;
+    private Step5_IncludeSynonym step5;
+    private Step6_CheckTDWG step6;
+    private Step7_CheckISo2Coordinates step7;
+    private Step8_CheckCoordinatesRaster step8;
     
     /**
      * 
@@ -131,14 +127,12 @@ public class Controler extends HttpServlet {
 	request.setAttribute("step4", step4);
 	step5 = newLaunch.getStep5();
 	request.setAttribute("step5", step5);
-	step6 = newLaunch.getStep6();
+	step6 = newLaunch.getStep7();
 	request.setAttribute("step6", step6);
-	step7 = newLaunch.getStep7();
+	step7 = newLaunch.getStep8();
 	request.setAttribute("step7", step7);
-	step8 = newLaunch.getStep8();
+	step8 = newLaunch.getStep9();
 	request.setAttribute("step8", step8);
-	step9 = newLaunch.getStep9();
-	request.setAttribute("step9", step9);
 	
 	this.getServletContext().getRequestDispatcher("/finalWorkflow.jsp").forward(request, response);
 	
@@ -178,8 +172,9 @@ public class Controler extends HttpServlet {
 	response.addHeader("Access-Control-Allow-Origin", "*");
 	
 	Iterator<FileItem> iterator = (Iterator<FileItem>)items.iterator();
-	ArrayList<MappingDwC> listDwcFiles = new ArrayList<>();
+	ArrayList<MappingDwC> listMappingFiles = new ArrayList<>();
 	ArrayList<ReconciliationService> listReconcileFiles = new ArrayList<>();
+	ArrayList<MappingReconcilePreparation> listMappingReconcileDWC = new ArrayList<>();
 	
 	int nbFilesInput = 0;
 	int nbFilesRaster = 0;
@@ -213,7 +208,7 @@ public class Controler extends HttpServlet {
 		String fileExtensionName = itemFile.getName();
 		fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
 		
-		File file = new File(DIRECTORY_PATH + "temp/data/noMappedDWC_" + this.getNbSessionRandom() + "_" + (nbFilesInput + 1 ) + "." + fileExtensionName);
+		File file = new File(DIRECTORY_PATH + "temp/data/noMappedDWC_" + this.getNbSessionRandom() + "_" + nbFilesInput + "." + fileExtensionName);
 		try {
 		    itemFile.write(file);
 		} catch (Exception e) {
@@ -222,10 +217,8 @@ public class Controler extends HttpServlet {
 		}
 		CSVFile csvFile = new CSVFile(file);
 		MappingDwC newMappingDWC = new MappingDwC(csvFile, false);
-		newMappingDWC.setCounterID(nbFilesInput);
-		newMappingDWC.setOriginalName(itemFile.getName());
-		newMappingDWC.setOriginalExtension(fileExtensionName);
-		listDwcFiles.add(newMappingDWC);
+		
+		listMappingFiles.add(newMappingDWC);
 		
 		newMappingDWC.initialiseMapping(this.getNbSessionRandom());
 		HashMap<String, String> connectionTags = new HashMap<>();
@@ -237,7 +230,14 @@ public class Controler extends HttpServlet {
 		newMappingDWC.setConnectionTags(connectionTags);
 		newMappingDWC.getNoMappedFile().setCsvName(file.getName());
 		//initialisation.getInputFilesList().add(csvFile.getCsvFile());
+		newMappingDWC.setFilename(itemFile.getName());
+		ReconciliationService reconciliationService = new ReconciliationService();
+		listReconcileFiles.add(reconciliationService);
 		
+		MappingReconcilePreparation mappingReconcileDWC = new MappingReconcilePreparation(newMappingDWC, reconciliationService, nbFilesInput);
+		mappingReconcileDWC.setOriginalName(itemFile.getName());
+		mappingReconcileDWC.setOriginalExtension(fileExtensionName);
+		listMappingReconcileDWC.add(mappingReconcileDWC);
 		
 		nbFilesInput ++;
 	    }
@@ -287,8 +287,8 @@ public class Controler extends HttpServlet {
 		String valueDropdown = item.getString();
 		String [] tableauField = fieldName.split("_");
 		String idDropdown = tableauField[tableauField.length-1];
-		for(int i = 0 ; i < listDwcFiles.size() ; i++ ){
-		    HashMap<String, String> connectionTags = listDwcFiles.get(i).getConnectionTags();
+		for(int i = 0 ; i < listMappingReconcileDWC.size() ; i++ ){
+		    HashMap<String, String> connectionTags = listMappingReconcileDWC.get(i).getMappingDWC().getConnectionTags();
 		    for(Entry<String, String> entry : connectionTags.entrySet()) {
 			String [] tableKey = entry.getKey().split("_");
 			String idKey = tableKey[tableKey.length-1];
@@ -304,11 +304,10 @@ public class Controler extends HttpServlet {
 		
 		int idMapping = Integer.parseInt(fieldName.split("_")[1]);
 		if(item.getString().equals("true")){
-		    for(int i = 0 ; i < listDwcFiles.size() ; i++ ){
-			int idFile = listDwcFiles.get(i).getCounterID();
-			if(idFile == (idMapping)){
-			    
-			    MappingDwC mappingDWC = listDwcFiles.get(i);
+		    for(int i = 0 ; i < listMappingReconcileDWC.size() ; i++ ){
+			int idFile = listMappingReconcileDWC.get(i).getIdFile();
+			if(idFile == (idMapping)){ 
+			    MappingDwC mappingDWC = listMappingReconcileDWC.get(i).getMappingDWC();
 			    mappingDWC.setMapping(true);
 			}
 		    }
@@ -318,13 +317,20 @@ public class Controler extends HttpServlet {
 	    }
 	    else if(fieldName.contains(reconcileActive)){
 		String [] tableauField =  fieldName.split("_");
-		int idFile = Integer.parseInt(tableauField[tableauField.length-1]);
-		System.out.println("idFileReconcile : " + idFile);
-		ReconciliationService reconciliationService = new ReconciliationService(idFile);
-		reconciliationService.setReconcile(true);
-		HashMap<Integer, String> linesConnectedNewName = new HashMap<>();
-		reconciliationService.setLineConnectedNewName(linesConnectedNewName);
-		listReconcileFiles.add(reconciliationService);
+		int idReconcile = Integer.parseInt(tableauField[tableauField.length-1]);
+		System.out.println("idFileReconcile : " + idReconcile);
+		for(int i = 0 ; i < listMappingReconcileDWC.size() ; i++ ){
+		    int idFile = listMappingReconcileDWC.get(i).getIdFile();
+		    if(idFile == (idReconcile)){
+			ReconciliationService reconciliationService = listMappingReconcileDWC.get(i).getReconcileDWC();
+			reconciliationService.setReconcile(true);
+			HashMap<Integer, String> linesConnectedNewName = new HashMap<>();
+			reconciliationService.setLineConnectedNewName(linesConnectedNewName);
+			reconciliationService.setFilename(listMappingReconcileDWC.get(i).getOriginalName());
+			listReconcileFiles.add(reconciliationService);
+		    }
+		}
+		
 	    }
 	    else if(fieldName.contains("dropdownReconcile_")){
 		
@@ -374,8 +380,9 @@ public class Controler extends HttpServlet {
 	    
 	}
 	
-	this.initialisation.setListDwcFiles(listDwcFiles);
-	this.initialisation.setListReconciliationService(listReconcileFiles);
+	
+	this.initialisation.setListMappingReconcileFiles(listMappingReconcileDWC);
+	
 	
     }
 

@@ -6,14 +6,16 @@ function initialise(){
 //var xhr = getXMLHttpRequest();
 
 //add a new input file
-function addField(compteur, idAdd, typeInput){
+function addField(compteur, idAdd, typeInput) {
 	//count inputs number
 	var nb_inp = document.getElementById(compteur).value;
 
 	var divAddLoad = document.createElement('div');
 	divAddLoad.setAttribute('id', "divAddLoad_" + nb_inp);
-	divAddLoad.setAttribute("class", "col-lg-12 addLoad");
-
+	divAddLoad.setAttribute("class", "btn-group btn-group-justified");
+    //divAddLoad.setAttribute("style", "margin-top: 10px; border-bottom-width: 10px; border-style:solid; border-width:1px; border-radius:5px; border-color:LightGray");
+    divAddLoad.setAttribute("role", "group");
+    
 	//Create a new input file
 	var inp = document.createElement('input');
 	inp.setAttribute('type', 'file');
@@ -21,19 +23,32 @@ function addField(compteur, idAdd, typeInput){
 	inp.setAttribute('name', typeInput + "_" + nb_inp);
 
 	if(typeInput == "inp"){
+        var globalInput = document.createElement("div");
+        
+        globalInput.setAttribute('id', "globalInput_" + nb_inp);
+        
 		inp.setAttribute('onchange', 'loadInputFile('+nb_inp+',\"change\")');
-
-		var divAdd = document.createElement('div');
+    
+        var spanInput = document.createElement('span');
+        spanInput.setAttribute('class', "btn btn-file");
+        spanInput.appendChild(inp);
+        
+        var divAdd = document.createElement('div');
 		divAdd.setAttribute('id', "divAdd_" + nb_inp);
-		divAdd.setAttribute('class', "col-lg-4");
-
+		divAdd.setAttribute('class', "fileinput fileinput-new btn-group");
+        divAdd.setAttribute('role', "group");
+        divAdd.appendChild(spanInput);
+        
+        
 		var divLoad = document.createElement('div');
 		divLoad.setAttribute('id', "divLoad_" + nb_inp);
-		divLoad.setAttribute('class', "col-lg-4");
-
+		divLoad.setAttribute('class', "col-lg-4 btn-group");
+        divLoad.setAttribute('role', "group");
+                             
 		var divReconcile = document.createElement('div');
 		divReconcile.setAttribute('id', "divReconcile_" + nb_inp);
-		divReconcile.setAttribute('class', "col-lg-4");
+		divReconcile.setAttribute('class', "col-lg-4 btn-group");
+        divReconcile.setAttribute('role', "group");
 
 		var bloc_inputs = document.getElementById('bloc-inputs');
 
@@ -58,27 +73,22 @@ function addField(compteur, idAdd, typeInput){
 		divTableReconcile.setAttribute('id', "divTableReconcile_" + nb_inp);
 		divTableReconcile.setAttribute('class', "col-lg-12 dataTable");
 		divTableReconcile.style.display = "inline-block";
-		//divTableReconcile.style="width:auto";
 		
-		/*var reconcile = document.createElement("input");
-		reconcile.id = "reconcileActive_" + nb_inp;
-		reconcile.name = "reconcileActive_" + nb_inp;
-		reconcile.value = "false";
-		reconcile.type = "hidden";
-		divTableReconcile.appendChild(reconcile);
-		*/
-		divAdd.appendChild(inp);
+        
+		divAdd.appendChild(spanInput);
 		divAddLoad.appendChild(divAdd);
 		divAddLoad.appendChild(divLoad);
 		divAddLoad.appendChild(divReconcile);
-
-		bloc_inputs.appendChild(divAddLoad);
-		bloc_inputs.appendChild(divMapping);
-		bloc_inputs.appendChild(divSubmitMapping);
-		bloc_inputs.appendChild(divTableReconcile);
-		bloc_inputs.appendChild(divReconciliationCheck);
-		bloc_inputs.appendChild(divSubmitReconcile);
-		
+        
+        bloc_inputs.appendChild(globalInput);
+        globalInput.appendChild(divAddLoad);
+        
+		globalInput.appendChild(divMapping);
+		globalInput.appendChild(divSubmitMapping);
+		globalInput.appendChild(divTableReconcile);
+		globalInput.appendChild(divReconciliationCheck);
+		globalInput.appendChild(divSubmitReconcile);
+		globalInput.setAttribute("style","margin-top: 10px; border-bottom-width: 10px; border-style:solid; border-width:1px; border-radius:5px; border-color:LightGray; display:inline-block;");
 		
 
 	}
@@ -139,16 +149,17 @@ function deleteField(compteur, typeInput){
 			var divTableReconcile = document.getElementById("divTableReconcile_" + id);
 			var divSubmitReconcile = document.getElementById("divSubmitReconcile_" + id);
 			
+            var globalInput = document.getElementById("globalInput_" + id);
 			//divAdd.removeChild(inp);
 			//divAddLoad.removeChild(divAdd);
+            bloc_inputs.removeChild(globalInput);
+			//bloc_inputs.removeChild(divAddLoad);
+			//bloc_inputs.removeChild(divMapping);
+			//bloc_inputs.removeChild(divSubmitMapping);
 
-			bloc_inputs.removeChild(divAddLoad);
-			bloc_inputs.removeChild(divMapping);
-			bloc_inputs.removeChild(divSubmitMapping);
-
-			bloc_inputs.removeChild(divReconciliationCheck);
-			bloc_inputs.removeChild(divTableReconcile);
-			bloc_inputs.removeChild(divSubmitReconcile);
+			 //bloc_inputs.removeChild(divReconciliationCheck);
+			//bloc_inputs.removeChild(divTableReconcile);
+			//bloc_inputs.removeChild(divSubmitReconcile);
 		}
 		//decrement input counter
 		document.getElementById(compteur).value --;
@@ -316,14 +327,15 @@ function mappingDWC(counter, change_load_reconcile){
 	var buttonConvert = null;
 	if(!convertButton){
 		var divLoad = document.getElementById("divLoad_" + counter);
-		buttonConvert = document.createElement('input');
+		buttonConvert = document.createElement('button');
 		buttonConvert.type = "button";
 		buttonConvert.id = "convert_" + counter;
 		buttonConvert.name = "convert_" + counter;
-		buttonConvert.value = "Load file for mapping";
+		//buttonConvert.value = "Load file for mapping";
 		buttonConvert.setAttribute("onclick" , "loadInputFile(" + counter + ",\"load\")");
 		divLoad.appendChild(buttonConvert);
 		divAddLoad.appendChild(divLoad);
+        $("#convert_" + counter).text('Load file for mapping');
 	}
 	else{
 		buttonConvert = document.getElementById("convert_" + counter);

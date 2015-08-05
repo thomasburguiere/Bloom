@@ -33,8 +33,8 @@ import src.model.MappingDwC;
 public class PrepareTests {
 
 
-    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/test/";
-    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/ressources/";
+    private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/resources/test/";
+    private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/resources/";
 
     private Initialise initialisation;
     public String nbSessionRandom;
@@ -106,10 +106,9 @@ public class PrepareTests {
 	    }
 	    CSVFile csvFile = new CSVFile(file);
 	    MappingDwC newMappingDWC = new MappingDwC(csvFile, false);
-	    newMappingDWC.setCounterID(i);
-	    newMappingDWC.setOriginalName(inputFilesList.get(i).getName());
+	    //newMappingDWC.setOriginalName(inputFilesList.get(i).getName());
 	    String nameFile = inputFilesList.get(i).getName();
-	    newMappingDWC.setOriginalExtension(nameFile.substring(nameFile.indexOf('.')+1,nameFile.length()));
+	    //newMappingDWC.setOriginalExtension(nameFile.substring(nameFile.indexOf('.')+1,nameFile.length()));
 	    listMappedDWC.add(newMappingDWC);
 	    newMappingDWC.initialiseMapping(getNbSessionRandom());
 	    HashMap<String, String> connectionTags = new HashMap<>();
@@ -142,7 +141,7 @@ public class PrepareTests {
 
 	}
 	
-	initialisation.setListDwcFiles(listMappedDWC);
+	//initialisation.setListMappingFiles(listMappedDWC);
     }
 
     public void prepareInputsRaster(){

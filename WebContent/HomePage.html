@@ -1,0 +1,222 @@
+ <%--<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>--%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link
+	href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css"
+	rel="stylesheet" />
+
+<link
+	href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"
+	rel="stylesheet" type="text/css">
+<link
+	href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic'
+	rel='stylesheet' type='text/css'>
+<link
+	href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+	rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css"
+	href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+<link rel="Stylesheet" href="css/watable.css" />
+<link href="css/clean-blog.min.css" rel="stylesheet">
+<!--<link href="css/HomePage.css" rel="stylesheet">-->
+<title>Biodiversity Linked Organisms Occurrences Megadatasets</title>
+</head>
+<body onload="javascript:initialise()">
+
+
+
+	<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header page-scroll">
+			<button type="button" class="navbar-toggle" data-toggle="collapse"
+				data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse"
+			id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="about.html">About</a></li>
+				<li><a href="post.html">Documentation</a></li>
+				<li><a href="contact.html">Contact</a></li>
+			</ul>
+		</div>
+		<!-- /.navbar-collapse -->
+	</div>
+	<!-- /.container --> </nav>
+	<header class="intro-header"
+		style="background-image: url('images/IMG_1792.JPG')">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+				<div class="post-heading">
+					<h1>Biodiversity Linked Organisms Occurrences Megadatasets</h1>
+					<h2 class="subheading">Workflow for open data cleaning</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+	</header>
+	<div class="container">
+		<div id="divBody" class="row">
+			<!--<div class="col-lg-4">
+				<img src="images/colibri_bis.jpg"/>
+			</div>-->
+			<div class="col-lg-12">
+				<form action="controler" method="post" enctype="multipart/form-data"
+					name="formulaire" id="formulaire" accept-charset=utf-8>
+					<div class="post-preview" id="bloc-intro">
+						<h2 class="post-title">Workflow begining</h2>
+						<h3 class="post-subtitle">Choose your inputs preferences</h3>
+					</div>
+					<hr class="col-lg-12"></hr>
+					<div class="post-preview col-lg-12" id="bloc-inputs">
+						<div class="post-preview">
+							<h3 class="post-subtitle">Select inputs files</h3>
+						</div>
+						<input id="compteur_inp" type="hidden" name="compteur_inp" value=1 />
+						<div class="btn-group btn-group-justified marginBloc" role="group">
+							<div class="btn-group" role="group">
+								<button id="addFile" type="button" class="btn btn-default"
+									name="addFile"
+									onclick="javascript:addField('compteur_inp', 'synonyms', 'inp')"
+									value="Add a new file">Add a new file
+                                </button>
+							</div>
+							<div class="btn-group" role="group">
+								<button id="delFile" name="delFile" type="button"
+									class="btn btn-default"
+									onclick="javascript:deleteField('compteur_inp', 'inp')"
+									value="Delete file">Delete file
+                                </button>
+							</div>
+						</div>
+                        <div:hover id="globalInput_0" style="margin-top: 10px; border-bottom-width: 10px; border-style:solid; border-width:1px; border-radius:5px; border-color:LightGray; display:inline-block;">
+                            <div id="divAddLoad_0" class="btn-group btn-group-justified" role="group" >
+                                <div id="divAdd_0" class="fileinput fileinput-new btn-group" role="group">
+                                    <span class="btn btn-file">
+                                        <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')">
+                                    </span>
+                                </div>
+                                <!--<div id="divAdd_0" class="form-control file-caption kv-fileinput-caption btn btn-default btn-file btn-group" role="group">
+                                    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                        <span class="input-group-addon btn btn-default btn-file">
+                                            <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')" />
+                                        </span>
+                                    </div>
+                                </div>-->
+                                <div id="divLoad_0" class="col-lg-4 btn-group" role="group"></div>
+                                <div class="col-lg-4 btn-group" role="group" id="divReconcile_0"></div>
+                            </div>
+                       
+                            <div id="divMapping_0" class="col-lg-12 mapping"></div>
+                            <div id="divSubmitMapping_0" class="col-lg-12 submitMapping">
+                            </div>
+                            <div id="divTableReconcile_0" class="col-lg-12 dataTable"
+                                style="width: auto">
+                                <!--  <input name="reconcileActive_0" id="reconcileActive_0" type="hidden" value="">-->
+                            </div>
+                            <div id="divReconciliationCheck_0" class="col-lg-12"></div>
+
+                            <div id="divSubmitReconcile_0" class="col-lg-12"></div>
+                        </div>
+                     </div>
+                    <hr class="col-lg-12"></hr>
+					<div class="post-preview col-lg-12" id="bloc-synonym">
+						<h3 class="post-subtitle">Synonyms taxons</h3>
+						<input id="synonyms" type="checkbox" name="synonyms"
+							value="synonyms"> Include synonyms taxons
+					</div>
+					<hr class="col-lg-12"></hr>
+					<div class="post-preview col-lg-12" id="bloc-divRaster">
+						<h3 class="post-subtitle">Raster checking</h3>
+						<input id="compteur_raster" type="hidden" name="compteur_raster"
+							value=0 /> <input id="compteur_header" type="hidden"
+							name="compteur_header" value=0 /> <input type="checkbox"
+							id="raster" name="raster" value="raster"
+							onclick="addDeleteRasterFile()"> Check data in raster
+						cells
+						<div id="divRasterFiles" style="margin-left: 40px"></div>
+					</div>
+					<hr class="col-lg-12"></hr>
+					<div class="post-preview col-lg-12" id="bloc-tdwg4">
+						<h3 class="post-subtitle">TDWG4 checking</h3>
+						<input type="checkbox" id="tdwg4" name="tdwg4" value="tdwg4">
+						Botanic data (check tdwg4 code)
+					</div>
+					<hr class="col-lg-12"></hr>
+					<div class=" post-preview col-lg-12" id="bloc-introduce">
+						<h3 class="post-subtitle">How biological individual(s) is
+							represented in the Occurrence</h3>
+						<h4 class="post-meta">became established at the location.
+							("establishmentMeans" DarwinCore term)</h4>
+						<input id="establishment" type="checkbox" name="establishment"
+							value="establishment" onclick="established()"> Choose
+						your to check with an introduce way
+
+						<div style="margin-left: 40px">
+							<input id="native" type="checkbox" name="native" value="native"
+								onclick="checkEstablishment()"> Native <br> <input
+								id="introduced" type="checkbox" name="introduced"
+								value="introduced" onclick="checkEstablishment()">
+							Introduced <br> <input id="naturalised" type="checkbox"
+								name="naturalised" value="naturalised"
+								onclick="checkEstablishment()"> Naturalised <br> <input
+								id="invasive" type="checkbox" name="invasive" value="invasive"
+								onclick="checkEstablishment()"> Invasive <br> <input
+								id="managed" type="checkbox" name="managed" value="managed"
+								onclick="checkEstablishment()"> Managed <br> <input
+								id="uncertain" type="checkbox" name="uncertain"
+								value="uncertain" onclick="checkEstablishment()">
+							Uncertain <br> <input id="others" type="checkbox"
+								name="others" value="others" onclick="checkEstablishment()">
+							Others (blank, tags no represented, ...)
+						</div>
+					</div>
+			</div>
+			<hr class="col-lg-12"></hr>
+			<!-- Pager -->
+			<ul class="pager">
+				<li class="next"><input type="submit" value="Launch workflow"
+					id="workflowLaunch" name="workflowLaunch" class="button"></li>
+			</ul>
+			</form>
+		</div>
+	</div>
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="js/jquery.watable.js"></script>
+	<script type="text/javascript" src="js/ReconciliationFunctions.js"></script>
+	<script type="text/javascript" src="js/functions.js"></script>
+
+	<script type="text/javascript" charset="utf8"
+		src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
+	<script
+		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script
+		src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+	<script type="text/javascript">
+			
+			
+			
+		</script>
+	</div>
+</body>
+</html>

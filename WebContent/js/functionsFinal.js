@@ -1,57 +1,54 @@
-function initialiseFinalPage(){
-	var step1_involved = document.getElementById("step1_involved").value;
-	if(step1_involved == "true"){
+function initialiseFinalPage() {
+	for (var i = 1; i <= 9 ; i++) {
+		var step_involved = document.getElementById("step" + i + "_involved").value;
+        
+		if(step_involved == "true"){
+		      console.log(i + "  => " + step_involved);
+            this.initialiseStep(i, true);
+		}
+		else{
+            console.log(i + " => " + step_involved);
+			this.initialiseStep(i, false);
+		}
 		
-		this.initialiseStep1();
-	}
-
-	var step3_involved = document.getElementById("step3_involved").value;
-	if(step3_involved == "true"){
-		this.initialiseStep3();
-	}
-
-	var step4_involved = document.getElementById("step4_involved").value;
-	if(step4_involved == "true"){
-		this.initialiseStep4();
-	}
-
-	var step5_involved = document.getElementById("step5_involved").value;
-	if(step5_involved == "true"){
-		this.initialiseStep5();
-	}
-
-	var step6_involved = document.getElementById("step6_involved").value;
-	if(step6_involved == "true"){
-		this.initialiseStep6();
-	}
-
-	var step7_involved = document.getElementById("step7_involved").value;
-	if(step7_involved == "true"){
-		this.initialiseStep7();
-	}
-
-	var step8_involved = document.getElementById("step8_involved").value;
-	if(step8_involved == "true"){
-		this.initialiseStep8();
-	}
-
-	var step9_involved = document.getElementById("step9_involved").value;
-	if(step9_involved == "true"){
-		this.initialiseStep9();
 	}
 }
 
 function checkErrorOk(step_ok, p_ok){
 	if(step_ok == "true"){
-		console.log("true : " + step_ok);
+		//console.log("true : " + step_ok);
 		p_ok.setAttribute("style", "color:#089A4C");
 	}
 	else{
-		console.log("false : " + step_ok);
+		//console.log("false : " + step_ok);
 		p_ok.setAttribute("style", "color:#FF0000");
 	}
 }
 
+function initialiseStep(nbStep, involved){
+	var divStep = document.getElementById("divStep" + nbStep);
+	var step_ok = document.getElementById("step" + nbStep + "_ok").value;
+	var p_ok = document.getElementById("p_ok" + nbStep);
+	
+	divStep.setAttribute('style', "margin-left: 40px; visibility: visible");
+	console.log(involved);
+	if(involved){
+		var divStepInvolved = document.getElementById("divStep" + nbStep + "Involved");
+		this.checkErrorOk(step_ok, p_ok);
+		//divStepInvolved.setAttribute('style', "margin-left: 40px; visibility: visible");
+	}
+	else{
+	    var notInvolved = document.getElementById("divStep" + nbStep + "NotInvolved");
+        console.log(notInvolved);
+	    //notInvolved.setAttribute('style', "margin-left: 40px; visibility: visible");
+	    
+	}
+	
+	
+	
+}
+
+/*
 function initialiseStep1(){
 	var divStep1 = document.getElementById("divStep1");
 	var step1_ok = document.getElementById("step1_ok").value;
@@ -60,6 +57,16 @@ function initialiseStep1(){
 	this.checkErrorOk(step1_ok, p_ok);
 	
 	divStep1.setAttribute('style', "margin-left: 40px; visibility: visible");
+}
+
+function initialiseStep2(){
+	var divStep2 = document.getElementById("divStep2");
+	var step2_ok = document.getElementById("step2_ok").value;
+	var p_ok = document.getElementById("p_ok2");
+	
+	this.checkErrorOk(step2_ok, p_ok);
+	
+	divStep2.setAttribute('style', "margin-left: 40px; visibility: visible");
 }
 
 function initialiseStep3(){
@@ -131,3 +138,4 @@ function initialiseStep9(){
 	
 	divStep9.setAttribute('style', "margin-left: 40px; visibility: visible");
 }
+*/

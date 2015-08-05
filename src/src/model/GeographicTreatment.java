@@ -50,18 +50,23 @@ public class GeographicTreatment {
 	this.darwinCore = darwinCore;
     }
     
-    public void geoGraphicTreatment(){
+    public ArrayList<String> geoGraphicTreatment(){
+	ArrayList<String> infosSummary = new ArrayList<>();
+	
 	this.deleteWrongIso2();
 	this.createTableClean();
 	
 	ArrayList<String> wrongCoordinates = this.deleteWrongCoordinates();
 	this.setWrongCoordinatesList(wrongCoordinates);
+	infosSummary.add("error number : " + Integer.toString(wrongCoordinates.size()));
 	
 	ArrayList<String> wrongGeoSpatial = this.deleteWrongGeospatial();
 	this.setWrongGeoList(wrongGeoSpatial);
 	
 	ArrayList<String> wrongPolygon = this.checkCoordinatesIso2Code();
 	this.setWrongPolygonList(wrongPolygon);
+	
+	return infosSummary;
     }
     
     /**
