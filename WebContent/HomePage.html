@@ -1,4 +1,3 @@
- <%--<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>--%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -7,7 +6,6 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet"
 	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 <link
@@ -26,14 +24,12 @@
 <link rel="stylesheet" type="text/css"
 	href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
 <link rel="Stylesheet" href="css/watable.css" />
-<link href="css/clean-blog.min.css" rel="stylesheet">
+<link href="css/clean-blog.css" rel="stylesheet">
 <!--<link href="css/HomePage.css" rel="stylesheet">-->
+
 <title>Biodiversity Linked Organisms Occurrences Megadatasets</title>
 </head>
 <body onload="javascript:initialise()">
-
-
-
 	<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -61,22 +57,19 @@
 	<!-- /.container --> </nav>
 	<header class="intro-header"
 		style="background-image: url('images/IMG_1792.JPG')">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-				<div class="post-heading">
-					<h1>Biodiversity Linked Organisms Occurrences Megadatasets</h1>
-					<h2 class="subheading">Workflow for open data cleaning</h2>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Biodiversity Linked Organisms Occurrences Megadatasets</h1>
+                        <h2 class="subheading">Workflow for open data cleaning</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
 	</header>
 	<div class="container">
 		<div id="divBody" class="row">
-			<!--<div class="col-lg-4">
-				<img src="images/colibri_bis.jpg"/>
-			</div>-->
 			<div class="col-lg-12">
 				<form action="controler" method="post" enctype="multipart/form-data"
 					name="formulaire" id="formulaire" accept-charset=utf-8>
@@ -88,6 +81,8 @@
 					<div class="post-preview col-lg-12" id="bloc-inputs">
 						<div class="post-preview">
 							<h3 class="post-subtitle">Select inputs files</h3>
+                            <h4 class="post-meta">You can choose as many as you like. Files must be to csv format with <a href="http://rs.tdwg.org/dwc/terms/guides/text/" onclick="window.open(this.href); return false;">DarwinCore terms</a>.
+                            </h4>
 						</div>
 						<input id="compteur_inp" type="hidden" name="compteur_inp" value=1 />
 						<div class="btn-group btn-group-justified marginBloc" role="group">
@@ -106,30 +101,23 @@
                                 </button>
 							</div>
 						</div>
-                        <div:hover id="globalInput_0" style="margin-top: 10px; border-bottom-width: 10px; border-style:solid; border-width:1px; border-radius:5px; border-color:LightGray; display:inline-block;">
+                        <div id="globalInput_0" class="global" style="margin-top: 10px; border-bottom-width: 10px; border-style:solid; border-width:1px; border-radius:5px; border-color:LightGray; display:inline-block;">
                             <div id="divAddLoad_0" class="btn-group btn-group-justified" role="group" >
                                 <div id="divAdd_0" class="fileinput fileinput-new btn-group" role="group">
                                     <span class="btn btn-file">
                                         <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')">
                                     </span>
                                 </div>
-                                <!--<div id="divAdd_0" class="form-control file-caption kv-fileinput-caption btn btn-default btn-file btn-group" role="group">
-                                    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                        <span class="input-group-addon btn btn-default btn-file">
-                                            <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')" />
-                                        </span>
-                                    </div>
-                                </div>-->
                                 <div id="divLoad_0" class="col-lg-4 btn-group" role="group"></div>
                                 <div class="col-lg-4 btn-group" role="group" id="divReconcile_0"></div>
                             </div>
                        
                             <div id="divMapping_0" class="col-lg-12 mapping"></div>
-                            <div id="divSubmitMapping_0" class="col-lg-12 submitMapping">
+                            <div id="divSubmitMapping_0" class="col-lg-12 submit-mapping btn-group btn-group-justified">
                             </div>
                             <div id="divTableReconcile_0" class="col-lg-12 dataTable"
                                 style="width: auto">
-                                <!--  <input name="reconcileActive_0" id="reconcileActive_0" type="hidden" value="">-->
+                                <input name="reconcileActive_0" id="reconcileActive_0" type="hidden" value="">
                             </div>
                             <div id="divReconciliationCheck_0" class="col-lg-12"></div>
 
@@ -188,35 +176,70 @@
 							Others (blank, tags no represented, ...)
 						</div>
 					</div>
-			</div>
+			     
 			<hr class="col-lg-12"></hr>
 			<!-- Pager -->
 			<ul class="pager">
-				<li class="next"><input type="submit" value="Launch workflow"
-					id="workflowLaunch" name="workflowLaunch" class="button"></li>
+                <div class="btn-group btn-group-justified" role="group">
+                    <div class="btn-group" role="group">
+                    <button type="submit" id="workflowLaunch" name="workflowLaunch" class="btn btn-default">
+                        Start workflow
+                    </button>
+                    </div>
+                </div>
+                
 			</ul>
 			</form>
+        </div>
 		</div>
 	</div>
-
+	<hr></hr>
+<!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="http://www.gbif.org/">
+                                <img src="images/logo-gbif_2.gif" height="70" width="70" class="img-circle"></img>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; BLOOM 2015</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script src="bootstrap/js/bootstrap.min.js"></script>
+		src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+    </script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
 	<script src="js/jquery.watable.js"></script>
 	<script type="text/javascript" src="js/ReconciliationFunctions.js"></script>
 	<script type="text/javascript" src="js/functions.js"></script>
 
 	<script type="text/javascript" charset="utf8"
-		src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
-	<script
-		src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js">
+    </script>
 	<script
 		src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-	<script type="text/javascript">
-			
-			
-			
-		</script>
-	</div>
+	<script type="text/javascript"></script>
 </body>
 </html>

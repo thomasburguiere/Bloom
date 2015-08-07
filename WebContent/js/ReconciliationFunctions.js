@@ -93,13 +93,14 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 
 		if(!reconcileButton){
 			var divReconcile = document.getElementById("divReconcile_" + counter);
-			buttonReconcile = document.createElement('input');
+			buttonReconcile = document.createElement('button');
 			buttonReconcile.type = "button";
 			buttonReconcile.id = "reconcileButton_" + counter;
 			buttonReconcile.name = "reconcileButton_" + counter;
-			buttonReconcile.value = "Taxonomic validation";
+			//buttonReconcile.value = "Taxonomic validation";
 			buttonReconcile.setAttribute("onclick" , "loadInputFile(" + counter + ",\"reconcile\")");
 			divReconcile.appendChild(buttonReconcile);
+            $("#reconcileButton_" + counter).text("Taxonomic validation");
 			divAddLoad.appendChild(divReconcile);
 			/*var testSelect = document.createElement('a');
 			var divReconciliationCheck = document.getElementById("divReconciliationCheck_" + counter);
@@ -170,12 +171,22 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 			var divReconciliationCheck = document.getElementById("divReconciliationCheck_" + counter);
 			var urlTaxo = document.getElementById("urlAPItaxo_" + counter);
 			if(urlTaxo == null){
+                var divUrlTaxo = document.createElement("div");
+                divUrlTaxo.setAttribute('class', "col-lg-12 url-div");
+                divUrlTaxo.id = "divUrlTaxo_" + counter;
+                
 				var urlTaxo = document.createElement("input");
 				urlTaxo.id = "urlAPItaxo_" + counter;
 				urlTaxo.type = "url";
-				urlTaxo.setAttribute('class', "form-control col-lg-12");
+				urlTaxo.setAttribute('class', "col-lg-10");
 				urlTaxo.placeholder = "http://data1.kew.org/reconciliation/reconcile/IpniName";
-				divReconciliationCheck.appendChild(urlTaxo);
+                var labelUrl = document.createElement('label');
+                labelUrl.id = "labelUrlTaxo_" + counter;
+                labelUrl.setAttribute('class', "col-lg-2");
+                divUrlTaxo.appendChild(labelUrl);
+                divUrlTaxo.appendChild(urlTaxo);
+				divReconciliationCheck.appendChild(divUrlTaxo);
+                $("#labelUrlTaxo_" + counter).text("Url reference");
 			}
 			if(changeOrLoad == "change"){
 				var fileInput = document.querySelector('#inp_' + counter);
@@ -239,7 +250,7 @@ function createReconciliationPreparation(presentTags, nbInput){
 		tablePrepareReconcile.id = "tablePrepareReconcile_" + nbInput;
 		tablePrepareReconcile.name = "tablePrepareReconcile_" + nbInput;
 		tablePrepareReconcile.border = "0";
-		tablePrepareReconcile.setAttribute("class", "tableMapping");
+		tablePrepareReconcile.setAttribute("class", "table");
 		for(var i = 0 ; i < columnPrepare.length; i++){
 			var row = tablePrepareReconcile.insertRow(-1);
 			row.id = "rowReconcile_"+i;
@@ -267,10 +278,10 @@ function createReconciliationPreparation(presentTags, nbInput){
 
 		divReconciliationCheck.appendChild(tablePrepareReconcile);
 
-		var buttonStartReconciliation = document.createElement('input');
+		var buttonStartReconciliation = document.createElement('button');
 		buttonStartReconciliation.id = "buttonStartReconciliation_" + nbInput;
 		buttonStartReconciliation.name = "buttonStartReconciliation_" + nbInput;
-		buttonStartReconciliation.value = "Start reconciliation";
+		//buttonStartReconciliation.value = "Start reconciliation";
 		buttonStartReconciliation.type = "button";
 		buttonStartReconciliation.setAttribute("onclick", "startReconciliation(" + nbInput + ")");
 
@@ -278,15 +289,14 @@ function createReconciliationPreparation(presentTags, nbInput){
 		divButtonStartReconciliation.id = "divButtonStartReconciliation_" + nbInput;
 		divButtonStartReconciliation.setAttribute('class', "col-lg-6");
 		divButtonStartReconciliation.appendChild(buttonStartReconciliation);
-
+        
 		divSubmitReconcile.appendChild(divButtonStartReconciliation);
+        
 
-		//alert("creation : " + divButtonStartReconciliation.id);
-
-		var buttonCancelReconciliation = document.createElement('input');
+		var buttonCancelReconciliation = document.createElement('button');
 		buttonCancelReconciliation.id = "buttonCancelReconciliation_" + nbInput;
 		buttonCancelReconciliation.name = "buttonCancelReconciliation_" + nbInput;
-		buttonCancelReconciliation.value = "Cancel reconciliation";
+		//buttonCancelReconciliation.value = "Cancel reconciliation";
 		buttonCancelReconciliation.type = "button";
 		buttonCancelReconciliation.setAttribute("onclick", "cancelReconciliation(" + nbInput + ")");
 
@@ -294,13 +304,16 @@ function createReconciliationPreparation(presentTags, nbInput){
 		divButtonCancelReconciliation.id = "divButtonCancelReconciliation_" + nbInput;
 		divButtonCancelReconciliation.setAttribute('class', "col-lg-6");
 		divButtonCancelReconciliation.appendChild(buttonCancelReconciliation);
+        
 
 		divSubmitReconcile.appendChild(divButtonCancelReconciliation);
-
-		var buttonValidReconciliation = document.createElement('input');
+        $("#buttonCancelReconciliation_" + nbInput).text("Cancel reconciliation");
+        $("#buttonStartReconciliation_" + nbInput).text("Start reconciliation");
+        
+		var buttonValidReconciliation = document.createElement('button');
 		buttonValidReconciliation.id = "buttonValidReconciliation_" + nbInput;
 		buttonValidReconciliation.name = "buttonValidReconciliation_" + nbInput;
-		buttonValidReconciliation.value = "Valid reconciliation";
+		//buttonValidReconciliation.value = "Valid reconciliation";
 		buttonValidReconciliation.type = "button";
 		var activeReconcile = new Boolean(true);
 		buttonValidReconciliation.setAttribute("onclick", "setReconciliation(" + activeReconcile + "," + nbInput + ")");
@@ -309,11 +322,11 @@ function createReconciliationPreparation(presentTags, nbInput){
 		divButtonValidReconciliation.id = "divButtonValidReconciliation_" + nbInput;
 		divButtonValidReconciliation.setAttribute('class', "col-lg-6");
 		divButtonValidReconciliation.appendChild(buttonValidReconciliation);
-
+       
 		divButtonValidReconciliation.style.display ="none";
 
 		divSubmitReconcile.appendChild(divButtonValidReconciliation);
-
+         $("#buttonValidReconciliation_" + nbInput).text("Valid reconciliation");
 
 	}
 }
@@ -358,7 +371,7 @@ function startReconciliation(nbInput){
 		tableReconcile.id = "tableReconcile_" + nbInput;
 		tableReconcile.name = "tableReconcile_" + nbInput;
 		tableReconcile.border = "0";
-		tableReconcile.setAttribute("class", "tableMapping");
+		tableReconcile.setAttribute("class", "table-mapping");
 		
 		var reconcile = $("#reconcileActive_" + nbInput);
 		if(reconcile.length != 1){
@@ -383,7 +396,7 @@ function startReconciliation(nbInput){
 		tableReconcile.id = "tableReconcile_" + nbInput;
 		tableReconcile.name = "tableReconcile_" + nbInput;
 		tableReconcile.border = "0";
-		tableReconcile.setAttribute("class", "tableMapping");
+		tableReconcile.setAttribute("class", "table-mapping");
 
 		divTableReconcile.appendChild(tableReconcile);
 		divTableReconcile.style.display = "inline-block";

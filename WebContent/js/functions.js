@@ -24,8 +24,9 @@ function addField(compteur, idAdd, typeInput) {
 
 	if(typeInput == "inp"){
         var globalInput = document.createElement("div");
-        
+        globalInput.setAttribute('class', "global");
         globalInput.setAttribute('id', "globalInput_" + nb_inp);
+        
         
 		inp.setAttribute('onchange', 'loadInputFile('+nb_inp+',\"change\")');
     
@@ -59,7 +60,7 @@ function addField(compteur, idAdd, typeInput) {
 
 		var divSubmitMapping = document.createElement('div');
 		divSubmitMapping.setAttribute('id', "divSubmitMapping_" + nb_inp);
-		divSubmitMapping.setAttribute('class', "col-lg-12 submitMapping");
+		
 		
 		var divReconciliationCheck = document.createElement('div');
 		divReconciliationCheck.setAttribute('id', "divReconciliationCheck_" + nb_inp);
@@ -85,6 +86,9 @@ function addField(compteur, idAdd, typeInput) {
         
 		globalInput.appendChild(divMapping);
 		globalInput.appendChild(divSubmitMapping);
+        divSubmitMapping.setAttribute('class', "col-lg-12 submit-mapping btn-group btn-group-justified");
+        divSubmitMapping.setAttribute('role', "group");
+        
 		globalInput.appendChild(divTableReconcile);
 		globalInput.appendChild(divReconciliationCheck);
 		globalInput.appendChild(divSubmitReconcile);
@@ -334,8 +338,9 @@ function mappingDWC(counter, change_load_reconcile){
 		//buttonConvert.value = "Load file for mapping";
 		buttonConvert.setAttribute("onclick" , "loadInputFile(" + counter + ",\"load\")");
 		divLoad.appendChild(buttonConvert);
-		divAddLoad.appendChild(divLoad);
-        $("#convert_" + counter).text('Load file for mapping');
+		$("#convert_" + counter).text('Load file for mapping');
+        divAddLoad.appendChild(divLoad);
+        
 	}
 	else{
 		buttonConvert = document.getElementById("convert_" + counter);
@@ -360,7 +365,7 @@ function mappingDWC(counter, change_load_reconcile){
 		var divTableReconcile = document.getElementById("divTableReconcile_" + counter);
 		var tableReconcile = document.getElementById("tableReconcile_" + counter + "_wrapper");
 		var tablePrepareReconcile = document.getElementById("tablePrepareReconcile_" + counter);
-		var urlAPItaxo = document.getElementById("urlAPItaxo_" + counter);
+		var divUrlTaxo = document.getElementById("divUrlTaxo_" + counter);
 		
 		var divMessageReconcileCancelled  = document.getElementById("divMessageReconcileCancelled_" + counter);
 		var divMessageReconcileSaved = document.getElementById("divMessageReconcileSaved_" + counter);
@@ -390,7 +395,7 @@ function mappingDWC(counter, change_load_reconcile){
 			   
 			if(tablePrepareReconcile){
 				divReconciliationCheck.removeChild(tablePrepareReconcile);
-				divReconciliationCheck.removeChild(urlAPItaxo);
+				divReconciliationCheck.removeChild(divUrlTaxo);
 			}
 			
 			if(divTableReconcile){
@@ -474,7 +479,7 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		mappingTable.id = "mappingTable_" + nbInput;
 		mappingTable.name = "mappingTable_" + nbInput;
 		mappingTable.border = "0";
-		mappingTable.setAttribute('class', "tableMapping");
+		
 
 		for(var i = 0 ; i < firstLineInput.length; i++){
 			var tagInput = firstLineInput[i];
@@ -509,7 +514,8 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		}
 
 		divMapping.appendChild(mappingTable);
-
+        mappingTable.setAttribute('class', "table-mapping");
+        
 		var mapping = document.createElement("input");
 		mapping.id = "mappingActive_" + nbInput;
 		mapping.name = "mappingActive_" + nbInput;
@@ -517,33 +523,37 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		mapping.type = "hidden";
 		divMapping.appendChild(mapping);
 
-		var buttonOK = document.createElement('input');
+		var buttonOK = document.createElement('button');
 		buttonOK.id = "okMapping_" + nbInput;
 		buttonOK.name = "okMapping_" + nbInput;
-		buttonOK.value = "OK";
+        //buttonOK.value = "OK";
 		buttonOK.type = "button";
 		var activeMapping = new Boolean(true);
 		buttonOK.setAttribute("onclick", "activeMapping(" + activeMapping +"," + nbInput +")");
 
-		var buttonCancel = document.createElement('input');
+		var buttonCancel = document.createElement('button');
 		buttonCancel.id = "cancelMapping_" + nbInput;
 		buttonCancel.name = "cancelMapping_" + nbInput;
-		buttonCancel.value = "Cancel conversion";
+        //buttonCancel.value = "Cancel conversion";
 		buttonCancel.type = "button";
 		buttonCancel.setAttribute('onclick', "deleteMapping("+ nbInput +")");
 
 		var divSubmitOK = document.createElement('div');
 		divSubmitOK.setAttribute('id', "divSubmitMappingOK_" + nbInput);
-		divSubmitOK.setAttribute('class', "col-lg-6");	
+		divSubmitOK.setAttribute('class', "col-lg-6 btn-group");
+        divSubmitOK.setAttribute('role',"group");	
 		divSubmitOK.setAttribute('value', 'false');
 		divSubmitOK.appendChild(buttonOK);
-
+        
+        
 		var divSubmitMappingCancel = document.createElement('div');
 		divSubmitMappingCancel.setAttribute('id', "divSubmitMappingCancel_" + nbInput);
-		divSubmitMappingCancel.setAttribute('class', "col-lg-6");
+		divSubmitMappingCancel.setAttribute('class', "col-lg-6 btn-group");
+        divSubmitMappingCancel.setAttribute('role',"group");	
 		divSubmitMappingCancel.setAttribute('value', "false");
 		divSubmitMappingCancel.appendChild(buttonCancel);
-
+       
+        
 		var divMessageSaved = document.createElement('div');
 		divMessageSaved.setAttribute('id', "divMessageSaved_" + nbInput);
 		divMessageSaved.setAttribute('class', "col-lg-12 text-success text-center");
@@ -562,10 +572,14 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		divMessageCancelled.appendChild(messageCancelled);
 
 		divSubmitMapping.appendChild(divSubmitOK);
+        $("#okMapping_" + nbInput).text('Valid mapping DarwinCore');
 		divSubmitMapping.appendChild(divSubmitMappingCancel);
+         $("#cancelMapping_" + nbInput).text('Cancel mapping DarwinCore');
 		divSubmitMapping.appendChild(divMessageSaved);
 		divSubmitMapping.appendChild(divMessageCancelled);
 
+        divSubmitMapping.setAttribute('class', "col-lg-12 submitMapping btn-group btn-group-justified");
+        divSubmitMapping.setAttribute('role', "group");
 	}
 }
 
