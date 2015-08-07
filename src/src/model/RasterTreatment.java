@@ -36,6 +36,7 @@ public class RasterTreatment {
     private String RESSOURCES_PATH = "";
     private int nbWrongOccurrences;
     private File matrixFileValidCells;
+    private File wrongRasterFile;
     
     public RasterTreatment(ArrayList<File> rasterFiles, Treatment dataTreatment){
 	this.rasterFiles = rasterFiles;
@@ -371,8 +372,7 @@ public class RasterTreatment {
      * @return void
      */
     public void deleteWrongCellsFromClean(ArrayList<Integer> notValidData){
-
-
+	
 	/*
 	 * First, retrieve wrong data, not included in a raster cell.
 	 */
@@ -405,7 +405,8 @@ public class RasterTreatment {
 	    {
 		new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
 	    }
-	    dataTreatment.createFileCsv(resultatSelect, "wrong/wrong_raster_" + this.dataTreatment.getNbSessionRandom() + ".csv" );
+	    File wrongRasterFile = dataTreatment.createFileCsv(resultatSelect, "wrong/wrong_raster_" + this.dataTreatment.getNbSessionRandom() + ".csv" );
+	    this.setWrongRasterFile(wrongRasterFile);
 	}
 
 	for(int j = 0 ; j < messagesSelect.size() ; j++){
@@ -436,6 +437,7 @@ public class RasterTreatment {
 		System.out.println(messagesDelete.get(j));
 	    }
 	}
+	
     }
 
     public ArrayList<File> getRasterFiles() {
@@ -494,6 +496,13 @@ public class RasterTreatment {
     public void setMatrixFileValidCells(File matrixFileValidCells) {
 	this.matrixFileValidCells = matrixFileValidCells;
     }
-    
+
+    public File getWrongRasterFile() {
+        return wrongRasterFile;
+    }
+
+    public void setWrongRasterFile(File wrongRasterFile) {
+        this.wrongRasterFile = wrongRasterFile;
+    }
     
 }

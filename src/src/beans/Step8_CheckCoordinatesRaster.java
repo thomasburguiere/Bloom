@@ -16,6 +16,7 @@ public class Step8_CheckCoordinatesRaster {
     private boolean involved = false;
     private int nbFound = 0;
     private String pathWrongRaster = "";
+    private String pathMatrixResultRaster = "";
     
     public Step8_CheckCoordinatesRaster(){
 	
@@ -52,6 +53,13 @@ public class Step8_CheckCoordinatesRaster {
     public void setPathWrongRaster(String pathWrongRaster) {
         this.pathWrongRaster = pathWrongRaster;
     }
-    
+
+    public String getPathMatrixResultRaster() {
+        return pathMatrixResultRaster;
+    }
+
+    public void setPathMatrixResultRaster(String pathMatrixResultRaster) {
+        this.pathMatrixResultRaster = pathMatrixResultRaster;
+    }
     
 }

@@ -251,13 +251,17 @@ public class Treatment {
 	this.setNbSynonymInvolved(treatmentSynonyms.getNbSynonymInvolved());
     }
 
-    public void tdwgCodeOption(){
+    public boolean tdwgCodeOption(){
 	TdwgTreatment tdwg4Treatment = new TdwgTreatment();
 	tdwg4Treatment.setDIRECTORY_PATH(this.getDIRECTORY_PATH());
 	tdwg4Treatment.setRESSOURCES_PATH(this.getRESSOURCES_PATH());
 	tdwg4Treatment.setNbSessionRandom(this.getNbSessionRandom());
 
 	tdwg4Treatment.checkIsoTdwgCode(fileDarwinCore);
+	
+	boolean sucessTdwgTreatment = tdwg4Treatment.isSucessTdwgTreatment();
+	
+	return sucessTdwgTreatment;
     }
 
     public GeographicTreatment checkGeographicOption(){
@@ -302,7 +306,7 @@ public class Treatment {
     }
 
 
-    public File establishmentMeansOption(ArrayList<String> listEstablishmentChecked){
+    public EstablishmentTreatment establishmentMeansOption(ArrayList<String> listEstablishmentChecked){
 	EstablishmentTreatment establishTreatment = new EstablishmentTreatment(listEstablishmentChecked);
 	establishTreatment.setDIRECTORY_PATH(this.getDIRECTORY_PATH());
 	establishTreatment.setRESSOURCES_PATH(this.getRESSOURCES_PATH());
@@ -310,10 +314,10 @@ public class Treatment {
 
 	establishTreatment.establishmentMeansTreatment();
 	ArrayList<String> noEstablishment = establishTreatment.getNoEstablishmentList();
-
-	File noEstablishmentFile = this.createFileCsv(noEstablishment, "wrong/noEstablishmentMeans_" + this.getNbSessionRandom() + ".csv");
-
-	return noEstablishmentFile;
+	File wrongEstablishmentMeans = this.createFileCsv(noEstablishment, "wrong/noEstablishmentMeans_" + this.getNbSessionRandom() + ".csv");
+	establishTreatment.setWrongEstablishmentMeansFile(wrongEstablishmentMeans);
+	
+	return establishTreatment;
     }
 
     /**

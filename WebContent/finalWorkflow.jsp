@@ -17,7 +17,7 @@
 
 <title>Biodiversity Linked Organisms Occurrences Megadatasets</title>
 </head>
-<body onload="javascript:initialise()">
+<body onload="javascript:initialiseFinalPage()">
 	<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -59,204 +59,401 @@
 	<div class="container">
 		<div id="divBody" class="row">
 			<div class="col-lg-12">
-<!-- 
-	<div id="hiddenResults">
-		<input type="hidden" id="step1_involved" value="${step1.involved}" />
-		<input type="hidden" id="step1_ok" value="${step1.step1_ok}" />
-		
-		<input type="hidden" id="step2_involved" value="${step2.involved}" />
-		<input type="hidden" id="step2_ok" value="${step2.step2_ok}" />
-		
-		<input type="hidden" id="step3_involved" value="${step3.involved}" />
-		<input type="hidden" id="step3_ok" value="${step3.step3_ok}" />
-		<input type="hidden" id="step3_nbFound" value="${step3.nbFound}" />
-		<input type="hidden" id="step3_path" value="${step3.pathWrongCoordinates}" />
+                <div class="post-preview" id="bloc-intro">
+					<h2 class="post-title">Summary workflow</h2>
+					<h3 class="post-subtitle">All results can be downloaded</h3>
+				</div>
+                <div id="hiddenResults">
+                    <input type="hidden" id="step1_involved" value="${step1.involved}" />
+                    <input type="hidden" id="step1_ok" value="${step1.step1_ok}" />
 
-		<input type="hidden" id="step4_involved" value="${step4.involved}" />
-		<input type="hidden" id="step4_ok" value="${step4.step4_ok}" /> <input
-			type="hidden" id="step4_nbFound" value="${step4.nbFound}" /> <input
-			type="hidden" id="step4_path" value="${step4.pathWrongGeoIssue}" />
-			
-		<input type="hidden" id="step5_involved" value="${step5.involved}" />
-		<input type="hidden" id="step5_ok" value="${step5.step5_ok}" /> 
-		
-		<input
-			type="hidden" id="step5_involved" value="${step5.involved}" /> <input
-			type="hidden" id="step5_ok" value="${step5.step5_ok}" /> <input
-			type="hidden" id="step5_nbFound" value="${step5.nbFound}" /> <input
-			type="hidden" id="step6_involved" value="${step6.involved}" /> <input
-			type="hidden" id="step6_ok" value="${step6.step6_ok}" /> <input
-			type="hidden" id="step7_involved" value="${step7.involved}" /> <input
-			type="hidden" id="step7_ok" value="${step7.step7_ok}" /> <input
-			type="hidden" id="step7_nbFound" value="${step7.nbFound}" /> <input
-			type="hidden" id="step7_path" value="${step7.pathWrongIso2}" /> <input
-			type="hidden" id="step8_involved" value="${step8.involved}" /> <input
-			type="hidden" id="step8_ok" value="${step8.step8_ok}" /> <input
-			type="hidden" id="step8_nbFound" value="${step8.nbFound}" /> <input
-			type="hidden" id="step8_path" value="${step8.pathWrongRaster}" />
-	</div>
--->
-        <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep1>
-            <thead>
-                <tr id="p_ok1">
-                    Step 1 : Mapping to DarwinCore format
-                </tr>
-            </thead>
-            <tbody>
-                <c:set var="count1" value="0" scope="page" />
-                <c:forEach items="${step1.mappedFilesAssociatedPath}" var="entry">
-                    <tr data-index=<c:out value="${count1}" />>
-                        <td colspan="6">
-                            <div class="card-view">
-                                <span class="name">Filename</span>
-                                <span class="value"><c:out value='${entry.key.filename}'/></span>
+                    <input type="hidden" id="step2_involved" value="${step2.involved}" />
+                    <input type="hidden" id="step2_ok" value="${step2.step2_ok}" />
+
+                    <input type="hidden" id="step3_involved" value="${step3.involved}" />
+                    <input type="hidden" id="step3_ok" value="${step3.step3_ok}" />
+                    <input type="hidden" id="step3_nbFound" value="${step3.nbFound}" />
+                    <input type="hidden" id="step3_path" value="${step3.pathWrongCoordinates}" />
+
+                    <input type="hidden" id="step4_involved" value="${step4.involved}" />
+                    <input type="hidden" id="step4_ok" value="${step4.step4_ok}" /> <input
+                        type="hidden" id="step4_nbFound" value="${step4.nbFound}" /> <input
+                        type="hidden" id="step4_path" value="${step4.pathWrongGeoIssue}" />
+
+                    <input type="hidden" id="step5_involved" value="${step5.involved}" />
+                    <input type="hidden" id="step5_ok" value="${step5.step5_ok}" /> 
+
+                    <input
+                        type="hidden" id="step5_involved" value="${step5.involved}" />
+                    <input
+                        type="hidden" id="step5_ok" value="${step5.step5_ok}" />
+                    <input
+                        type="hidden" id="step5_nbFound" value="${step5.nbFound}" />
+                    <input
+                        type="hidden" id="step6_involved" value="${step6.involved}" />
+                    <input
+                        type="hidden" id="step6_ok" value="${step6.step6_ok}" />
+                    <input
+                        type="hidden" id="step7_involved" value="${step7.involved}" />
+                    <input
+                        type="hidden" id="step7_ok" value="${step7.step7_ok}" />
+                    <input
+                        type="hidden" id="step7_nbFound" value="${step7.nbFound}" />
+                    <input
+                        type="hidden" id="step7_path" value="${step7.pathWrongIso2}" />                         <input
+                        type="hidden" id="step8_involved" value="${step8.involved}" />
+                    <input
+                        type="hidden" id="step8_ok" value="${step8.step8_ok}" />
+                    <input
+                        type="hidden" id="step8_nbFound" value="${step8.nbFound}" />
+                    <input
+                        type="hidden" id="step8_path" value="${step8.pathWrongRaster}" />
+                    <input
+                        type="hidden" id="step9_involved" value="${step9.involved}" />
+                    <input
+                        type="hidden" id="step9_ok" value="${step9.step9_ok}" />
+                </div>
+                
+                <hr class="col-lg-12"></hr>
+                <div id="headerStep1_involved" class="post-preview">
+                    <h4 class="post-meta">Step 1 : Mapping to DarwinCore format</h4>
+                </div>
+                <div id="headerStep1_NotInvolved" class="post-preview">
+                    <h4 class="post-meta">Step 1 : Mapping to DarwinCore format isn't involved in process</h4>
+                </div>
+                <div class="fixed-table-body">
+                    <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" data-height="299" data-response-handler="responseHandler" id=divStep1>
+                        <thead style="display: none;">
+                            <tr>
+                                <th style="">
+                                    <div class="th-inner ">Filename</div>
+                                    <div class="fht-cell"></div>
+                                </th>
+                                <th style="">
+                                    <div class="th-inner ">Success</div>
+                                    <div class="fht-cell"></div>
+                                </th>
+                                <th style="">
+                                    <div class="th-inner ">Download Link</div>
+                                    <div class="fht-cell"></div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:set var="count1" value="0" scope="page" />
+                            <c:forEach items="${step1.mappedFilesAssociatedPath}" var="entry">
+                                <tr data-index=<c:out value="${count1}" />>
+                                    <td colspan="6">
+                                        <div class="card-view">
+                                            <span class="title">Filename</span>
+                                            <span class="value"><c:out value='${entry.key.filename}'/></span>
+                                        </div>
+                                        <div id="p_ok1" class="card-view">
+                                            <span class="title">Success</span>
+                                            <span class="value">${step1.step1_ok}</span>
+                                        </div>
+                                        <div class="card-view">
+                                            <span class="title">Download link</span>
+                                            <span class="value"><a href=<c:out value='${entry.value}'/>>Download</a></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <c:set var="count1" value="${count1 + 1}" scope="page"/>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+                <hr class="col-lg-12"></hr>
+
+                <div id="headerStep2_involved" class="post-preview">
+                    <h4 class="post-meta">Step 2 : Reconciliation Service</h4>
+                </div>
+                <div id="headerStep2_NotInvolved" class="post-preview">
+                    <h4 class="post-meta">Step 2 : Reconciliation Service isn't involved in process</h4>
+                </div>
+                <div class="fixed-table-body">
+                    <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep2>
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:set var="count2" value="0" scope="page" />
+                            <c:forEach items="${step2.reconciledFilesAssociatedPath}" var="entry">
+                                <tr data-index=<c:out value="${count2}" />>
+                                    <td colspan="6">
+                                        <div class="card-view">
+                                            <span class="title">Filename</span>
+                                            <span class="value"><c:out value='${entry.key.filename}'/></span>
+                                        </div>
+                                        <div id="p_ok2" class="card-view">
+                                            <span class="title">Success</span>
+                                            <span class="value">${step2.step2_ok}</span>
+                                        </div>
+                                        <div class="card-view">
+                                            <span class="title">Download link</span>
+                                            <span class="value">
+                                                <a href=<c:out value='${entry.value}'/>>Download</a>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <c:set var="count2" value="${count2 + 1}" scope="page"/>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+                <hr class="col-lg-12"></hr>
+
+                <div id="headerStep3_involved" class="post-preview">
+                    <h4 class="post-meta">Step 3 : Check coordinates</h4>
+                </div>
+                <div id="headerStep3_NotInvolved" class="post-preview">
+                    <h4 class="post-meta">Step 3 : Check coordinates isn't involved in process</h4>
+                </div>
+                <div class="fixed-table-body">
+                    <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep3>
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-index=0 />
+                                <td colspan="6">
+                                    <div class="card-view">
+                                        <span class="title">Occurrences number deleted</span>
+                                        <span class="value"><c:out value='${step3.nbFound}'/></span>
+                                    </div>
+                                    <div class="card-view">
+                                        <span class="title">Download link</span>
+                                        <span class="value"><a href=<c:out value='${step3.pathWrongCoordinates}'/>>Wrong coordinates file</a></span>
+                                    </div>
+                                    <div id="p_ok3" class="card-view">
+                                        <span class="title">Success</span>
+                                        <span class="value">${step3.step3_ok}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr class="col-lg-12"></hr>
+
+                <div id="headerStep4_involved" class="post-preview">
+                    <h4 class="post-meta">Step 4 : Check geospatial issue</h4>
+                </div>
+                <div id="headerStep4_NotInvolved" class="post-preview">
+                    <h4 class="post-meta">Step 4 : Check geospatial issue isn't involved in process</h4>
+                </div>
+                <div class="fixed-table-body">
+                    <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep4>
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-index=0 />
+                                <td colspan="6">
+                                    <div class="card-view">
+                                        <span class="title">Occurrences number deleted</span>
+                                        <span class="value"><c:out value='${step4.nbFound}'/></span>
+                                    </div>
+                                    <div class="card-view">
+                                        <span class="title">Download link</span>
+                                        <span class="value"><a href=<c:out value='${step4.pathWrongGeoIssue}'/>>Wrong geospatial issue file</a></span>
+                                    </div>
+                                    <div id="p_ok4" class="card-view">
+                                        <span class="title">Success</span>
+                                        <span class="value">${step4.step4_ok}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr class="col-lg-12"></hr>
+
+                <div id="headerStep5_involved" class="post-preview">
+                    <h4 class="post-meta">Step 5 : Check synonym</h4>
+                </div>
+                <div id="headerStep5_NotInvolved" class="post-preview">
+                    <h4 class="post-meta">Step 5 : Check synonym isn't involved in process</h4>
+                </div>
+                <div class="fixed-table-body">
+                    <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep5>
+                        <div id=divStep5 style="display: none">
+                            <div id=divStep5Involved style="display: none">
+                                Number of occurrences involved : ${step5.nbFound}
                             </div>
-                            <div class="card-view">
-                                <span class="sucess">Sucess</span>
-                                <span class="value">Yes/No</span>
+                            <div id="p_ok5" class="card-view">
+                                <span class="title">Success</span>
+                                <span class="value">${step5.step5_ok}</span>
                             </div>
-                            <div class="card-view">
-                                <span class="downloadLink">Download link</span>
-                                <span class="value"><a href=<c:out value='${entry.value}'/>>Download</a></span>
-                            </div>
-                        </td>
-                    </tr>
-                    <c:set var="count1" value="${count1 + 1}" scope="page"/>
-                </c:forEach>
-            </tbody>
-        </table>
-        <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep2>
-            <thead>
-                <tr id="p_ok2">
-                    Step 2 : Reconciliation Service
-                </tr>
-            </thead>
-            <tbody>
-                <c:set var="count2" value="0" scope="page" />
-                <c:forEach items="${step2.reconciledFilesAssociatedPath}" var="entry">
-                    <tr data-index=<c:out value="${count2}" />>
-                        <td colspan="6">
-                            <div class="card-view">
-                                <span class="name">Filename</span>
-                                <span class="value"><c:out value='${entry.key.filename}'/></span>
-                            </div>
-                            <div class="card-view">
-                                <span class="sucess">Sucess</span>
-                                <span class="value">Yes/No</span>
-                            </div>
-                            <div class="card-view">
-                                <span class="downloadLink">Download link</span>
-                                <span class="value"><a href=<c:out value='${entry.value}'/>>Download</a></span>
-                            </div>
-                        </td>
-                    </tr>
-                    <c:set var="count2" value="${count2 + 1}" scope="page"/>
-                </c:forEach>
-            </tbody>
-        </table>
-       <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep3>
-            <thead>
-                <tr id="p_ok3">
-                    Step 3 : Check coordinates
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-index=0 />>
-                    <td colspan="6">
-                        <div class="card-view">
-                            <span class="errorNumber">Occurrences number deleted</span>
-                            <span class="value"><c:out value='${step3.nbFound}'/></span>
                         </div>
-                        <div class="card-view">
-                            <span class="downloadLink">Download link</span>
-                            <span class="value"><a href=<c:out value='${step3.pathWrongCoordinates}'/>>Download wrong coordinates file</a></span>
-                        </div>
-                    </td>
-                </tr>   
+                    </table>
+                </div>
+                <hr class="col-lg-12"></hr>
+
+                <div id="headerStep6_involved" class="post-preview">
+                    <h4 class="post-meta">Step 6 : Check TDWG code</h4>
+                </div>
+                <div id="headerStep6_NotInvolved" class="post-preview">
+                    <h4 class="post-meta">Step 6 : Check TDWG code isn't involved in process</h4>
+                </div>
+                <div class="fixed-table-body">
+                    <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep6>
+                        <tr data-index=0 />
+                            <td colspan="6">
+                                <div id="p_ok6" class="card-view">
+                                    <span class="title">Success</span>
+                                    <span class="value"><c:out value='${step6.step6_ok}'/></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <hr class="col-lg-12"></hr>
+
+                <div id="headerStep7_involved" class="post-preview">
+                    <h4 class="post-meta">Step 7 : Check if coordinates are equivalent to ISO2 code</h4>
+                </div>
+                <div id="headerStep7_NotInvolved" class="post-preview">
+                    <h4 class="post-meta">Step 7 : Check if coordinates are equivalent to ISO2 code isn't involved in process</h4>
+                </div>
+                <div class="fixed-table-body">
+                    <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep7>
+                        <tr data-index=0 />
+                            <td colspan="6">
+                                <div id="p_ok7" class="card-view">
+                                    <span class="title">Success</span>
+                                    <span class="value"><c:out value='${step7.step7_ok}'/></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <hr class="col-lg-12"></hr>
+                    
+                <div id="headerStep8_involved" class="post-preview">
+                    <h4 class="post-meta">Step 8 : Check coordinates in raster cells</h4>
+                </div>
+                <div id="headerStep8_NotInvolved" class="post-preview">
+                    <h4 class="post-meta">Step 8 : Check coordinates in raster cells isn't involved in process</h4>
+                </div>
+                <div class="fixed-table-body">
+                   <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep8>
+                        <tr data-index=0 />
+                            <td colspan="6">
+                                <div id="p_ok8" class="card-view">
+                                    <span class="title">Success</span>
+                                    <span class="value"><c:out value='${step8.step8_ok}'/></span>
+                                </div>
+                                <div class="card-view">
+                                    <span class="title">Occurrences number</span>
+                                    <span class="value"><c:out value='${step8.nbFound}'/></span>
+                                </div>
+                                 <div class="card-view">
+                                    <span class="title">Download link</span>
+                                    <span class="value"><a href=<c:out value='${step8.pathWrongRaster}'/>>Wrong occurences for raster cells</a></span>
+                                </div>
+                                <div class="card-view">
+                                                <span class="title">Download link</span>
+                                                <span class="value"><a href=<c:out value='${step8.pathMatrixResultRaster}'/>>Matrix results file</a></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <hr class="col-lg-12"></hr>
+
+                <div class="post-preview">
+                    <h4 id="headerStep9_involved" class="post-meta">Step 9 : EstablishmentMeans check</h4>
+                </div>
+                <div id="headerStep9_NotInvolved" class="post-preview">
+                    <h4 class="post-meta">Step 9 : EstablishmentMeans check isn't involved in process</h4>
+                </div>
+                <div class="fixed-table-body">
+                    <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep9>
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-index=0 />
+                                <td colspan="6">
+                                    <div class="card-view">
+                                        <span class="title">Occurrences number deleted</span>
+                                        <span class="value"><c:out value='${step9.nbFound}'/></span>
+                                    </div>
+                                    <div class="card-view">
+                                        <span class="title">Download link</span>
+                                        <span class="value"><a href=<c:out value='${step9.pathWrongEstablishmentMeans}'/>>Wrong establishmentMeans file</a></span>
+                                    </div>
+                                    <div id="p_ok9" class="card-view">
+                                        <span class="title">Success</span>
+                                        <span class="value">${step9.step9_ok}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr class="col-lg-12"></hr>
+
+                <div id="downloadFinalFiles">
+                    <div class="post-preview">
+                        <h4 class="post-meta">These files can be downloaded</h4>
+                    </div>
+                    <c:forEach items="${finalisation.listPathsOutputFiles}" var="path">
+                        <c:set var="name" value="${fn:split(path, '/')}" />
+                        <c:set var="length" value="${fn:length(name)}"/>
+                        ${name[length-1]}
+                        <a href=<c:out value='${path}'/>>Download clean data </a>
+                        <br>
+                    </c:forEach>
+                </div>
             </div>
-        </table>
-        <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep4>
-          <thead>
-                <tr id="p_ok4">
-                    Step 4 : Check geospatial issue
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-index=0 />
-                    <td colspan="6">
-                        <div class="card-view">
-                            <span class="errorNumber">Occurrences number deleted</span>
-                            <span class="value"><c:out value='${step3.nbFound}'/></span>
-                        </div>
-                        <div class="card-view">
-                            <span class="downloadLink">Download link</span>
-                            <span class="value"><a href=<c:out value='${step4.pathWrongGeoIssue}'/>>Download wrong geospatial issue file</a></span>
-                        </div>
-                    </td>
-                </tr>   
-            </div>
-        </table>
-        <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep5>
-            <div id=divStep5 style="display: none">
-                <div id=divStep5Involved style="display: none">
-                    <p id="p_ok5">Step 5 : Add synonyms</p>
-                    Number of occurrences involved : ${step5.nbFound}
-                </div>
-                <div id=divStep5NotInvolved style="display: none">
-                    <p id="step5NotInvolved">Step 5 isn't involved in process</p>
-                </div>
-            </div>
-        </table>
-        <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep6>
-            <div id=divStep6 style="display: none">
-                <div id=divStep6Involved style="display: none">
-                    <p id="p_ok6">Step 6 : Check TDWG code</p>
-                </div>
-                <div id=divStep6NotInvolved style="display: none">
-                    <p id="step6NotInvolved">Step 6 isn't involved in process</p>
-                </div>
-            </div>
-        </table>
-        <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep7>
-            <div id=divStep7 style="display: none">
-                <div id=divStep7Involved style="display: none">
-                    <p id="p_ok7">Step 7 : Check if coordinates are equivalent to ISO2 code</p>
-                    Number of wrong occurrences : ${step7.nbFound}
-                </div>
-                <div id=divStep7NotInvolved style="display: none">
-                    <p id="step7NotInvolved">Step 7 isn't involved in process</p>
-                </div>
-            </div>
-        </table>
-        <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" id=divStep8>
-            <div id=divStep8 style="display: none">
-                <div id=divStep8Involved style="display: none">
-                    <p id="p_ok8">Step 8 :Check coordinates in raster cells</p>
-                    Number of occurrences found : "${step8.nbFound}"
-                </div>
-                <div id=divStep8NotInvolved style="display: none">
-                    <p id="step8NotInvolved">Step 8 isn't involved in process</p>
-                </div>
-            </div>
-        </table>
-        <br>
-        <div id="downloadFinalFiles">
-        <p> These files can be downloaded : </p>
-            <c:forEach items="${finalisation.listPathsOutputFiles}" var="path">
-                <c:set var="name" value="${fn:split(path, '/')}" />
-                <c:set var="length" value="${fn:length(name)}"/>
-                ${name[length-1]}
-                <a href=<c:out value='${path}'/>>Download clean data </a>
-                <br>
-            </c:forEach>
         </div>
     </div>
-</div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="http://www.gbif.org/">
+                                <img src="images/logo-gbif_2.gif" height="70" width="70" class="img-circle"></img>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; BLOOM 2015</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script src="js/jquery.watable.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script type="text/javascript"></script>
+    <script type="text/javascript" src="js/functionsFinal.js"></script>
 </body>
 </html>

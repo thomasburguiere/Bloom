@@ -21,6 +21,7 @@ public class EstablishmentTreatment {
     private ArrayList<String> listEstablishmentChecked;
     private ArrayList<String> inverseEstablishmentList;
     private ArrayList<String> noEstablishmentList;
+    private File wrongEstablishmentMeansFile;
     
     public EstablishmentTreatment(ArrayList<String> listCheckedEstablishment){
 	this.listEstablishmentChecked = listCheckedEstablishment;
@@ -195,7 +196,13 @@ public class EstablishmentTreatment {
     public void setNoEstablishmentList(ArrayList<String> noEstablishmentList) {
         this.noEstablishmentList = noEstablishmentList;
     }
-     
-    
+
+    public File getWrongEstablishmentMeansFile() {
+        return wrongEstablishmentMeansFile;
+    }
+
+    public void setWrongEstablishmentMeansFile(File wrongEstablishmentMeansFile) {
+        this.wrongEstablishmentMeansFile = wrongEstablishmentMeansFile;
+    }
     
 }

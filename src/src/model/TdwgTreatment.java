@@ -30,7 +30,7 @@ public class TdwgTreatment {
     private String DIRECTORY_PATH = "";
     private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/resources/";
     private String nbSessionRandom;
-    
+    private boolean sucessTdwgTreatment;
     
     public TdwgTreatment(){
 	
@@ -44,7 +44,7 @@ public class TdwgTreatment {
      */
     public void checkIsoTdwgCode(DarwinCore fileDarwinCore){
 	//change example : locationID="TDWG:MXS-JA"
-	
+	this.setSucessTdwgTreatment(true);
 	fileDarwinCore.associateIdData();
 	HashMap<String, ArrayList<String>> idAssoData = fileDarwinCore.getIdAssoData(); 
 
@@ -74,6 +74,7 @@ public class TdwgTreatment {
 		    tdwg4Code = this.tdwg4ContainedPoint(point, iso2.replaceAll("\"", ""));
 		} catch (IOException e) {
 		    // TODO Auto-generated catch block
+		    this.setSucessTdwgTreatment(false);
 		    e.printStackTrace();
 		}
 		System.out.println("\ttdwg4 : " + tdwg4Code);
@@ -95,10 +96,16 @@ public class TdwgTreatment {
 		String sqlUpdateTDWG = "UPDATE Workflow.Clean_" + this.getNbSessionRandom() + " SET Clean_" + this.getNbSessionRandom() + ".locationID_=\"" + newLocationID + "\" WHERE Clean_" + this.getNbSessionRandom() + ".id_=" + id_ + ";";
 
 		ConnectionDatabase newConnectionUpdateClean = new ConnectionDatabase();
-		newConnectionUpdateClean.newConnection("executeUpdate", sqlUpdateTDWG);
+		ArrayList<String> messages = newConnectionUpdateClean.newConnection("executeUpdate", sqlUpdateTDWG);
 		
+		for(int i = 0; i < messages.size(); i++){
+		    if(messages.get(i).contains("Connection error : ")){
+			this.setSucessTdwgTreatment(false);
+		    }
+		}
 	    }
 	}
+	
     }
     
     /**
@@ -164,5 +171,13 @@ public class TdwgTreatment {
         this.nbSessionRandom = nbSessionRandom;
     }
 
+    public boolean isSucessTdwgTreatment() {
+        return sucessTdwgTreatment;
+    }
+
+    public void setSucessTdwgTreatment(boolean sucessTdwgTreatment) {
+        this.sucessTdwgTreatment = sucessTdwgTreatment;
+    }
+    
     
 }

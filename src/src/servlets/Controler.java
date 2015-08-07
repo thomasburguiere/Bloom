@@ -37,6 +37,7 @@ import src.beans.Step5_IncludeSynonym;
 import src.beans.Step6_CheckTDWG;
 import src.beans.Step7_CheckISo2Coordinates;
 import src.beans.Step8_CheckCoordinatesRaster;
+import src.beans.Step9_EstablishmentMeans;
 import src.model.CSVFile;
 import src.model.LaunchWorkflow;
 import src.model.MappingDwC;
@@ -67,6 +68,7 @@ public class Controler extends HttpServlet {
     private Step6_CheckTDWG step6;
     private Step7_CheckISo2Coordinates step7;
     private Step8_CheckCoordinatesRaster step8;
+    private Step9_EstablishmentMeans step9;
     
     /**
      * 
@@ -127,12 +129,14 @@ public class Controler extends HttpServlet {
 	request.setAttribute("step4", step4);
 	step5 = newLaunch.getStep5();
 	request.setAttribute("step5", step5);
-	step6 = newLaunch.getStep7();
+	step6 = newLaunch.getStep6();
 	request.setAttribute("step6", step6);
-	step7 = newLaunch.getStep8();
+	step7 = newLaunch.getStep7();
 	request.setAttribute("step7", step7);
-	step8 = newLaunch.getStep9();
+	step8 = newLaunch.getStep8();
 	request.setAttribute("step8", step8);
+	step9 = newLaunch.getStep9();
+	request.setAttribute("step9", step9);
 	
 	this.getServletContext().getRequestDispatcher("/finalWorkflow.jsp").forward(request, response);
 	

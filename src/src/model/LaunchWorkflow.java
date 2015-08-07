@@ -22,6 +22,7 @@ import src.beans.Step5_IncludeSynonym;
 import src.beans.Step6_CheckTDWG;
 import src.beans.Step7_CheckISo2Coordinates;
 import src.beans.Step8_CheckCoordinatesRaster;
+import src.beans.Step9_EstablishmentMeans;
 
 /**
  * src.model
@@ -43,6 +44,7 @@ public class LaunchWorkflow {
     private Step6_CheckTDWG step6;
     private Step7_CheckISo2Coordinates step7;
     private Step8_CheckCoordinatesRaster step8;
+    private Step9_EstablishmentMeans step9;
 
     /**
      * 
@@ -74,12 +76,16 @@ public class LaunchWorkflow {
 	step6 = new Step6_CheckTDWG();
 	step7 = new Step7_CheckISo2Coordinates();
 	step8 = new Step8_CheckCoordinatesRaster();
+	step9 = new Step9_EstablishmentMeans();
 
 	boolean inputFilesIsValid = this.isValidInputFiles();
 
 	if(inputFilesIsValid){
 
 	    this.launchWorkflow();
+	    step3.setInvolved(true);
+	    step4.setInvolved(true);
+	    step7.setInvolved(true);
 	}
 
 	if(this.initialisation.isSynonym()){
@@ -90,7 +96,8 @@ public class LaunchWorkflow {
 	}
 
 	if(this.initialisation.isTdwg4Code()){
-	    dataTreatment.tdwgCodeOption();
+	    boolean sucessTdwgTreatment = dataTreatment.tdwgCodeOption();
+	    step6.setStep6_ok(sucessTdwgTreatment);
 	    step6.setInvolved(true);
 	}
 
@@ -110,6 +117,7 @@ public class LaunchWorkflow {
 	//keep introduced data
 	if(this.initialisation.isEstablishment()){
 	    this.launchEstablishmentMeansOption();
+	    step9.setInvolved(true);
 	}
 
 	this.writeFinalOutput();
@@ -316,6 +324,8 @@ public class LaunchWorkflow {
 	RasterTreatment rasterTreatment = this.dataTreatment.checkWorldClimCell(this.initialisation.getInputRastersList());
 	finalisation.setMatrixFileValidCells(rasterTreatment.getMatrixFileValidCells());
 	finalisation.setPathMatrixFile(rasterTreatment.getMatrixFileValidCells().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
+	step8.setPathWrongRaster(rasterTreatment.getWrongRasterFile().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
+	step8.setPathMatrixResultRaster(rasterTreatment.getMatrixFileValidCells().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
 	step8.setNbFound(rasterTreatment.getNbWrongOccurrences());
     }
 
@@ -326,10 +336,18 @@ public class LaunchWorkflow {
      */
     public void launchEstablishmentMeansOption(){
 	if(this.initialisation.getEstablishmentList().size() != 0){
-	    File wrongEstablishmentMeans = this.dataTreatment.establishmentMeansOption(this.initialisation.getEstablishmentList());
+	    EstablishmentTreatment establishTreatment = this.dataTreatment.establishmentMeansOption(this.initialisation.getEstablishmentList());
+	    ArrayList<String> noEstablishment = establishTreatment.getNoEstablishmentList();
+	    step9.setNbFound(noEstablishment.size());
+	    File wrongEstablishmentMeans = establishTreatment.getWrongEstablishmentMeansFile();
 	    finalisation.setWrongEstablishmentMeans(wrongEstablishmentMeans);
 	    finalisation.setPathWrongEstablishmentMeans(wrongEstablishmentMeans.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
+	    step9.setStep9_ok(true);
+	    step9.setPathWrongEstablishmentMeans(wrongEstablishmentMeans.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), ""));
 	}
+	/*else{
+	    step9.setStep9_ok(false);
+	}*/
     }
 
 
@@ -394,77 +412,76 @@ public class LaunchWorkflow {
 	this.finalisation = finalisation;
     }
 
-    /*
-    public String getDIRECTORY_PATH() {
-        return DIRECTORY_PATH;
-    }
-
-    public void setDIRECTORY_PATH(String dIRECTORY_PATH) {
-        DIRECTORY_PATH = dIRECTORY_PATH;
-    }
-     */
     public Step1_MappingDwc getStep1() {
-	return step1;
+        return step1;
     }
 
     public void setStep1(Step1_MappingDwc step1) {
-	this.step1 = step1;
+        this.step1 = step1;
     }
 
     public Step2_ReconciliationService getStep2() {
-	return step2;
+        return step2;
     }
 
     public void setStep2(Step2_ReconciliationService step2) {
-	this.step2 = step2;
+        this.step2 = step2;
     }
 
     public Step3_CheckCoordinates getStep3() {
-	return step3;
+        return step3;
     }
 
-    public void setStep2(Step3_CheckCoordinates step3) {
-	this.step3 = step3;
+    public void setStep3(Step3_CheckCoordinates step3) {
+        this.step3 = step3;
     }
 
     public Step4_CheckGeoIssue getStep4() {
-	return step4;
+        return step4;
     }
 
-    public void setStep3(Step4_CheckGeoIssue step3) {
-	this.step4 = step3;
+    public void setStep4(Step4_CheckGeoIssue step4) {
+        this.step4 = step4;
     }
 
     public Step5_IncludeSynonym getStep5() {
-	return step5;
+        return step5;
     }
 
     public void setStep5(Step5_IncludeSynonym step5) {
-	this.step5 = step5;
+        this.step5 = step5;
     }
 
-    public Step6_CheckTDWG getStep7() {
-	return step6;
+    public Step6_CheckTDWG getStep6() {
+        return step6;
     }
 
     public void setStep6(Step6_CheckTDWG step6) {
-	this.step6 = step6;
+        this.step6 = step6;
     }
 
-    public Step7_CheckISo2Coordinates getStep8() {
-	return step7;
+    public Step7_CheckISo2Coordinates getStep7() {
+        return step7;
     }
 
     public void setStep7(Step7_CheckISo2Coordinates step7) {
-	this.step7 = step7;
+        this.step7 = step7;
     }
 
-    public Step8_CheckCoordinatesRaster getStep9() {
-	return step8;
+    public Step8_CheckCoordinatesRaster getStep8() {
+        return step8;
     }
 
     public void setStep8(Step8_CheckCoordinatesRaster step8) {
-	this.step8 = step8;
-    }  
+        this.step8 = step8;
+    }
 
+    public Step9_EstablishmentMeans getStep9() {
+        return step9;
+    }
+
+    public void setStep9(Step9_EstablishmentMeans step9) {
+        this.step9 = step9;
+    }
+    
 }

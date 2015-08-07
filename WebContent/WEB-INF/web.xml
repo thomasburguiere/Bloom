@@ -116,6 +116,14 @@
 		<url-pattern>/step8</url-pattern>
 	</servlet-mapping>
 	<servlet>
+		<servlet-name>Step9_EstablishmentMeans</servlet-name>
+		<servlet-class>src.beans.Step9_EstablishmentMeans</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Step9_EstablishmentMeans</servlet-name>
+		<url-pattern>/step9</url-pattern>
+	</servlet-mapping>
+	<servlet>
 		<servlet-name>ExampleWebTestCase</servlet-name>
 		<servlet-class>src.test.ExampleWebTestCase</servlet-class>
 	</servlet>

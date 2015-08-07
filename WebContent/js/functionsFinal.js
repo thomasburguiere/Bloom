@@ -14,9 +14,9 @@ function initialiseFinalPage() {
 	}
 }
 
-function checkErrorOk(step_ok, p_ok){
+function checkErrorOk(step_ok, p_ok, nbStep){
 	if(step_ok == "true"){
-		//console.log("true : " + step_ok);
+		console.log("true : " + "p_ok" + nbStep);
 		p_ok.setAttribute("style", "color:#089A4C");
 	}
 	else{
@@ -28,17 +28,27 @@ function checkErrorOk(step_ok, p_ok){
 function initialiseStep(nbStep, involved){
 	var divStep = document.getElementById("divStep" + nbStep);
 	var step_ok = document.getElementById("step" + nbStep + "_ok").value;
+	var step_ok = document.getElementById("step" + nbStep + "_ok").value;
 	var p_ok = document.getElementById("p_ok" + nbStep);
-	
+	var headerStep_involved = $("#headerStep" + nbStep + "_involved");
+    var headerStep_notInvolved = $("#headerStep" + nbStep + "_NotInvolved");
+    
 	divStep.setAttribute('style', "margin-left: 40px; visibility: visible");
 	console.log(involved);
 	if(involved){
 		var divStepInvolved = document.getElementById("divStep" + nbStep + "Involved");
-		this.checkErrorOk(step_ok, p_ok);
+        headerStep_involved.show();
+        headerStep_notInvolved.hide();
+		this.checkErrorOk(step_ok, p_ok, nbStep);
 		//divStepInvolved.setAttribute('style', "margin-left: 40px; visibility: visible");
 	}
 	else{
+        
+        headerStep_involved.hide();
+        headerStep_notInvolved.show();
+        
 	    var notInvolved = document.getElementById("divStep" + nbStep + "NotInvolved");
+        divStep.style.display = "none";
         console.log(notInvolved);
 	    //notInvolved.setAttribute('style', "margin-left: 40px; visibility: visible");
 	    
