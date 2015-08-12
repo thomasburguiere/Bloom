@@ -225,7 +225,7 @@ hr.small {
 
 .post-preview>a:hover,.post-preview>a:focus {
 	text-decoration: none;
-	color: #0085a1
+	color: lightgrey;
 }
 
 .post-preview>a>.post-title {
@@ -242,7 +242,7 @@ hr.small {
 
 .post-preview>.post-meta {
 	color: gray;
-	font-size: 18px;
+	font-size: 23px;
 	font-style: italic;
 	margin-top: 0
 }
@@ -253,7 +253,7 @@ hr.small {
 }
 
 .post-preview>.post-meta>a:hover,.post-preview>.post-meta>a:focus {
-	color: #0085a1;
+	color: #26A69A;
 	text-decoration: underline
 }
 
@@ -351,14 +351,23 @@ form .row:first-child .floating-label-form-group {
 	border-top: 1px solid #eee
 }
 
+label{
+    font-size: 25px;
+}
+
 .btn {
 	font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	text-transform: uppercase;
 	font-size: 14px;
 	font-weight: 800;
 	letter-spacing: 1px;
-	border-radius: 0;
-	padding: 15px 25px
+    /*padding: 10px;
+    padding-right: 20px;
+    padding-left: 20px;*/
+    background-color: #868b8d;
+    text-align: center;
+    border-radius: 5px;
+    vertical-align: middle;
 }
 
 .btn-lg {
@@ -366,16 +375,50 @@ form .row:first-child .floating-label-form-group {
 	padding: 25px 35px
 }
 
-.btn-default:hover,.btn-default:focus {
-	background-color: #6BDF9B;
-	border: 1px solid #6BDF9B;
-	color: #fff
+.font-button:hover,.font-button:focus {
+	background-color: lightgrey;
+	border: 1px solid lightgrey;
+	color: black;
+}
+.btn:hover, .btn-large:hover {
+    background-color:lightgrey;
+}
+
+.btn-group{
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+    border-top-left-radius: 
+}
+
+.btn-large{
+    border-radius: 5px;
+    vertical-align: middle;
+}
+.btn-group > .btn-group:not(:first-child):not(:last-child) > .btn{
+    border-radius: 5px;
+    vertical-align: text-top;
+}
+.btn-group > .btn-group:first-child:not(:last-child) > .btn:last-child, .btn-group > .btn-group:first-child:not(:last-child) > .dropdown-toggle{
+    border-radius: 5px;
+}
+
+.global{
+    margin-top: 10px;
+    border-bottom-width: 10px;
+    border-style:solid;
+    border-width:1px;
+    border-radius:5px;
+    border-color:LightGray;
+    display:inline-block;
+    padding-bottom: 15px;
+    padding-top: 15px;
 }
 
 .global:hover,
 .global:focus {
-	background-color: #6BDF9B;
-	border: 1px solid #6BDF9B;
+	background-color: #ffffee;
+	border: 1px solid #ffffee;
 	color: black;
 }
 
@@ -396,8 +439,8 @@ form .row:first-child .floating-label-form-group {
 
 .pager li>a:hover,.pager li>a:focus {
 	color: #fff;
-	background-color: #0085a1;
-	border: 1px solid #0085a1
+	background-color: #ffffee;
+	border: 1px solid #ffffee;
 }
 
 .pager .disabled>a,.pager .disabled>a:hover,.pager .disabled>a:focus,.pager .disabled>span
@@ -410,13 +453,13 @@ form .row:first-child .floating-label-form-group {
 ::-moz-selection {
 	color: #fff;
 	text-shadow: none;
-	background: #0085a1
+	background: black;
 }
 
 ::selection {
 	color: #fff;
 	text-shadow: none;
-	background: #0085a1
+	background: black; 
 }
 
 img::selection {
@@ -430,7 +473,11 @@ img::-moz-selection {
 }
 
 body {
-	webkit-tap-highlight-color: #0085a1
+	webkit-tap-highlight-color: #F1F5F3;
+}
+
+td{
+    padding: 5px;
 }
 
 td.details-control {
@@ -452,19 +499,39 @@ tr.shown td.details-control {
 	display:compact;
 }
 
-.table-mapping{
-    margin-bottom:20px;
-    margin-top: 20px;
+.table-marges{
+    margin-bottom:15px;
+    margin-top: 15px;
     font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15px;
 }
-button{
-    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;   
+
+input[type=button]{
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    border-radius: 5px;
+    vertical-align: middle;
+}
+
+input[type=text],input[type=url]{
+    font-size: 15px; 
+    border-bottom-color:#33ddcc;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+[type="radio"]:checked + label::after{
+    background-color: #33ddcc;
+    border: #33ddcc;
+}
+
+input[type=radio]{
+    text-align: left;
 }
 
 .table-mapping:hover,
 .table-mapping:focus{
-    background-color: #6BDF9B;
-	border: 1px solid #6BDF9B;
+    background-color: #ffffee;
+	border: 1px solid #ffffee;
 	color: black;
     
 }
@@ -487,7 +554,49 @@ button{
     padding: 0px;
 }
 
-td{
-    padding-top: 10px;
-    padding-bottom: 10px;
+.center{
+    text-align: center;
+}
+
+.marges{
+    margin-top: 15px;   
+}
+.font-button{
+    text-transform: uppercase;
+	font-size: 20px;
+	font-weight: 800;
+	letter-spacing: 1px;
+    text-align: center;
+    border-radius: 5px;
+    vertical-align: middle;
+}
+
+.font-medium-button{
+    text-transform: uppercase;
+	font-size: 15px;
+	font-weight: 800;
+	letter-spacing: 1px;
+    text-align: center;
+    border-radius: 5px;
+    vertical-align: middle;
+    width: 80%;
+}
+
+
+.font-small-button{
+    text-transform: uppercase;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 1px;
+    text-align: center;
+    border-radius: 5px;
+    vertical-align: middle;
+    background-color: #ff7766;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+
+.sub-table-reconcile,.tr,.td{
+    text-align: left;   
 }

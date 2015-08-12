@@ -12,7 +12,7 @@ function addField(compteur, idAdd, typeInput) {
 
 	var divAddLoad = document.createElement('div');
 	divAddLoad.setAttribute('id', "divAddLoad_" + nb_inp);
-	divAddLoad.setAttribute("class", "btn-group btn-group-justified");
+	divAddLoad.setAttribute("class", "col-lg-12 center");
     //divAddLoad.setAttribute("style", "margin-top: 10px; border-bottom-width: 10px; border-style:solid; border-width:1px; border-radius:5px; border-color:LightGray");
     divAddLoad.setAttribute("role", "group");
     
@@ -31,32 +31,52 @@ function addField(compteur, idAdd, typeInput) {
 		inp.setAttribute('onchange', 'loadInputFile('+nb_inp+',\"change\")');
     
         var spanInput = document.createElement('span');
-        spanInput.setAttribute('class', "btn btn-file");
-        spanInput.appendChild(inp);
+        spanInput.innerHTML = "Browse";
+       // spanInput.setAttribute('class', "btn btn-file");
+        
+        var divBTN = document.createElement('div');
+        divBTN.setAttribute('class', "btn");
+        
+        divBTN.appendChild(spanInput);
+        divBTN.appendChild(inp);
         
         var divAdd = document.createElement('div');
 		divAdd.setAttribute('id', "divAdd_" + nb_inp);
-		divAdd.setAttribute('class', "fileinput fileinput-new btn-group");
+		divAdd.setAttribute('class', "file-field input-field col-lg-4");
         divAdd.setAttribute('role', "group");
-        divAdd.appendChild(spanInput);
         
+        divAdd.appendChild(divBTN);
+        
+        
+        
+        var divPathWrapper = document.createElement('div');
+        divPathWrapper.setAttribute('class', "file-path-wrapper");
+        
+        var inputText = document.createElement('input');
+        inputText.type = "text";
+        inputText.id = "inputText_" + nb_inp;
+        inputText.setAttribute('class', "file-path validate");
+        
+        divPathWrapper.appendChild(inputText);
+        
+        divAdd.appendChild(divPathWrapper);
         
 		var divLoad = document.createElement('div');
 		divLoad.setAttribute('id', "divLoad_" + nb_inp);
-		divLoad.setAttribute('class', "col-lg-4 btn-group");
-        divLoad.setAttribute('role', "group");
+		divLoad.setAttribute('class', "col-lg-4 marges");
+        //divLoad.setAttribute('role', "group");
                              
 		var divReconcile = document.createElement('div');
 		divReconcile.setAttribute('id', "divReconcile_" + nb_inp);
-		divReconcile.setAttribute('class', "col-lg-4 btn-group");
-        divReconcile.setAttribute('role', "group");
+		divReconcile.setAttribute('class', "col-lg-4 marges");
+        //divReconcile.setAttribute('role', "group");
 
 		var bloc_inputs = document.getElementById('bloc-inputs');
 
 		// add all new elements to the formulary
 		var divMapping = document.createElement('div');
 		divMapping.setAttribute('id', "divMapping_" + nb_inp);
-		divMapping.setAttribute('class', "col-lg-12 mapping");
+		divMapping.setAttribute('class', "col-lg-12");
 
 		var divSubmitMapping = document.createElement('div');
 		divSubmitMapping.setAttribute('id', "divSubmitMapping_" + nb_inp);
@@ -68,7 +88,7 @@ function addField(compteur, idAdd, typeInput) {
 		
 		var divSubmitReconcile = document.createElement('div');
 		divSubmitReconcile.setAttribute('id', "divSubmitReconcile_" + nb_inp);
-		divSubmitReconcile.setAttribute('class', "col-lg-12");
+		divSubmitReconcile.setAttribute('class', "col-lg-12 center");
 		
 		var divTableReconcile = document.createElement('div');
 		divTableReconcile.setAttribute('id', "divTableReconcile_" + nb_inp);
@@ -76,7 +96,7 @@ function addField(compteur, idAdd, typeInput) {
 		divTableReconcile.style.display = "inline-block";
 		
         
-		divAdd.appendChild(spanInput);
+		//divAdd.appendChild(spanInput);
 		divAddLoad.appendChild(divAdd);
 		divAddLoad.appendChild(divLoad);
 		divAddLoad.appendChild(divReconcile);
@@ -86,13 +106,13 @@ function addField(compteur, idAdd, typeInput) {
         
 		globalInput.appendChild(divMapping);
 		globalInput.appendChild(divSubmitMapping);
-        divSubmitMapping.setAttribute('class', "col-lg-12 submit-mapping btn-group btn-group-justified");
-        divSubmitMapping.setAttribute('role', "group");
+        divSubmitMapping.setAttribute('class', "col-lg-12 center");
+        //divSubmitMapping.setAttribute('role', "group");
         
 		globalInput.appendChild(divTableReconcile);
 		globalInput.appendChild(divReconciliationCheck);
 		globalInput.appendChild(divSubmitReconcile);
-		globalInput.setAttribute("style","margin-top: 10px; border-bottom-width: 10px; border-style:solid; border-width:1px; border-radius:5px; border-color:LightGray; display:inline-block;");
+		//globalInput.setAttribute("style","margin-top: 10px; border-bottom-width: 10px; border-style:solid; border-width:1px; border-radius:5px; border-color:LightGray; display:inline-block;");
 		
 
 	}
@@ -206,7 +226,7 @@ function addDeleteRasterFile(){
 				var tableRaster = document.createElement("table");
 				tableRaster.id = "rasterTable";
 				tableRaster.name = "rasterTable";
-				tableRaster.setAttribute("class", "table table-striped");
+				tableRaster.setAttribute("class", "table table-striped table-marges");
 				divRasterFiles.appendChild(tableRaster);
 
 				this.addLine(addRasterButton,delRasterButton, "row_raster_0");
@@ -337,6 +357,7 @@ function mappingDWC(counter, change_load_reconcile){
 		buttonConvert.name = "convert_" + counter;
 		//buttonConvert.value = "Load file for mapping";
 		buttonConvert.setAttribute("onclick" , "loadInputFile(" + counter + ",\"load\")");
+        buttonConvert.setAttribute('class', "btn btn-default waves-effect waves-light btn-large font-medium-button");
 		divLoad.appendChild(buttonConvert);
 		$("#convert_" + counter).text('Load file for mapping');
         divAddLoad.appendChild(divLoad);
@@ -373,7 +394,7 @@ function mappingDWC(counter, change_load_reconcile){
 		if(change_load_reconcile == "load"){
 			if(tableMapping){
 				divMapping.style.display = "block";
-				tableMapping.style.display="block";
+				//tableMapping.style.display="block";
 				divSubmitMapping.style.display = "block";
 				divSubmitMappingOK.style.display = "block";
 				divSubmitMappingCancel.style.display ="block";
@@ -438,7 +459,9 @@ function mappingDWC(counter, change_load_reconcile){
 function loadInputFile(counter, change_load_reconcile){
 
 	var fileExist = document.getElementById('inp_' + counter);
-
+    var filename = fileExist.value;
+    var inputText = document.getElementById("inputText_" + counter);
+    inputText.value = filename;
 	if(fileExist.value != null){
 		var columns = this.mappingDWC(counter, change_load_reconcile);
 		taxonReconciliation(columns, counter, change_load_reconcile);
@@ -479,21 +502,25 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		mappingTable.id = "mappingTable_" + nbInput;
 		mappingTable.name = "mappingTable_" + nbInput;
 		mappingTable.border = "0";
-		
-
+        
+        var tbody = document.createElement("tbody");
+        mappingTable.appendChild(tbody);
+        
 		for(var i = 0 ; i < firstLineInput.length; i++){
 			var tagInput = firstLineInput[i];
 			var row = mappingTable.insertRow(-1); // insert last line
 			row.id = "row_" + i;
 			row.name = "row_" + i;
+            tbody.appendChild(row);
 			var cellInput = row.insertCell(0);
 			cellInput.innerHTML = tagInput;
 
 			var dropdownDwC = document.createElement("select");
+            dropdownDwC.style.display = "block";
 			dropdownDwC.name = "dropdownDwC_" + i;
-
-			var cellDwC = row.insertCell(1);
-
+            var cellDwC = row.insertCell(1);
+			
+            //tbody.appendChild(cellDwC);
 			for(var j = 0 ; j <  dwcTags.length ; j++){
 				var dwcTag = dwcTags[j];
 				var optionDwC = document.createElement('option');
@@ -506,17 +533,17 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 				dropdownDwC.appendChild(optionDwC);
 			}
 
+			
+			
 			cellDwC.appendChild(dropdownDwC);
-			mappingTable.appendChild(row);
-			mappingTable.appendChild(cellInput);
-			mappingTable.appendChild(cellDwC);
+			
 
 		}
 
 		divMapping.appendChild(mappingTable);
-        mappingTable.setAttribute('class', "table-mapping");
-        
-		var mapping = document.createElement("input");
+        mappingTable.setAttribute('class', "centered table-marges");
+
+        var mapping = document.createElement("input");
 		mapping.id = "mappingActive_" + nbInput;
 		mapping.name = "mappingActive_" + nbInput;
 		mapping.value = "false";
@@ -530,6 +557,7 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		buttonOK.type = "button";
 		var activeMapping = new Boolean(true);
 		buttonOK.setAttribute("onclick", "activeMapping(" + activeMapping +"," + nbInput +")");
+        buttonOK.setAttribute('class', "btn btn-default waves-effect waves-light font-small-button");
 
 		var buttonCancel = document.createElement('button');
 		buttonCancel.id = "cancelMapping_" + nbInput;
@@ -537,19 +565,20 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
         //buttonCancel.value = "Cancel conversion";
 		buttonCancel.type = "button";
 		buttonCancel.setAttribute('onclick', "deleteMapping("+ nbInput +")");
-
+        buttonCancel.setAttribute('class', "btn btn-default waves-effect waves-light font-small-button");
+        
 		var divSubmitOK = document.createElement('div');
 		divSubmitOK.setAttribute('id', "divSubmitMappingOK_" + nbInput);
-		divSubmitOK.setAttribute('class', "col-lg-6 btn-group");
-        divSubmitOK.setAttribute('role',"group");	
+		divSubmitOK.setAttribute('class', "col-lg-6");
+       // divSubmitOK.setAttribute('role',"group");	
 		divSubmitOK.setAttribute('value', 'false');
 		divSubmitOK.appendChild(buttonOK);
         
         
 		var divSubmitMappingCancel = document.createElement('div');
 		divSubmitMappingCancel.setAttribute('id', "divSubmitMappingCancel_" + nbInput);
-		divSubmitMappingCancel.setAttribute('class', "col-lg-6 btn-group");
-        divSubmitMappingCancel.setAttribute('role',"group");	
+		divSubmitMappingCancel.setAttribute('class', "col-lg-6");
+        //divSubmitMappingCancel.setAttribute('role',"group");	
 		divSubmitMappingCancel.setAttribute('value', "false");
 		divSubmitMappingCancel.appendChild(buttonCancel);
        
@@ -578,8 +607,8 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 		divSubmitMapping.appendChild(divMessageSaved);
 		divSubmitMapping.appendChild(divMessageCancelled);
 
-        divSubmitMapping.setAttribute('class', "col-lg-12 submitMapping btn-group btn-group-justified");
-        divSubmitMapping.setAttribute('role', "group");
+        divSubmitMapping.setAttribute('class', "col-lg-12 center");
+        //divSubmitMapping.setAttribute('role', "group");
 	}
 }
 

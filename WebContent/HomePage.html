@@ -5,13 +5,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet"
-	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet"	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 <link
-	href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css"
-	rel="stylesheet" />
-
+	href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css">
 <link
 	href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"
 	rel="stylesheet" type="text/css">
@@ -23,10 +20,9 @@
 	rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css"
 	href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
-<link rel="Stylesheet" href="css/watable.css" />
 <link href="css/clean-blog.css" rel="stylesheet">
 <!--<link href="css/HomePage.css" rel="stylesheet">-->
-
+ 
 <title>Biodiversity Linked Organisms Occurrences Megadatasets</title>
 </head>
 <body onload="javascript:initialise()">
@@ -85,67 +81,80 @@
                             </h4>
 						</div>
 						<input id="compteur_inp" type="hidden" name="compteur_inp" value=1 />
-						<div class="btn-group btn-group-justified marginBloc" role="group">
-							<div class="btn-group" role="group">
-								<button id="addFile" type="button" class="btn btn-default"
+						<div class="col-lg-12 center">
+							
+                            <div class="col-lg-6 marges">
+								<button id="addFile" type="button" class="btn btn-default waves-effect waves-light btn-large font-button"
 									name="addFile"
 									onclick="javascript:addField('compteur_inp', 'synonyms', 'inp')"
 									value="Add a new file">Add a new file
                                 </button>
 							</div>
-							<div class="btn-group" role="group">
+                           
+							<div class="col-lg-6 marges">
 								<button id="delFile" name="delFile" type="button"
-									class="btn btn-default"
+									class="btn btn-default waves-effect waves-light btn-large font-button"
 									onclick="javascript:deleteField('compteur_inp', 'inp')"
 									value="Delete file">Delete file
                                 </button>
 							</div>
+                            
+
 						</div>
-                        <div id="globalInput_0" class="global" style="margin-top: 10px; border-bottom-width: 10px; border-style:solid; border-width:1px; border-radius:5px; border-color:LightGray; display:inline-block;">
-                            <div id="divAddLoad_0" class="btn-group btn-group-justified" role="group" >
+                        <div id="globalInput_0" class="global">
+                            <div id="divAddLoad_0" class="col-lg-12 center">
+                                <div id="divAdd_0" class="file-field input-field col-lg-4">
+                                    <div class="btn">
+                                          <span>Browse</span>
+                                          <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')">
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <input id="inputText_0" class="file-path validate" type="text">
+                                    </div>
+                                </div>
+                                <!--
                                 <div id="divAdd_0" class="fileinput fileinput-new btn-group" role="group">
                                     <span class="btn btn-file">
                                         <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')">
                                     </span>
                                 </div>
-                                <div id="divLoad_0" class="col-lg-4 btn-group" role="group"></div>
-                                <div class="col-lg-4 btn-group" role="group" id="divReconcile_0"></div>
+                                -->
+                                <div id="divLoad_0" class="col-lg-4 marges"></div>
+                                <div class="col-lg-4 marges" id="divReconcile_0"></div>
                             </div>
                        
-                            <div id="divMapping_0" class="col-lg-12 mapping"></div>
-                            <div id="divSubmitMapping_0" class="col-lg-12 submit-mapping btn-group btn-group-justified">
+                            <div id="divMapping_0" class="col-lg-12"></div>
+                            <div id="divSubmitMapping_0" class="col-lg-12 btn-group btn-group-justified">
                             </div>
-                            <div id="divTableReconcile_0" class="col-lg-12 dataTable"
-                                style="width: auto">
+                            <div id="divTableReconcile_0" class="col-lg-12 dataTable">
                                 <input name="reconcileActive_0" id="reconcileActive_0" type="hidden" value="">
                             </div>
                             <div id="divReconciliationCheck_0" class="col-lg-12"></div>
 
-                            <div id="divSubmitReconcile_0" class="col-lg-12"></div>
+                            <div id="divSubmitReconcile_0" class="col-lg-12 center"></div>
                         </div>
                      </div>
                     <hr class="col-lg-12"></hr>
 					<div class="post-preview col-lg-12" id="bloc-synonym">
 						<h3 class="post-subtitle">Synonyms taxons</h3>
-						<input id="synonyms" type="checkbox" name="synonyms"
-							value="synonyms"> Include synonyms taxons
+                            <input id="synonyms" type="checkbox" name="synonyms" value="synonyms"> 
+                            <label for="synonyms">Include synonyms taxons</label>
 					</div>
 					<hr class="col-lg-12"></hr>
 					<div class="post-preview col-lg-12" id="bloc-divRaster">
 						<h3 class="post-subtitle">Raster checking</h3>
-						<input id="compteur_raster" type="hidden" name="compteur_raster"
-							value=0 /> <input id="compteur_header" type="hidden"
-							name="compteur_header" value=0 /> <input type="checkbox"
-							id="raster" name="raster" value="raster"
-							onclick="addDeleteRasterFile()"> Check data in raster
-						cells
-						<div id="divRasterFiles" style="margin-left: 40px"></div>
+						<input id="compteur_raster" type="hidden" name="compteur_raster" value=0 /> 
+                        <input id="compteur_header" type="hidden" name="compteur_header" value=0 /> 
+                        <input type="checkbox" id="raster" name="raster" value="raster" onclick="addDeleteRasterFile()"> 
+                        <label for="raster">Check data in raster cells</label>
+						<div id="divRasterFiles" style="margin-left: 40px">
+                        </div>
 					</div>
 					<hr class="col-lg-12"></hr>
 					<div class="post-preview col-lg-12" id="bloc-tdwg4">
 						<h3 class="post-subtitle">TDWG4 checking</h3>
 						<input type="checkbox" id="tdwg4" name="tdwg4" value="tdwg4">
-						Botanic data (check tdwg4 code)
+				        <label for="tdwg4">Botanic data (check tdwg4 code)</label>
 					</div>
 					<hr class="col-lg-12"></hr>
 					<div class=" post-preview col-lg-12" id="bloc-introduce">
@@ -154,39 +163,54 @@
 						<h4 class="post-meta">became established at the location.
 							("establishmentMeans" DarwinCore term)</h4>
 						<input id="establishment" type="checkbox" name="establishment"
-							value="establishment" onclick="established()"> Choose
-						your to check with an introduce way
-
+							value="establishment" onclick="established()">
+                        <label for="establishment">Choose your to check with an introduce way</label>
 						<div style="margin-left: 40px">
 							<input id="native" type="checkbox" name="native" value="native"
-								onclick="checkEstablishment()"> Native <br> <input
+								onclick="checkEstablishment()"> 
+                            <label for="native">Native </label>
+                            <br>
+                            <input
 								id="introduced" type="checkbox" name="introduced"
 								value="introduced" onclick="checkEstablishment()">
-							Introduced <br> <input id="naturalised" type="checkbox"
+                            <label for="introduced">Introduced</label>
+                            <br>
+                            <input id="naturalised" type="checkbox"
 								name="naturalised" value="naturalised"
-								onclick="checkEstablishment()"> Naturalised <br> <input
+								onclick="checkEstablishment()"> 
+                            <label for="naturalised">Naturalised</label>
+                            <br>
+                            <input
 								id="invasive" type="checkbox" name="invasive" value="invasive"
-								onclick="checkEstablishment()"> Invasive <br> <input
+								onclick="checkEstablishment()"> 
+                            <label for="invasive">Invasive</label>
+                            <br>
+                            <input
 								id="managed" type="checkbox" name="managed" value="managed"
-								onclick="checkEstablishment()"> Managed <br> <input
+								onclick="checkEstablishment()"> 
+                            <label for="managed">Managed </label>
+                            <br>
+                            <input
 								id="uncertain" type="checkbox" name="uncertain"
 								value="uncertain" onclick="checkEstablishment()">
-							Uncertain <br> <input id="others" type="checkbox"
+                            <label for="uncertain">Uncertain</label> 
+                            <br> 
+                            <input id="others" type="checkbox"
 								name="others" value="others" onclick="checkEstablishment()">
-							Others (blank, tags no represented, ...)
+                            <label for="others">Others (blank, tags no represented, ...)</label>
 						</div>
 					</div>
 			     
 			<hr class="col-lg-12"></hr>
 			<!-- Pager -->
 			<ul class="pager">
-                <div class="btn-group btn-group-justified" role="group">
-                    <div class="btn-group" role="group">
-                    <button type="submit" id="workflowLaunch" name="workflowLaunch" class="btn btn-default">
+                <!--<div class="btn-group btn-group-justified" role="group">-->
+                    <div class="col-lg-12">
+                    <button type="submit" id="workflowLaunch" name="workflowLaunch" class="waves-effect waves-light btn-large card-panel grey darken-2 font-button">
                         Start workflow
                     </button>
                     </div>
-                </div>
+               <!-- </div>-->
                 
 			</ul>
 			</form>
@@ -201,24 +225,28 @@
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <ul class="list-inline text-center">
                         <li>
-                            <a href="http://www.gbif.org/">
-                                <img src="images/logo-gbif_2.gif" height="70" width="70" class="img-circle"></img>
+                            <a href="http://www.cnrs.fr" target="_blank">
+                                <img src="images/logo_cnrs.jpg" height="50" width="50" class="img-circle" style="cursor:pointer;"></img>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                                </span>
+                            <a href="https://www.mnhn.fr/fr" target="_blank">
+                                <img src="images/logo_mnhn.jpg" height="50" width="50" class="img-circle" style="cursor:pointer;"></img>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                </span>
+                            <a href="http://isyeb.mnhn.fr/" target="_blank">
+                               <img src="images/logo_ISYEB.png" height="50" width="50" class="img-circle" style="cursor:pointer;"></img>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://www.upmc.fr/" target="_blank">
+                                <img src="images/logo_upmc.png" height="50" width="50" class="img-circle" style="cursor:pointer;"></img>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://www.ephe.fr/" target="_blank">
+                                <img src="images/logo_ephe.png" height="50" width="50" class="img-circle" style="cursor:pointer;"></img>
                             </a>
                         </li>
                     </ul>

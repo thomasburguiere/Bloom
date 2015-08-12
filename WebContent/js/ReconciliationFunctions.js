@@ -99,6 +99,7 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 			buttonReconcile.name = "reconcileButton_" + counter;
 			//buttonReconcile.value = "Taxonomic validation";
 			buttonReconcile.setAttribute("onclick" , "loadInputFile(" + counter + ",\"reconcile\")");
+            buttonReconcile.setAttribute('class', "btn btn-default waves-effect waves-light btn-large font-medium-button");
 			divReconcile.appendChild(buttonReconcile);
             $("#reconcileButton_" + counter).text("Taxonomic validation");
 			divAddLoad.appendChild(divReconcile);
@@ -127,8 +128,8 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 
 			divSubmitReconcile.appendChild(divMessageReconcileCancelled);
 			divSubmitReconcile.appendChild(divMessageReconcileSaved);
-			/*
-			var reconcile = document.createElement("input");
+			
+			/*var reconcile = document.createElement("input");
 			reconcile.id = "reconcileActive_" + counter;
 			reconcile.name = "reconcileActive_" + counter;
 			reconcile.value = "false";
@@ -179,10 +180,11 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 				urlTaxo.id = "urlAPItaxo_" + counter;
 				urlTaxo.type = "url";
 				urlTaxo.setAttribute('class', "col-lg-10");
-				urlTaxo.placeholder = "http://data1.kew.org/reconciliation/reconcile/IpniName";
+				//urlTaxo.placeholder = "http://data1.kew.org/reconciliation/reconcile/IpniName";
                 var labelUrl = document.createElement('label');
                 labelUrl.id = "labelUrlTaxo_" + counter;
                 labelUrl.setAttribute('class', "col-lg-2");
+                labelUrl.value = "http://data1.kew.org/reconciliation/reconcile/IpniName";
                 divUrlTaxo.appendChild(labelUrl);
                 divUrlTaxo.appendChild(urlTaxo);
 				divReconciliationCheck.appendChild(divUrlTaxo);
@@ -250,19 +252,25 @@ function createReconciliationPreparation(presentTags, nbInput){
 		tablePrepareReconcile.id = "tablePrepareReconcile_" + nbInput;
 		tablePrepareReconcile.name = "tablePrepareReconcile_" + nbInput;
 		tablePrepareReconcile.border = "0";
-		tablePrepareReconcile.setAttribute("class", "table");
+		tablePrepareReconcile.setAttribute("class", "centered table-marges");
+        var tbody = document.createElement("tbody");
+        tablePrepareReconcile.appendChild(tbody);
+        
 		for(var i = 0 ; i < columnPrepare.length; i++){
 			var row = tablePrepareReconcile.insertRow(-1);
 			row.id = "rowReconcile_"+i;
 			row.name = "rowReconcile_"+i;
+            tbody.appendChild(row);
 			var cellInput = row.insertCell(0);
 			cellInput.innerHTML = columnPrepare[i];
 
 			var dropdownReconcile = document.createElement("select");
 			dropdownReconcile.name = "dropdownReconcile_" + nbInput + "_" + i;
 			dropdownReconcile.id = "dropdownReconcile_" + nbInput + "_" + i;
+            dropdownReconcile.style.display = "block";
 			var cellReconcile = row.insertCell(1);
-			for(var j = 0 ; j < presentTags.length; j++){
+			
+            for(var j = 0 ; j < presentTags.length; j++){
 				var tag = presentTags[j];
 				var optionTag = document.createElement('option');
 				optionTag.value = tag;
@@ -271,9 +279,9 @@ function createReconciliationPreparation(presentTags, nbInput){
 				dropdownReconcile.appendChild(optionTag);
 			}
 			cellReconcile.appendChild(dropdownReconcile);
-			tablePrepareReconcile.appendChild(row);
-			tablePrepareReconcile.appendChild(cellInput);
-			tablePrepareReconcile.appendChild(cellReconcile);
+			//tablePrepareReconcile.appendChild(row);
+			//tablePrepareReconcile.appendChild(cellInput);
+			//tablePrepareReconcile.appendChild(cellReconcile);
 		}
 
 		divReconciliationCheck.appendChild(tablePrepareReconcile);
@@ -284,7 +292,8 @@ function createReconciliationPreparation(presentTags, nbInput){
 		//buttonStartReconciliation.value = "Start reconciliation";
 		buttonStartReconciliation.type = "button";
 		buttonStartReconciliation.setAttribute("onclick", "startReconciliation(" + nbInput + ")");
-
+        buttonStartReconciliation.setAttribute('class', "btn btn-default waves-effect waves-light font-small-button");
+        
 		var divButtonStartReconciliation = document.createElement('div');
 		divButtonStartReconciliation.id = "divButtonStartReconciliation_" + nbInput;
 		divButtonStartReconciliation.setAttribute('class', "col-lg-6");
@@ -299,7 +308,8 @@ function createReconciliationPreparation(presentTags, nbInput){
 		//buttonCancelReconciliation.value = "Cancel reconciliation";
 		buttonCancelReconciliation.type = "button";
 		buttonCancelReconciliation.setAttribute("onclick", "cancelReconciliation(" + nbInput + ")");
-
+        buttonCancelReconciliation.setAttribute('class', "btn btn-default waves-effect waves-light font-small-button");
+        
 		var divButtonCancelReconciliation= document.createElement('div');
 		divButtonCancelReconciliation.id = "divButtonCancelReconciliation_" + nbInput;
 		divButtonCancelReconciliation.setAttribute('class', "col-lg-6");
@@ -317,6 +327,7 @@ function createReconciliationPreparation(presentTags, nbInput){
 		buttonValidReconciliation.type = "button";
 		var activeReconcile = new Boolean(true);
 		buttonValidReconciliation.setAttribute("onclick", "setReconciliation(" + activeReconcile + "," + nbInput + ")");
+        buttonValidReconciliation.setAttribute('class',"btn btn-default waves-effect waves-light font-small-button");
 
 		var divButtonValidReconciliation = document.createElement('div');
 		divButtonValidReconciliation.id = "divButtonValidReconciliation_" + nbInput;
@@ -371,7 +382,7 @@ function startReconciliation(nbInput){
 		tableReconcile.id = "tableReconcile_" + nbInput;
 		tableReconcile.name = "tableReconcile_" + nbInput;
 		tableReconcile.border = "0";
-		tableReconcile.setAttribute("class", "table-mapping");
+		tableReconcile.setAttribute("class", "table-mapping table-marges");
 		
 		var reconcile = $("#reconcileActive_" + nbInput);
 		if(reconcile.length != 1){
@@ -396,7 +407,7 @@ function startReconciliation(nbInput){
 		tableReconcile.id = "tableReconcile_" + nbInput;
 		tableReconcile.name = "tableReconcile_" + nbInput;
 		tableReconcile.border = "0";
-		tableReconcile.setAttribute("class", "table-mapping");
+		tableReconcile.setAttribute("class", "table-mapping table-marges");
 
 		divTableReconcile.appendChild(tableReconcile);
 		divTableReconcile.style.display = "inline-block";
@@ -517,7 +528,7 @@ function adjustJSON(nbInput){
 
 function createTableReconciliationService(resultsReconcile, nbInput, row){
 	var indexRow = row.index();
-	var subTableReconcile = '<table class="" id=tableInput_' + nbInput + '_row_' + indexRow + ' cellpadding="5" cellspacing="0" border="0" style="display:block; padding-left:50px;" >';
+	var subTableReconcile = '<table id=tableInput_' + nbInput + '_row_' + indexRow + ' cellpadding="5" cellspacing="0" border="0" style="display:block; padding-left:50px;" >';
 	var size = 0;
 	for(i in resultsReconcile){
 		size ++;
@@ -525,7 +536,7 @@ function createTableReconciliationService(resultsReconcile, nbInput, row){
 	if(size > 0){
 		subTableReconcile +=
 			'<tr>'+
-			'<td style="font-weight : bold">check</td>'+
+			//'<td style="font-weight : bold">check</td>'+
 			'<td style="font-weight : bold">name</td>' +
 			'<td style="font-weight : bold">score</td>' +
 			'</tr>';
@@ -537,8 +548,8 @@ function createTableReconciliationService(resultsReconcile, nbInput, row){
 			var idRadio = "radio_" + nbInput + "_" + indexRow + "_" + i;
 			subTableReconcile += 
 				'<tr>'+
-					'<td><INPUT type="radio" name="' + nameRadio + '" value="' + name + '" id="' + idRadio + '" ></td>' +
-					'<td>' + name +'</td>' +
+					'<td><input type="radio" name="' + 'group1' + '" value="' + name + '" id="' + idRadio + '"/>' +
+					'<label for="' + idRadio + '">' + name +'</label></td>' +
 					'<td>' + score +'</td>' +
 				'</tr>';
 		}
