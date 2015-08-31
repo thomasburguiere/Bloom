@@ -515,6 +515,10 @@ tr.shown td.details-control {
 	display:compact;
 }
 
+.datatable:focus,.datatable:hover{
+    background-color: #ffffee;
+}
+
 .table-marges{
     margin-bottom:15px;
     margin-top: 15px;
