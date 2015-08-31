@@ -34,10 +34,11 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="index.html">Home</a></li>
-				<li><a href="about.html">About</a></li>
-				<li><a href="post.html">Documentation</a></li>
-				<li><a href="contact.html">Contact</a></li>
+				<li><a href="HomePage.html">Home</a></li>
+                <li><a href="LaunchPage.html">Start</a></li>
+				<li><a href="AboutPage.html">About</a></li>
+				<li><a href="DocumentationPage.html">Documentation</a></li>
+				<li><a href="Contact.html">Contact</a></li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->
@@ -49,7 +50,7 @@
             <div class="row">
                 <div class="col-lg-12 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
-                        <h1>Biodiversity Linked Organisms Occurrences Megadatasets</h1>
+                        <h1>BLOOM</h1>
                         <h2 class="subheading">Workflow for open data cleaning</h2>
                     </div>
                 </div>
@@ -415,31 +416,36 @@
             </div>
         </div>
     </div>
-    <!-- Footer -->
+	<hr></hr>
+<!-- Footer -->
     <footer>
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <ul class="list-inline text-center">
                         <li>
-                            <a href="http://www.gbif.org/">
-                                <img src="images/logo-gbif_2.gif" height="70" width="70" class="img-circle"></img>
+                            <a href="http://www.cnrs.fr" target="_blank">
+                                <img src="images/logo_cnrs.jpg" height="50" width="50" class="img-circle" style="cursor:pointer;"></img>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                                </span>
+                            <a href="https://www.mnhn.fr/fr" target="_blank">
+                                <img src="images/logo_mnhn.jpg" height="50" width="50" class="img-circle" style="cursor:pointer;"></img>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                </span>
+                            <a href="http://isyeb.mnhn.fr/" target="_blank">
+                               <img src="images/logo_ISYEB.png" height="50" width="50" class="img-circle" style="cursor:pointer;"></img>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://www.upmc.fr/" target="_blank">
+                                <img src="images/logo_upmc.png" height="50" width="50" class="img-circle" style="cursor:pointer;"></img>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://www.ephe.fr/" target="_blank">
+                                <img src="images/logo_ephe.png" height="50" width="50" class="img-circle" style="cursor:pointer;"></img>
                             </a>
                         </li>
                     </ul>

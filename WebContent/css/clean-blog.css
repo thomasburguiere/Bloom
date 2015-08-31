@@ -13,11 +13,11 @@ p {
 	line-height: 1.5;
 	margin: 30px 0
 }
-
+/*
 p a {
 	text-decoration: underline
 }
-
+*/
 h1,h2,h3,h4,h5,h6 {
 	font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	font-weight: 800
@@ -303,6 +303,7 @@ footer .copyright {
 	border-bottom: 1px solid #eee
 }
 
+
 .floating-label-form-group input,.floating-label-form-group textarea {
 	z-index: 1;
 	position: relative;
@@ -322,7 +323,7 @@ footer .copyright {
 	position: relative;
 	top: 2em;
 	margin: 0;
-	font-size: .85em;
+	/*font-size: .85em;*/
 	line-height: 1.764705882em;
 	vertical-align: middle;
 	vertical-align: baseline;
@@ -401,6 +402,21 @@ label{
 }
 .btn-group > .btn-group:first-child:not(:last-child) > .btn:last-child, .btn-group > .btn-group:first-child:not(:last-child) > .dropdown-toggle{
     border-radius: 5px;
+}
+
+.btn-primary{
+    background-color: #616161;
+    font-size: 20px;
+    font-family: Lora,"Times New Roman",serif;
+    display: inline-block;
+    padding-left: 70px;
+    padding-right: 70px;
+}
+
+.btn-primary:focus,.btn-primary:hover{
+    background-color: lightgray;
+    border-color: lightgray;
+    color:black;
 }
 
 .global{
@@ -512,11 +528,15 @@ input[type=button]{
     vertical-align: middle;
 }
 
-input[type=text],input[type=url]{
+input[type=url]{
     font-size: 15px; 
     border-bottom-color:#33ddcc;
     margin-left: 15px;
     margin-right: 15px;
+}
+
+input[type=text]:hover,input[type=text]:focus{
+    border-bottom-color: transparent;
 }
 
 [type="radio"]:checked + label::after{
@@ -532,15 +552,20 @@ input[type=radio]{
 .table-mapping:focus{
     background-color: #ffffee;
 	border: 1px solid #ffffee;
-	color: black;
-    
+	color: black;   
 }
+
 .table {
     margin-bottom: 0px !important;
     border-bottom: 1px solid #DDD;
     border-collapse: collapse !important;
     border-radius: 1px;
 }
+
+table:hover,.table:focus{
+    background-color: #ffffee;
+}
+
 .fixed-table-body .card-view .title {
     font-weight: bold;
     display: inline-block;
@@ -599,4 +624,29 @@ input[type=radio]{
 
 .sub-table-reconcile,.tr,.td{
     text-align: left;   
+}
+
+
+.container,.row{
+    
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+}
+
+.container{
+    width:90%;
+    margin-left:auto;
+    margin-right: auto;
+}
+
+.row{
+    margin-bottom: 20px;   
+}
+
+.paragraphe{
+    text-align: justify;   
+}
+
+.divImg{
+    text-align: center;   
 }

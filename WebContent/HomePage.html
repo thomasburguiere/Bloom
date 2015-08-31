@@ -42,10 +42,11 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="index.html">Home</a></li>
-				<li><a href="about.html">About</a></li>
-				<li><a href="post.html">Documentation</a></li>
-				<li><a href="contact.html">Contact</a></li>
+				<li><a href="HomePage.html">Home</a></li>
+                <li><a href="LaunchPage.html">Start</a></li>
+				<li><a href="AboutPage.html">About</a></li>
+				<li><a href="DocumentationPage.html">Documentation</a></li>
+				<li><a href="Contact.html">Contact</a></li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->
@@ -57,7 +58,7 @@
             <div class="row">
                 <div class="col-lg-12 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
-                        <h1>Biodiversity Linked Organisms Occurrences Megadatasets</h1>
+                        <h1>BLOOM</h1>
                         <h2 class="subheading">Workflow for open data cleaning</h2>
                     </div>
                 </div>
@@ -67,156 +68,34 @@
 	<div class="container">
 		<div id="divBody" class="row">
 			<div class="col-lg-12">
-				<form action="controler" method="post" enctype="multipart/form-data"
-					name="formulaire" id="formulaire" accept-charset=utf-8>
-					<div class="post-preview" id="bloc-intro">
-						<h2 class="post-title">Workflow begining</h2>
-						<h3 class="post-subtitle">Choose your inputs preferences</h3>
-					</div>
-					<hr class="col-lg-12"></hr>
-					<div class="post-preview col-lg-12" id="bloc-inputs">
-						<div class="post-preview">
-							<h3 class="post-subtitle">Select inputs files</h3>
-                            <h4 class="post-meta">You can choose as many as you like. Files must be to csv format with <a href="http://rs.tdwg.org/dwc/terms/guides/text/" onclick="window.open(this.href); return false;">DarwinCore terms</a>.
-                            </h4>
-						</div>
-						<input id="compteur_inp" type="hidden" name="compteur_inp" value=1 />
-						<div class="col-lg-12 center">
-							
-                            <div class="col-lg-6 marges">
-								<button id="addFile" type="button" class="btn btn-default waves-effect waves-light btn-large font-button"
-									name="addFile"
-									onclick="javascript:addField('compteur_inp', 'synonyms', 'inp')"
-									value="Add a new file">Add a new file
-                                </button>
-							</div>
-                           
-							<div class="col-lg-6 marges">
-								<button id="delFile" name="delFile" type="button"
-									class="btn btn-default waves-effect waves-light btn-large font-button"
-									onclick="javascript:deleteField('compteur_inp', 'inp')"
-									value="Delete file">Delete file
-                                </button>
-							</div>
-                            
-
-						</div>
-                        <div id="globalInput_0" class="global">
-                            <div id="divAddLoad_0" class="col-lg-12 center">
-                                <div id="divAdd_0" class="file-field input-field col-lg-4">
-                                    <div class="btn">
-                                          <span>Browse</span>
-                                          <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')">
-                                    </div>
-                                    <div class="file-path-wrapper">
-                                        <input id="inputText_0" class="file-path validate" type="text">
-                                    </div>
-                                </div>
-                                <!--
-                                <div id="divAdd_0" class="fileinput fileinput-new btn-group" role="group">
-                                    <span class="btn btn-file">
-                                        <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')">
-                                    </span>
-                                </div>
-                                -->
-                                <div id="divLoad_0" class="col-lg-4 marges"></div>
-                                <div class="col-lg-4 marges" id="divReconcile_0"></div>
-                            </div>
-                       
-                            <div id="divMapping_0" class="col-lg-12"></div>
-                            <div id="divSubmitMapping_0" class="col-lg-12 btn-group btn-group-justified">
-                            </div>
-                            <div id="divTableReconcile_0" class="col-lg-12 dataTable">
-                                <input name="reconcileActive_0" id="reconcileActive_0" type="hidden" value="">
-                            </div>
-                            <div id="divReconciliationCheck_0" class="col-lg-12"></div>
-
-                            <div id="divSubmitReconcile_0" class="col-lg-12 center"></div>
-                        </div>
-                     </div>
-                    <hr class="col-lg-12"></hr>
-					<div class="post-preview col-lg-12" id="bloc-synonym">
-						<h3 class="post-subtitle">Synonyms taxons</h3>
-                            <input id="synonyms" type="checkbox" name="synonyms" value="synonyms"> 
-                            <label for="synonyms">Include synonyms taxons</label>
-					</div>
-					<hr class="col-lg-12"></hr>
-					<div class="post-preview col-lg-12" id="bloc-divRaster">
-						<h3 class="post-subtitle">Raster checking</h3>
-						<input id="compteur_raster" type="hidden" name="compteur_raster" value=0 /> 
-                        <input id="compteur_header" type="hidden" name="compteur_header" value=0 /> 
-                        <input type="checkbox" id="raster" name="raster" value="raster" onclick="addDeleteRasterFile()"> 
-                        <label for="raster">Check data in raster cells</label>
-						<div id="divRasterFiles" style="margin-left: 40px">
-                        </div>
-					</div>
-					<hr class="col-lg-12"></hr>
-					<div class="post-preview col-lg-12" id="bloc-tdwg4">
-						<h3 class="post-subtitle">TDWG4 checking</h3>
-						<input type="checkbox" id="tdwg4" name="tdwg4" value="tdwg4">
-				        <label for="tdwg4">Botanic data (check tdwg4 code)</label>
-					</div>
-					<hr class="col-lg-12"></hr>
-					<div class=" post-preview col-lg-12" id="bloc-introduce">
-						<h3 class="post-subtitle">How biological individual(s) is
-							represented in the Occurrence</h3>
-						<h4 class="post-meta">became established at the location.
-							("establishmentMeans" DarwinCore term)</h4>
-						<input id="establishment" type="checkbox" name="establishment"
-							value="establishment" onclick="established()">
-                        <label for="establishment">Choose your to check with an introduce way</label>
-						<div style="margin-left: 40px">
-							<input id="native" type="checkbox" name="native" value="native"
-								onclick="checkEstablishment()"> 
-                            <label for="native">Native </label>
-                            <br>
-                            <input
-								id="introduced" type="checkbox" name="introduced"
-								value="introduced" onclick="checkEstablishment()">
-                            <label for="introduced">Introduced</label>
-                            <br>
-                            <input id="naturalised" type="checkbox"
-								name="naturalised" value="naturalised"
-								onclick="checkEstablishment()"> 
-                            <label for="naturalised">Naturalised</label>
-                            <br>
-                            <input
-								id="invasive" type="checkbox" name="invasive" value="invasive"
-								onclick="checkEstablishment()"> 
-                            <label for="invasive">Invasive</label>
-                            <br>
-                            <input
-								id="managed" type="checkbox" name="managed" value="managed"
-								onclick="checkEstablishment()"> 
-                            <label for="managed">Managed </label>
-                            <br>
-                            <input
-								id="uncertain" type="checkbox" name="uncertain"
-								value="uncertain" onclick="checkEstablishment()">
-                            <label for="uncertain">Uncertain</label> 
-                            <br> 
-                            <input id="others" type="checkbox"
-								name="others" value="others" onclick="checkEstablishment()">
-                            <label for="others">Others (blank, tags no represented, ...)</label>
-						</div>
-					</div>
-			     
-			<hr class="col-lg-12"></hr>
-			<!-- Pager -->
-			<ul class="pager">
-                <!--<div class="btn-group btn-group-justified" role="group">-->
-                    <div class="col-lg-12">
-                    <button type="submit" id="workflowLaunch" name="workflowLaunch" class="waves-effect waves-light btn-large card-panel grey darken-2 font-button">
-                        Start workflow
-                    </button>
-                    </div>
-               <!-- </div>-->
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 paragraphe">
+                <p>
+                    The uncertainty and significant biodiversity crisis raise new ecological and 
+environmental questions highlighting the need of monitoring biodiversity. However, the 
+sheer magnitude and complexity of biodiversity data make it impractical to consider the 
+available millions of organisms’ occurrence points for analyzing on a large scale the 
+impact of climate change or addressing macroecological research questions. 
+                </p>
+                <p>
+                    Besides the size, the first challenge is the extreme heterogeneity of biodiversity occurrence data. Using occurrence points is non-trivial and curation process should take into account and correct wrong identifications, poor geolocalization, format errors, wrong projection 
+systems, etc. As potentially no single data is the same, it is hardly possible to correct all 
+errors automatically without going through extremely sophisticated validation 
+processes, most of it requiring direct human input and going through each record 
+manually. 
+                </p>
+                <p>
+                    Our objective is to provide an efficient and easy tool to improve biodiversity monitoring via an automatic curation procedure of biodiversity data. The BLOOM project will 
+provide a generic solution for biodiversity big data curation process. To this end, we 
+propose a data validation worflow that addresses, for millions of points, simple data 
+quality checking (coordinates, localities, outlier points and taxonomy).    
+                </p>
+                </div>
                 
-			</ul>
-			</form>
+                
+                
+            </div>
         </div>
-		</div>
-	</div>
+    </div>
 	<hr></hr>
 <!-- Footer -->
     <footer>
@@ -255,19 +134,13 @@
             </div>
         </div>
     </footer>
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
-    </script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-	<script src="js/jquery.watable.js"></script>
-	<script type="text/javascript" src="js/ReconciliationFunctions.js"></script>
-	<script type="text/javascript" src="js/functions.js"></script>
 
-	<script type="text/javascript" charset="utf8"
-		src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js">
-    </script>
-	<script
-		src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-	<script type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="js/jquery.watable.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript"></script>
+    <script type="text/javascript" src="js/functionsFinal.js"></script>
 </body>
-</html>
+</html>              
+                

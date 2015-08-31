@@ -1,4 +1,4 @@
-function initialise(){
+function initialise() {
 	document.getElementById('compteur_inp').value = 1;
 	document.getElementById('compteur_raster').value = 0;
 	document.getElementById('compteur_header').value = 0;
@@ -14,7 +14,7 @@ function addField(compteur, idAdd, typeInput) {
 	divAddLoad.setAttribute('id', "divAddLoad_" + nb_inp);
 	divAddLoad.setAttribute("class", "col-lg-12 center");
     //divAddLoad.setAttribute("style", "margin-top: 10px; border-bottom-width: 10px; border-style:solid; border-width:1px; border-radius:5px; border-color:LightGray");
-    divAddLoad.setAttribute("role", "group");
+    //divAddLoad.setAttribute("role", "group");
     
 	//Create a new input file
 	var inp = document.createElement('input');
@@ -24,7 +24,7 @@ function addField(compteur, idAdd, typeInput) {
 
 	if(typeInput == "inp"){
         var globalInput = document.createElement("div");
-        globalInput.setAttribute('class', "global");
+        globalInput.setAttribute('class', "col-lg-12 global");
         globalInput.setAttribute('id', "globalInput_" + nb_inp);
         
         
@@ -120,27 +120,65 @@ function addField(compteur, idAdd, typeInput) {
 		//inp.setAttribute("class", "");
 		var tableRaster = document.getElementById("rasterTable");
 		var nb_header = document.getElementById("compteur_header").value;
-		var header = document.createElement('input');
+		
+        
+       /* 
+        var header = document.createElement('input');
 		header.setAttribute('type', 'file');
 		header.setAttribute('id', 'header_' + nb_header);
 		header.setAttribute('name', 'header_' + nb_header);
-		//header.setAttribute('style', 'color:rgb(51,153,255); border-color:rgb(255,255,255); border-style:solid;" size="100"');
-
+        */
 		var rowInputRaster = tableRaster.insertRow(-1);
 		var rowNb = parseInt(nb_header) + 2;
 		rowInputRaster.id = "row_raster_" + rowNb;
 		rowInputRaster.name = "row_raster_" + rowNb;
-
+        
 		var cellInputRaster = rowInputRaster.insertCell(0);
-		cellInputRaster.appendChild(inp);
-		var cellInputHeader = rowInputRaster.insertCell(1);
-		cellInputHeader.appendChild(header);
-
+		//cellInputRaster.appendChild(inp);
+		
+        this.createInputSpecial(nb_header, typeInput, cellInputRaster);
+        
+        var cellInputHeader = rowInputRaster.insertCell(1);
+        this.createInputSpecial(nb_header, "header_", cellInputHeader);
+		//cellInputHeader.appendChild(header);
+        
 		document.getElementById("compteur_header").value ++;
 	}	
 
 	//increment input counter
 	document.getElementById(compteur).value ++;
+}
+
+function createInputSpecial(nbInput, typeInput, container){
+    var divContainer = document.createElement('div');
+    divContainer.setAttribute('class', 'file-field input-field');
+    
+    var divBtn = document.createElement('div');   
+    divBtn.setAttribute('class', 'btn');
+    var span = document.createElement('span');
+    span.innerHTML = "Browse";
+    divBtn.appendChild(span);
+    
+    var inputLoad = document.createElement('input');
+    inputLoad.setAttribute('type', 'file');
+    inputLoad.setAttribute('id', typeInput + "_" + nbInput);
+    inputLoad.setAttribute('name', typeInput + "_" + nbInput);
+    divBtn.appendChild(inputLoad);
+    
+    var divFilePathWrapper = document.createElement('div');
+    divFilePathWrapper.setAttribute('class','file-path-wrapper');
+    var inputText = document.createElement('input');
+    inputText.setAttribute('type', 'text');
+    inputText.setAttribute('id', typeInput + '___' + nbInput);
+    inputText.setAttribute('name', typeInput + '___' + nbInput);
+    inputText.setAttribute('class', 'file-path validate');
+    
+    divFilePathWrapper.appendChild(inputText);
+    
+    divContainer.appendChild(divBtn);
+    divContainer.appendChild(divFilePathWrapper);
+    
+    container.appendChild(divContainer);
 }
 
 //delete a input file 
@@ -208,7 +246,7 @@ function addDeleteRasterFile(){
 				addRasterButton.id = "addRaster";
 				addRasterButton.name = "addRaster";
 				addRasterButton.type = "button";
-				addRasterButton.class = "btn btn-default dropdown-toggle";
+				addRasterButton.setAttribute('class',"btn btn-default waves-effect waves-light font-small-button dropdown-toggle");
 				//addRasterButton.style = "color:rgb(204,0,153); border-color:rgb(255,255,255); border-style:solid;";
 				addRasterButton.size="51";
 				addRasterButton.value = "Add a new raster file";
@@ -221,6 +259,7 @@ function addDeleteRasterFile(){
 				//delRasterButton.style = "color:rgb(204,0,153); border-color:rgb(255,255,255); border-style:solid;";
 				delRasterButton.size = "51";
 				delRasterButton.value = "Delete a raster file";
+                delRasterButton.setAttribute('class', 'btn btn-default waves-effect waves-light font-small-button');
 				delRasterButton.setAttribute("onclick","deleteField(\'compteur_raster\',\'raster\')");
 
 				var tableRaster = document.createElement("table");

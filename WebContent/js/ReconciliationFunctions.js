@@ -83,6 +83,10 @@ function getFile(nbInput){
 	}
 }
 
+function deleteInput(nbInput, newInput){
+    inputList.splice(nbInput, 1, newInput);
+}
+
 function taxonReconciliation(fileReader, counter, changeOrLoad) {
 	if(changeOrLoad != "load"){
 		var divAddLoad = document.getElementById("divAddLoad_" + counter);
@@ -144,7 +148,7 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 				console.log("value reconcileActive : " + reconcileActiveValue);
 				if(reconcileActiveValue == "false"){
 					var divReconciliationCheck = document.getElementById("divReconciliationCheck_" + counter);
-					divReconciliationCheck.style.display =" block";
+					divReconciliationCheck.style.display ="block";
 
 
 					divSubmitReconcile.style.display = "block";
@@ -191,16 +195,18 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
                 $("#labelUrlTaxo_" + counter).text("Url reference");
 			}
 			if(changeOrLoad == "change"){
+                console.log("change and read file");
 				var fileInput = document.querySelector('#inp_' + counter);
 				var reader = new FileReader();
 				reader.addEventListener('load', function() {
+                    
 					readInputFileReconcile(reader.result, counter);
 
 				}, false);
 				reader.readAsText(fileInput.files[0]);
 			}
 			else if(changeOrLoad == "reconcile"){
-
+                console.log("reconcile");
 				var divMessageReconcileCancelled  = document.getElementById("divMessageReconcileCancelled_" + counter);
 				var divMessageReconcileSaved = document.getElementById("divMessageReconcileSaved_" + counter);
 				var divButtonStartReconciliation = document.getElementById("divButtonStartReconciliation_" + counter);
@@ -235,7 +241,12 @@ function readInputFileReconcile(contentFile, nbInput){
 	var cols = createTitleJSON(headers);
 
 	var input = new InputObject(nbInput, rows, cols, contentFile, firstLine, []);
-	inputList.push(input);//add an input to the list
+    
+    this.deleteInput(nbInput, input);
+    //add an input to the list
+    //inputList.push(input);
+    
+    console.log(inputList);
 }
 
 function createReconciliationPreparation(presentTags, nbInput){
@@ -407,7 +418,7 @@ function startReconciliation(nbInput){
 		tableReconcile.id = "tableReconcile_" + nbInput;
 		tableReconcile.name = "tableReconcile_" + nbInput;
 		tableReconcile.border = "0";
-		tableReconcile.setAttribute("class", "table-mapping table-marges");
+		tableReconcile.setAttribute("class", "table-mapping table-marges compact");
 
 		divTableReconcile.appendChild(tableReconcile);
 		divTableReconcile.style.display = "inline-block";
@@ -416,6 +427,9 @@ function startReconciliation(nbInput){
 	var columnCheck = this.getColumChecked(nbInput);
 	var inputObj = this.getInput(nbInput);
 	inputObj.tagsReconcile = tagsReconcile;
+    var inputElement = this.getInput(nbInput);
+    console.log(inputElement);
+    console.log(inputList);
 	var rows = this.getRows(nbInput);
 	var cols = this.getCols(nbInput);
 	var i = cols.length - 1;
@@ -425,11 +439,17 @@ function startReconciliation(nbInput){
 		cols.push(col);
 	}
 
-	var table = $(tableReconcile).DataTable({
+    var table = $(tableReconcile).DataTable({
 		"data": rows,
 		"columns": cols,
 		"bAutoWidth" : true,
 		"sScrollX" : '50%',
+        "bFilter" : false, 
+        "bInfo" : false,
+        "ordering": false,
+        "info":     false,
+        "dom": '<"top"i>rt<"bottom"flp><"clear">',
+        "bLengthChange" : false,
 		"columnDefs": [
 		               {
 		            	   targets: -1,
@@ -441,6 +461,7 @@ function startReconciliation(nbInput){
 		               }
 		               ]
 	});
+
 	this.adjustJSON(nbInput);
 	$(window).bind('resize', function () {
 		$(tableReconcile).fnAdjustColumnSizing();
@@ -548,7 +569,7 @@ function createTableReconciliationService(resultsReconcile, nbInput, row){
 			var idRadio = "radio_" + nbInput + "_" + indexRow + "_" + i;
 			subTableReconcile += 
 				'<tr>'+
-					'<td><input type="radio" name="' + 'group1' + '" value="' + name + '" id="' + idRadio + '"/>' +
+					'<td><input type="radio" name="' + 'group' + indexRow + '" value="' + name + '" id="' + idRadio + '"/>' +
 					'<label for="' + idRadio + '">' + name +'</label></td>' +
 					'<td>' + score +'</td>' +
 				'</tr>';
@@ -661,8 +682,8 @@ function setReconciliation(reconcileActive, nbInput){
 		var idReconcileActive = "#reconcileActive_" + nbInput;
 	    var reconcileActiveJquery = $(idReconcileActive),val = reconcileActiveJquery.val();
 	    reconcileActiveJquery.val(val === "true" ? "false" : "true");
-		console.log("reconcileActive value :" );
-		console.log(reconcileActiveJquery.val());
+		//console.log("reconcileActive value :" );
+		//console.log(reconcileActiveJquery.val());
 
 	}
 	else{
