@@ -119,31 +119,31 @@ public class CSVFile {
      * @return void
      */
     public void findSeparator(){
-	int previous = 0;
-	List<String> reste = new ArrayList<String>();
+		int previous = 0;
+		List<String> reste = new ArrayList<String>();
 	
         boolean isGoodCandidate = false;
 	
         for (String sep : AVAILABLE_SEPARATORS) {
-	    for(int i = 0 ; i < lines.size() ; i++){
-		String line = lines.get(i);
-		
-		int compte = this.countSeparators(line, sep);
-		if (compte == 0) {
-                    // no separator in this line
-                    isGoodCandidate = false;
-                    break;
-                }
-                if (compte != previous && previous != 0) {
-                    // not the same number that the line before
-                    isGoodCandidate = false;
-                    break;
-                }
-
-                previous = compte;
-                isGoodCandidate = true;
+        	for(int i = 0 ; i < lines.size() ; i++){
+				String line = lines.get(i);
+				
+				int compte = this.countSeparators(line, sep);
+				if (compte == 0) {
+	                    // no separator in this line
+	                    isGoodCandidate = false;
+	                    break;
+				}
+	            if (compte != previous && previous != 0) {
+	            	// not the same number that the line before
+	                isGoodCandidate = false;
+	                break;
+	            }
+	
+	            previous = compte;
+	            isGoodCandidate = true;
             }
-	    if (isGoodCandidate) {
+        	if (isGoodCandidate) {
                 reste.add(sep);
             }
         }

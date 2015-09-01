@@ -141,11 +141,9 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 			divTableReconcile.appendChild(reconcile);*/
 		}
 		else{
-			console.log("changeOrLoad : " + changeOrLoad);
 			var reconcileActive = document.getElementById("reconcileActive_" + counter);
 			if(reconcileActive){
 				var reconcileActiveValue = document.getElementById("reconcileActive_" + counter).getAttribute("value");
-				console.log("value reconcileActive : " + reconcileActiveValue);
 				if(reconcileActiveValue == "false"){
 					var divReconciliationCheck = document.getElementById("divReconciliationCheck_" + counter);
 					divReconciliationCheck.style.display ="block";
@@ -163,7 +161,6 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 				}	
 				else{
 					reconcileActive.value = "false";
-					console.log("new value : " + reconcileActive.value);
 				}
 			}
 			
@@ -195,7 +192,6 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
                 $("#labelUrlTaxo_" + counter).text("Url reference");
 			}
 			if(changeOrLoad == "change"){
-                console.log("change and read file");
 				var fileInput = document.querySelector('#inp_' + counter);
 				var reader = new FileReader();
 				reader.addEventListener('load', function() {
@@ -206,7 +202,6 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 				reader.readAsText(fileInput.files[0]);
 			}
 			else if(changeOrLoad == "reconcile"){
-                console.log("reconcile");
 				var divMessageReconcileCancelled  = document.getElementById("divMessageReconcileCancelled_" + counter);
 				var divMessageReconcileSaved = document.getElementById("divMessageReconcileSaved_" + counter);
 				var divButtonStartReconciliation = document.getElementById("divButtonStartReconciliation_" + counter);
@@ -246,7 +241,7 @@ function readInputFileReconcile(contentFile, nbInput){
     //add an input to the list
     //inputList.push(input);
     
-    console.log(inputList);
+    //console.log(inputList);
 }
 
 function createReconciliationPreparation(presentTags, nbInput){
@@ -428,8 +423,6 @@ function startReconciliation(nbInput){
 	var inputObj = this.getInput(nbInput);
 	inputObj.tagsReconcile = tagsReconcile;
     var inputElement = this.getInput(nbInput);
-    console.log(inputElement);
-    console.log(inputList);
 	var rows = this.getRows(nbInput);
 	var cols = this.getCols(nbInput);
 	var i = cols.length - 1;
@@ -491,7 +484,7 @@ function startReconciliation(nbInput){
 		else {
 
 			// Open this row
-			console.log("create child");
+			//console.log("create child");
 			addTableForReconcile(nbInput, columnCheck, row);
 			tr.addClass('shown');
 		}

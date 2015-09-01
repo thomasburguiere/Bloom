@@ -53,7 +53,7 @@
 	</div>
 	<!-- /.container --> </nav>
 	<header class="intro-header"
-		style="background-image: url('images/IMG_1792.JPG')">
+		style="background-image: url('images/IMG_1792_NB.JPG')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -110,7 +110,7 @@
                                           <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')">
                                     </div>
                                     <div class="file-path-wrapper">
-                                        <input id="inputText_0" class="file-path validate" type="text">
+                                        <input id="text_inp_0" class="file-path validate" type="text">
                                     </div>
                                 </div>
                                 <!--
@@ -131,7 +131,6 @@
                                 <input name="reconcileActive_0" id="reconcileActive_0" type="hidden" value="">
                             </div>
                             <div id="divReconciliationCheck_0" class="col-lg-12"></div>
-
                             <div id="divSubmitReconcile_0" class="col-lg-12 center"></div>
                         </div>
                      </div>
@@ -201,22 +200,29 @@
                             <label for="others">Others (blank, tags no represented, ...)</label>
 						</div>
 					</div>
-			     
-			<hr class="col-lg-12"></hr>
-			<!-- Pager -->
-			<ul class="pager">
+			         
+			         <hr class="col-lg-12"></hr>
+			         <!-- Pager -->
+			         <ul class="pager">
                 <!--<div class="btn-group btn-group-justified" role="group">-->
                     <div class="col-lg-12">
-                    <button type="submit" id="workflowLaunch" name="workflowLaunch" class="waves-effect waves-light btn-large card-panel grey darken-2 font-button">
+                    <button type="submit" id="workflowLaunch" name="workflowLaunch" class="waves-effect waves-light btn-large card-panel grey darken-2 font-button" onClick="activeRunning()">
                         Start workflow
                     </button>
                     </div>
                <!-- </div>-->
                 
 			</ul>
-			</form>
-        </div>
+			     </form>
+            </div>
 		</div>
+        <div id="running" style="display:none">
+            <div class="progress">    
+                <div class="indeterminate">
+                </div>
+            </div>
+            <p class="running">Workflow is running</p>
+        </div>
 	</div>
 	<hr></hr>
 <!-- Footer -->

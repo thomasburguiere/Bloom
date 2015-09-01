@@ -27,7 +27,8 @@ function addField(compteur, idAdd, typeInput) {
         globalInput.setAttribute('class', "col-lg-12 global");
         globalInput.setAttribute('id', "globalInput_" + nb_inp);
         
-        
+        this.createInputSpecial(nb_inp, typeInput, divAddLoad);
+        /*
 		inp.setAttribute('onchange', 'loadInputFile('+nb_inp+',\"change\")');
     
         var spanInput = document.createElement('span');
@@ -60,7 +61,7 @@ function addField(compteur, idAdd, typeInput) {
         divPathWrapper.appendChild(inputText);
         
         divAdd.appendChild(divPathWrapper);
-        
+        */
 		var divLoad = document.createElement('div');
 		divLoad.setAttribute('id', "divLoad_" + nb_inp);
 		divLoad.setAttribute('class', "col-lg-4 marges");
@@ -97,7 +98,7 @@ function addField(compteur, idAdd, typeInput) {
 		
         
 		//divAdd.appendChild(spanInput);
-		divAddLoad.appendChild(divAdd);
+		//divAddLoad.appendChild(divAdd);
 		divAddLoad.appendChild(divLoad);
 		divAddLoad.appendChild(divReconcile);
         
@@ -120,27 +121,18 @@ function addField(compteur, idAdd, typeInput) {
 		//inp.setAttribute("class", "");
 		var tableRaster = document.getElementById("rasterTable");
 		var nb_header = document.getElementById("compteur_header").value;
-		
-        
-       /* 
-        var header = document.createElement('input');
-		header.setAttribute('type', 'file');
-		header.setAttribute('id', 'header_' + nb_header);
-		header.setAttribute('name', 'header_' + nb_header);
-        */
+		    
 		var rowInputRaster = tableRaster.insertRow(-1);
 		var rowNb = parseInt(nb_header) + 2;
 		rowInputRaster.id = "row_raster_" + rowNb;
 		rowInputRaster.name = "row_raster_" + rowNb;
         
 		var cellInputRaster = rowInputRaster.insertCell(0);
-		//cellInputRaster.appendChild(inp);
 		
         this.createInputSpecial(nb_header, typeInput, cellInputRaster);
         
         var cellInputHeader = rowInputRaster.insertCell(1);
-        this.createInputSpecial(nb_header, "header_", cellInputHeader);
-		//cellInputHeader.appendChild(header);
+        this.createInputSpecial(nb_header, "header", cellInputHeader);
         
 		document.getElementById("compteur_header").value ++;
 	}	
@@ -151,7 +143,7 @@ function addField(compteur, idAdd, typeInput) {
 
 function createInputSpecial(nbInput, typeInput, container){
     var divContainer = document.createElement('div');
-    divContainer.setAttribute('class', 'file-field input-field');
+    
     
     var divBtn = document.createElement('div');   
     divBtn.setAttribute('class', 'btn');
@@ -169,9 +161,20 @@ function createInputSpecial(nbInput, typeInput, container){
     divFilePathWrapper.setAttribute('class','file-path-wrapper');
     var inputText = document.createElement('input');
     inputText.setAttribute('type', 'text');
-    inputText.setAttribute('id', typeInput + '___' + nbInput);
-    inputText.setAttribute('name', typeInput + '___' + nbInput);
+    inputText.setAttribute('id', "text_" + typeInput + '_' + nbInput);
+    inputText.setAttribute('name', "text_" + typeInput + '_' + nbInput);
     inputText.setAttribute('class', 'file-path validate');
+    
+    if(typeInput == "raster" || typeInput == "header"){
+        divContainer.setAttribute('class', 'file-field input-field');
+        inputLoad.setAttribute('onchange', "loadInputRaster(\"" + nbInput + "\",\"" + typeInput + "\")");
+    }
+    else if(typeInput == "inp"){
+        divContainer.setAttribute('class', "file-field input-field col-lg-4");
+        divContainer.setAttribute('id', "divAdd_" + nbInput);
+        divContainer.setAttribute('role', "group");
+        inputLoad.setAttribute('onchange', 'loadInputFile('+nbInput+',\"change\")');
+    }
     
     divFilePathWrapper.appendChild(inputText);
     
@@ -265,7 +268,7 @@ function addDeleteRasterFile(){
 				var tableRaster = document.createElement("table");
 				tableRaster.id = "rasterTable";
 				tableRaster.name = "rasterTable";
-				tableRaster.setAttribute("class", "table table-striped table-marges");
+				tableRaster.setAttribute("class", "table table-marges");
 				divRasterFiles.appendChild(tableRaster);
 
 				this.addLine(addRasterButton,delRasterButton, "row_raster_0");
@@ -499,7 +502,7 @@ function loadInputFile(counter, change_load_reconcile){
 
 	var fileExist = document.getElementById('inp_' + counter);
     var filename = fileExist.value;
-    var inputText = document.getElementById("inputText_" + counter);
+    var inputText = document.getElementById("text_inp_" + counter);
     inputText.value = filename;
 	if(fileExist.value != null){
 		var columns = this.mappingDWC(counter, change_load_reconcile);
@@ -507,9 +510,79 @@ function loadInputFile(counter, change_load_reconcile){
 	}	
 }
 
+function loadInputRaster(counter, typeInput){
+    var fileExist = document.getElementById(typeInput + '_' + counter);
+    //console.log(typeInput + '_' + counter);
+    var filename = fileExist.value;
+    //console.log("filename : " + filename);
+    var inputText = document.getElementById("text_" + typeInput + "_" + counter);
+    inputText.value = filename;
+}
+
+function findSeparator(contentFile){
+    var previous = 0;
+    var lines = contentFile.split('\n');
+    var separators = [',','\t',';'];
+    var isGoodCandidate = new Boolean(false);
+    var reste = [];
+    
+    for(var s = 0; s < separators.length; s++){
+        var sep = separators[s];
+        for(var l = 0; l < lines.length; l++){
+            var line = lines[l];
+            if(line != ""){
+                var count = this.countSeparators(line, sep);
+                console.log("************\n" + line + "    " + count);
+                if (count == 0) {
+                    // no separator in this line
+                    isGoodCandidate = false;
+                    break;
+                }
+                if (count != previous && previous != 0) {
+                   // not the same number that the line before
+                   isGoodCandidate = false;
+                   break;
+                }
+
+                previous = count;
+                isGoodCandidate = true;
+            }
+        }
+        if (isGoodCandidate) {
+            reste.push(sep);
+        }
+    }
+    
+    if (reste.length == 0) {
+        // no one separator found
+        console.log("No separator found !");
+    }
+    else if (reste.length > 1) {
+        // too many separators found
+        console.log("Too many separators found");
+    }	
+    else{
+        console.log("separator : " + reste[0]);
+        return reste[0];
+    }
+}
+
+function countSeparators(line, separator) {
+        var number = 0;
+        var pos = line.indexOf(separator);
+        while (pos != -1) {
+            number++;
+            line = line.substring(pos + 1);
+            pos = line.indexOf(separator);
+        }
+        return number;
+    }
+
+
 function readInputFile(contentFile, nbInput){
-	var length = contentFile.split('\n')[0].split(',').length;
-	var firstLine = contentFile.split('\n')[0].split(',');
+    var separator = this.findSeparator(contentFile);
+	var length = contentFile.split('\n')[0].split(separator).length;
+	var firstLine = contentFile.split('\n')[0].split(separator);
 	//console.log(firstLine);
 	//console.log(contentFile.split('\n')[0].split(','));
 	//firstLine[length] = " ";
@@ -694,4 +767,16 @@ function deleteMapping(nbInput){
 	divSubmitMappingCancel.style.display = "none";
 	divMessageCancelled.style.display = "block";
 	activeMapping(false, nbInput);
+}
+
+function activeRunning(){
+    var divRunning = document.getElementById('running');   
+    //var submitButton = document.getElementById('workflowLaunch');
+    console.log("running");
+    var divBody = document.getElementById('divBody');
+    //submitButton.addEventListener("click", function(){
+        divRunning.style.display = 'block';
+        divBody.style.display = 'none';
+    //});
+    
 }

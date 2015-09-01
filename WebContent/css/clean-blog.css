@@ -22,6 +22,13 @@ h1,h2,h3,h4,h5,h6 {
 	font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	font-weight: 800
 }
+h2{
+    font-size: 35px;   
+}
+
+h3{
+    font-size: 24px;   
+}
 
 a {
 	color: #404040
@@ -62,7 +69,7 @@ hr.small {
 
 .navbar-custom .nav li a {
 	text-transform: uppercase;
-	font-size: 12px;
+	font-size: 20px;
 	font-weight: 800;
 	letter-spacing: 1px
 }
@@ -183,7 +190,7 @@ hr.small {
 }
 
 .intro-header .post-heading h1 {
-	font-size: 35px
+	font-size: 100px
 }
 
 .intro-header .post-heading .subheading,.intro-header .post-heading .meta
@@ -212,7 +219,7 @@ hr.small {
 
 @media only screen and (min-width:768px) {
 	.intro-header .post-heading h1 {
-		font-size: 55px
+		font-size: 100px
 	}
 	.intro-header .post-heading .subheading {
 		font-size: 30px
@@ -515,10 +522,6 @@ tr.shown td.details-control {
 	display:compact;
 }
 
-.datatable:focus,.datatable:hover{
-    background-color: #ffffee;
-}
-
 .table-marges{
     margin-bottom:15px;
     margin-top: 15px;
@@ -554,9 +557,7 @@ input[type=radio]{
 
 .table-mapping:hover,
 .table-mapping:focus{
-    background-color: #ffffee;
-	border: 1px solid #ffffee;
-	color: black;   
+    background-color: #ffffee;  
 }
 
 .table {
@@ -566,7 +567,8 @@ input[type=radio]{
     border-radius: 1px;
 }
 
-table:hover,.table:focus{
+
+.dataTables_scrollBody:hover,.dataTables_scrollBody:focus{
     background-color: #ffffee;
 }
 
@@ -592,7 +594,7 @@ table:hover,.table:focus{
 }
 .font-button{
     text-transform: uppercase;
-	font-size: 20px;
+	font-size: 17px;
 	font-weight: 800;
 	letter-spacing: 1px;
     text-align: center;
@@ -653,4 +655,8 @@ table:hover,.table:focus{
 
 .divImg{
     text-align: center;   
+}
+
+#running{
+    text-align: center;
 }
