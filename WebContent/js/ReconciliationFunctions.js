@@ -17,7 +17,8 @@ function getInput(nbInput){
 	var inputLength = inputList.length;
 	for(var i = 0 ; i < inputLength ; i++){
 		var input = inputList[i];
-		if(nbInput == i){
+        var inputId = input.id;
+		if(nbInput == inputId){
 			return input;
 		}
 	}
@@ -27,7 +28,8 @@ function getJson(nbInput){
 	var inputLength = inputList.length;
 	for(var i = 0 ; i < inputLength ; i++){
 		var input = inputList[i];
-		if(nbInput == i){
+        var inputId = input.id;
+		if(nbInput == inputId){
 			return input.json;
 		}
 	}
@@ -37,7 +39,8 @@ function getTags(nbInput){
 	var inputLength = inputList.length;
 	for(var i = 0 ; i < inputLength ; i++){
 		var input = inputList[i];
-		if(nbInput == i){
+		var inputId = input.id;
+		if(nbInput == inputId){
 			return input.tags;
 		}
 	}
@@ -47,7 +50,8 @@ function getReconcileTags(nbInput){
 	var inputLength = inputList.length;
 	for(var i = 0 ; i < inputLength ; i++){
 		var input = inputList[i];
-		if(nbInput == i){
+		var inputId = input.id;
+		if(nbInput == inputId){
 			return input.tagsReconcile;
 		}
 	}
@@ -57,7 +61,8 @@ function getRows(nbInput){
 	var inputLength = inputList.length;
 	for(var i = 0 ; i < inputLength ; i++){
 		var input = inputList[i];
-		if(nbInput == i){
+		var inputId = input.id;
+		if(nbInput == inputId){
 			return input.rows;
 		}
 	}
@@ -67,7 +72,8 @@ function getCols(nbInput){
 	var inputLength = inputList.length;
 	for(var i = 0 ; i < inputLength ; i++){
 		var input = inputList[i];
-		if(nbInput == i){
+		var inputId = input.id;
+		if(nbInput == inputId){
 			return input.cols;
 		}
 	}
@@ -77,7 +83,8 @@ function getFile(nbInput){
 	var inputLength = inputList.length;
 	for(var i = 0 ; i < inputLength ; i++){
 		var input = inputList[i];
-		if(nbInput == i){
+		var inputId = input.id;
+		if(nbInput == inputId){
 			return input.file;
 		}
 	}
@@ -192,14 +199,48 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
                 $("#labelUrlTaxo_" + counter).text("Url reference");
 			}
 			if(changeOrLoad == "change"){
+                
+                var divProgressBar = document.createElement('div');
+                divProgressBar.setAttribute('class', "progress-bar");
+                divProgressBar.setAttribute('id', "progressBarReconcile_" + counter);
+                
+                var divPercent = document.createElement('div');
+                divPercent.setAttribute('class',"percent");
+                divPercent.setAttribute('id', "percentBarReconcile_" + counter);
+        
+                divProgressBar.appendChild(divPercent);
+                
 				var fileInput = document.querySelector('#inp_' + counter);
 				var reader = new FileReader();
-				reader.addEventListener('load', function() {
-                    
-					readInputFileReconcile(reader.result, counter);
+                reader.readAsText(fileInput.files[0]);
+                reader.onloadstart = function(e) {
+                    document.getElementById('progressBarReconcile_' + counter).setAttribute('class', 'progress-bar loading');
+                };
+				reader.onprogress = function (evt) {
+                    // evt is an ProgressEvent.
+                    var progress = document.getElementById("progressBarReconcile_" + counter);
+                    if (evt.lengthComputable) {
+                        var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+                        // Increase the progress bar length.
+                        if (percentLoaded < 100) {
+                            progress.style.width = percentLoaded + '%';
+                            progress.textContent = percentLoaded + '%';
+                        }
+                    }
 
-				}, false);
-				reader.readAsText(fileInput.files[0]);
+                }
+                reader.onload = function(e) {
+                    // Ensure that the progress bar displays 100% at the end.
+                    divProgressBar.style.width = '100%';
+                    divProgressBar.textContent = '100%';
+					readInputFileReconcile(reader.result, counter);
+                    
+                    divTableReconcile.removeChild(divProgressBar);
+                }
+				
+                var divTableReconcile = document.getElementById("divTableReconcile_" + counter);
+                divTableReconcile.appendChild(divProgressBar);
+                
 			}
 			else if(changeOrLoad == "reconcile"){
 				var divMessageReconcileCancelled  = document.getElementById("divMessageReconcileCancelled_" + counter);
@@ -227,17 +268,35 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 }
 
 function readInputFileReconcile(contentFile, nbInput){
-	var firstLine = contentFile.split('\n')[0].split(',');
+    var separator = "";
+    var texte =  document.getElementById("csvDropdown_" + nbInput).options[document.getElementById("csvDropdown_" + nbInput).selectedIndex].value; 
+    console.log(texte);
+    if(texte == "comma"){
+        separator = ',';
+        console.log(separator);
+    }
+    else if(texte == "semiComma"){
+        separator = ';';
+        console.log(separator);
+    }
+    else{
+        separator = '\t';    
+        console.log(separator);
+    }
+	var firstLine = contentFile.split('\n')[0].split(separator);
 	this.createReconciliationPreparation(firstLine, nbInput);
 
 	var lines = contentFile.split("\n");
-	var headers = lines[0].split(",");
-	var rows = this.createDataJSON(headers, lines);
+	var headers = lines[0].split(separator);
+	var rows = this.createDataJSON(headers, lines, separator);
 	var cols = createTitleJSON(headers);
 
 	var input = new InputObject(nbInput, rows, cols, contentFile, firstLine, []);
-    
+    //console.log("before : " );
+    //console.log(input);
     this.deleteInput(nbInput, input);
+    //console.log("after : ");
+    //console.log(input);
     //add an input to the list
     //inputList.push(input);
     
@@ -421,7 +480,10 @@ function startReconciliation(nbInput){
 	var tagsReconcile = this.getTagsReconcileFromTable(nbInput);
 	var columnCheck = this.getColumChecked(nbInput);
 	var inputObj = this.getInput(nbInput);
+    //console.log(inputList);
+    console.log("nbInput : " + nbInput);
 	inputObj.tagsReconcile = tagsReconcile;
+    console.log(inputObj);
     var inputElement = this.getInput(nbInput);
 	var rows = this.getRows(nbInput);
 	var cols = this.getCols(nbInput);
@@ -493,7 +555,7 @@ function startReconciliation(nbInput){
 	} );
 }
 
-function createDataJSON(headers, lines){
+function createDataJSON(headers, lines, separator){
 	var rows = [];
 	for(var i = 0 ; i < lines.length ; i++){
 		var line = lines[i];
@@ -501,7 +563,7 @@ function createDataJSON(headers, lines){
 
 		if(i != 0 && line != ""){
 			for(var j = 0 ; j < headers.length ; j++){
-				var value = line.split(",");
+				var value = line.split(separator);
 				row.push(value[j]);
 			}
 

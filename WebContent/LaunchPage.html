@@ -20,6 +20,7 @@
 	rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css"
 	href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/css/bootstrap-select.min.css" rel="stylesheet" />
 <link href="css/clean-blog.css" rel="stylesheet">
 <!--<link href="css/HomePage.css" rel="stylesheet">-->
  
@@ -53,7 +54,7 @@
 	</div>
 	<!-- /.container --> </nav>
 	<header class="intro-header"
-		style="background-image: url('images/IMG_1792_NB.JPG')">
+		style="background-image: url('images/IMG_1792.JPG')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -104,7 +105,7 @@
 						</div>
                         <div id="globalInput_0" class="col-lg-12 global">
                             <div id="divAddLoad_0" class="col-lg-12 center">
-                                <div id="divAdd_0" class="file-field input-field col-lg-4">
+                                <div id="divAdd_0" class="file-field input-field col-lg-3">
                                     <div class="btn">
                                           <span>Browse</span>
                                           <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')">
@@ -113,15 +114,8 @@
                                         <input id="text_inp_0" class="file-path validate" type="text">
                                     </div>
                                 </div>
-                                <!--
-                                <div id="divAdd_0" class="fileinput fileinput-new btn-group" role="group">
-                                    <span class="btn btn-file">
-                                        <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')">
-                                    </span>
-                                </div>
-                                -->
-                                <div id="divLoad_0" class="col-lg-4 marges"></div>
-                                <div class="col-lg-4 marges" id="divReconcile_0"></div>
+                                <div id="divLoad_0" class="col-lg-3 marges"></div>
+                                <div class="col-lg-3 marges" id="divReconcile_0"></div>
                             </div>
                        
                             <div id="divMapping_0" class="col-lg-12"></div>
@@ -206,7 +200,7 @@
 			         <ul class="pager">
                 <!--<div class="btn-group btn-group-justified" role="group">-->
                     <div class="col-lg-12">
-                    <button type="submit" id="workflowLaunch" name="workflowLaunch" class="waves-effect waves-light btn-large card-panel grey darken-2 font-button" onClick="activeRunning()">
+                    <button type="submit" id="workflowLaunch" name="workflowLaunch" class="waves-effect waves-light btn-large card-panel grey darken-2 font-button"><!--onClick="activeRunning()"-->
                         Start workflow
                     </button>
                     </div>
@@ -275,6 +269,7 @@
     </script>
 	<script
 		src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/js/bootstrap-select.min.js"></script>
 	<script type="text/javascript"></script>
 </body>
 </html>

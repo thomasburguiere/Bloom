@@ -18,6 +18,7 @@ public class MappingReconcilePreparation {
     private int idFile;
     private String originalName = "";
     private String originalExtension = "";
+    private boolean isValid = true;
     
    /**
     * 
@@ -96,5 +97,13 @@ public class MappingReconcilePreparation {
     public void setOriginalExtension(String originalExtension) {
         this.originalExtension = originalExtension;
     }
+
+	public boolean isValid() {
+		return isValid;
+	}
+
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
     
 }

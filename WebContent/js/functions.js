@@ -64,12 +64,66 @@ function addField(compteur, idAdd, typeInput) {
         */
 		var divLoad = document.createElement('div');
 		divLoad.setAttribute('id', "divLoad_" + nb_inp);
-		divLoad.setAttribute('class', "col-lg-4 marges");
+		divLoad.setAttribute('class', "col-lg-3 marges");
         //divLoad.setAttribute('role', "group");
-                             
+        
+       /*
+        var divBtnCSV = document.createElement('div');
+        divBtnCSV.setAttribute('class', "btn-group");
+        divBtnCSV.setAttribute('id', "divBtnCSV_" + nb_inp);
+        
+        var divCSV = document.createElement('div');
+        divCSV.setAttribute('id', "divCSV_" + nb_inp);
+        divCSV.setAttribute('class', "col-lg-2");
+        
+        var buttonCSV = document.createElement('button');
+        buttonCSV.setAttribute('type', "button");
+        buttonCSV.setAttribute('class', "btn btn-default btn-lg");
+        buttonCSV.setAttribute('id', "csvButton_" + nb_inp);
+        
+        var dropDownCSV = document.createElement('button');
+        dropDownCSV.setAttribute('type', "button");
+        dropDownCSV.setAttribute('id', "dropDownCSV_" + nb_inp);
+        dropDownCSV.setAttribute('class', "btn btn-default dropdown-toggle");
+        dropDownCSV.setAttribute('data-toggle', "dropdown");
+        dropDownCSV.setAttribute('aria-haspopup', "true");
+        dropDownCSV.setAttribute('aria-expanded',"false");
+        
+        var ulDropdownMenu = document.createElement('ul');
+        ulDropdownMenu.setAttribute('class', "dropdown-menu");
+        ulDropdownMenu.setAttribute('id', "menuDropdowCSV_" + nb_inp);
+        ulDropdownMenu.setAttribute('name', "menuDropdowCSV_" + nb_inp);
+        
+        var liCommaMenu = document.createElement('li');
+        liCommaMenu.setAttribute('id', "commaCSV_" + nb_inp);
+        liCommaMenu.setAttribute('name', "commaCSV_" + nb_inp);
+        liCommaMenu.innerHTML = "Comma separator";
+        var aHrefComma = document.createElement('a');
+        aHrefComm.setAttribute('href', "#");
+        //<a href="#">Action</a>
+        var liTabMenu = document.createElement('li');
+        liTabMenu.setAttribute('id', "tabCSV_" + nb_inp);
+        liTabMenu.setAttribute('name', "tabCSV_" + nb_inp);
+        liTabMenu.innerHTML = "Tabulation separator";
+        
+        var liSemiCommaMenu = document.createElement('li');
+        liSemiCommaMenu.setAttribute('id', "semiCommaCSV_" + nb_inp);
+        liSemiCommaMenu.setAttribute('name', "semiCommaCSV_" + nb_inp);
+        liSemiCommaMenu.innerHTML = "Semi comma separator";
+        
+        ulDropdownMenu.appendChild(liCommaMenu);
+        ulDropdownMenu.appendChild(liSemiCommaMenu);
+        ulDropdownMenu.appendChild(liTabMenu);
+        
+        divBtnCSV.appendChild(buttonCSV);
+        divBtnCSV.appendChild(dropDownCSV);
+        divBtnCSV.appendChild(ulDropdownMenu);
+        
+        divCSV.appendChild(divBtnCSV);
+        */
 		var divReconcile = document.createElement('div');
 		divReconcile.setAttribute('id', "divReconcile_" + nb_inp);
-		divReconcile.setAttribute('class', "col-lg-4 marges");
+		divReconcile.setAttribute('class', "col-lg-3 marges");
         //divReconcile.setAttribute('role', "group");
 
 		var bloc_inputs = document.getElementById('bloc-inputs');
@@ -100,6 +154,7 @@ function addField(compteur, idAdd, typeInput) {
 		//divAdd.appendChild(spanInput);
 		//divAddLoad.appendChild(divAdd);
 		divAddLoad.appendChild(divLoad);
+        //divAddLoad.appendChild(divCSV);
 		divAddLoad.appendChild(divReconcile);
         
         bloc_inputs.appendChild(globalInput);
@@ -144,7 +199,6 @@ function addField(compteur, idAdd, typeInput) {
 function createInputSpecial(nbInput, typeInput, container){
     var divContainer = document.createElement('div');
     
-    
     var divBtn = document.createElement('div');   
     divBtn.setAttribute('class', 'btn');
     var span = document.createElement('span');
@@ -170,7 +224,7 @@ function createInputSpecial(nbInput, typeInput, container){
         inputLoad.setAttribute('onchange', "loadInputRaster(\"" + nbInput + "\",\"" + typeInput + "\")");
     }
     else if(typeInput == "inp"){
-        divContainer.setAttribute('class', "file-field input-field col-lg-4");
+        divContainer.setAttribute('class', "file-field input-field col-lg-3");
         divContainer.setAttribute('id', "divAdd_" + nbInput);
         divContainer.setAttribute('role', "group");
         inputLoad.setAttribute('onchange', 'loadInputFile('+nbInput+',\"change\")');
@@ -409,6 +463,7 @@ function mappingDWC(counter, change_load_reconcile){
 		buttonConvert = document.getElementById("convert_" + counter);
 		var divMapping = document.getElementById("divMapping_" + counter);
 		var tableMapping = document.getElementById("mappingTable_" + counter);
+        var infosMapping = document.getElementById("infosMapping_" + counter);
 		var divTableReconcile = document.getElementById("divTableReconcile_" + counter);
 		var divSubmitMapping = document.getElementById("divSubmitMapping_" + counter);
 		var divSubmitMappingOK = document.getElementById("divSubmitMappingOK_" + counter);
@@ -447,6 +502,7 @@ function mappingDWC(counter, change_load_reconcile){
 		}
 		if(change_load_reconcile == "change"){
 			if(tableMapping){
+                divMapping.removeChild(infosMapping);
 			    divMapping.removeChild(tableMapping);
 			    divMapping.removeChild(mappingActive);
 
@@ -488,13 +544,65 @@ function mappingDWC(counter, change_load_reconcile){
 	var fileInput = document.querySelector('#inp_' + counter);
 
 	buttonConvert.addEventListener('click', function() {
+		
+        var divProgressBar = document.createElement('div');
+        divProgressBar.setAttribute('class', "progress-bar");
+        divProgressBar.setAttribute('id', "progressBarMapping_" + counter);
+        
+        var divPercent = document.createElement('div');
+        divPercent.setAttribute('class',"percent");
+        divPercent.setAttribute('id', "percentBar_" + counter);
+        
+        divProgressBar.appendChild(divPercent);
+        
+        var divmapping = document.getElementById("divMapping_" + counter);
+        divmapping.appendChild(divProgressBar);
+        
 		var reader = new FileReader();
+        reader.readAsText(fileInput.files[0]);
+        reader.onloadstart = function(e) {
+            document.getElementById('progressBarMapping_' + counter).setAttribute('class', 'progress-bar loading');
+        };
+        
+        reader.onprogress = updateProgress;
+        reader.onload = function(e) {
+            // Ensure that the progress bar displays 100% at the end.
+            divProgressBar.style.width = '100%';
+            divProgressBar.textContent = '100%';
+            readInputFile(reader.result, counter);
+            //setTimeout("document.getElementById('progressBarMapping_'" + counter + ").className='';", 2000);
+            divmapping.removeChild(divProgressBar);
+        }
+        
+        //reader.DONE = reader.readAsText(fileInput.files[0]);
+        
+        
+        
+        function updateProgress(evt) {
+            
+            // evt is an ProgressEvent.
+            var progress = document.getElementById("progressBarMapping_" + counter);
+            if (evt.lengthComputable) {
+                var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+                // Increase the progress bar length.
+                if (percentLoaded < 100) {
+                    progress.style.width = percentLoaded + '%';
+                    progress.textContent = percentLoaded + '%';
+                }
+            }
+            
+        }
+            
+        
+        /*var reader = new FileReader();
 		reader.addEventListener('load', function() {
 			readInputFile(reader.result, counter);
 		}, false);
-		reader.readAsText(fileInput.files[0]);
+		reader.readAsText(fileInput.files[0]);*/
 
-	}, false);	
+	}, false);
+    
+    
 }
 
 //when click on "convert" checkbox
@@ -505,6 +613,7 @@ function loadInputFile(counter, change_load_reconcile){
     var inputText = document.getElementById("text_inp_" + counter);
     inputText.value = filename;
 	if(fileExist.value != null){
+        this.separatorCSV(counter);
 		var columns = this.mappingDWC(counter, change_load_reconcile);
 		taxonReconciliation(columns, counter, change_load_reconcile);
 	}	
@@ -517,6 +626,45 @@ function loadInputRaster(counter, typeInput){
     //console.log("filename : " + filename);
     var inputText = document.getElementById("text_" + typeInput + "_" + counter);
     inputText.value = filename;
+}
+
+function separatorCSV(nb_inp){
+    var divCSV = document.getElementById("divCSV_" + nb_inp);
+    if(!divCSV){
+        var divCSV = document.createElement('div');
+        divCSV.setAttribute('id', "divCSV_" + nb_inp);
+        divCSV.setAttribute('class', "col-lg-2 marges");
+
+        var selectCSV = document.createElement('select');
+        selectCSV.setAttribute('id', "csvDropdown_" + nb_inp);
+        selectCSV.setAttribute('class', "csvDropdown");
+
+        var optionComma = document.createElement('option');
+        optionComma.setAttribute('id', "optionComma_" + nb_inp);
+        optionComma.setAttribute('value', "comma");
+        optionComma.innerHTML = "Comma";
+
+        var optionTab = document.createElement('option');
+        optionTab.setAttribute('id', "optionTab_" + nb_inp);
+        optionTab.setAttribute('value', "tab");
+        optionTab.innerHTML = "Tabulation";
+
+        var optionSemiComma = document.createElement('option');
+        optionSemiComma.setAttribute('id', "optionSemiComma_" + nb_inp);
+        optionSemiComma.setAttribute('value', "semiComma");
+        optionSemiComma.innerHTML = "Semi comma";
+
+        selectCSV.appendChild(optionComma);
+        selectCSV.appendChild(optionSemiComma);
+        selectCSV.appendChild(optionTab);
+
+        divCSV.appendChild(selectCSV);
+
+        divAddLoad = document.getElementById('divAddLoad_' + nb_inp);
+        divAddLoad.appendChild(divCSV);
+    }
+    
+    //return separator;
 }
 
 function findSeparator(contentFile){
@@ -532,7 +680,7 @@ function findSeparator(contentFile){
             var line = lines[l];
             if(line != ""){
                 var count = this.countSeparators(line, sep);
-                console.log("************\n" + line + "    " + count);
+                //console.log("************\n" + line + "    " + count);
                 if (count == 0) {
                     // no separator in this line
                     isGoodCandidate = false;
@@ -580,10 +728,26 @@ function countSeparators(line, separator) {
 
 
 function readInputFile(contentFile, nbInput){
-    var separator = this.findSeparator(contentFile);
+    var separator = "";//this.findSeparator(contentFile);
+    var texte =  document.getElementById("csvDropdown_" + nbInput).options[document.getElementById("csvDropdown_" + nbInput).selectedIndex].value; 
+    console.log(texte);
+    if(texte == "comma"){
+        separator = ',';
+        console.log(separator);
+    }
+    else if(texte == "semiComma"){
+        separator = ';';
+        console.log(separator);
+    }
+    else{
+        separator = '\t';    
+        console.log(separator);
+    }
+    
 	var length = contentFile.split('\n')[0].split(separator).length;
 	var firstLine = contentFile.split('\n')[0].split(separator);
-	//console.log(firstLine);
+	console.log(contentFile);
+    console.log(firstLine);
 	//console.log(contentFile.split('\n')[0].split(','));
 	//firstLine[length] = " ";
 	var dwcTags = [" ","abstract","acceptedNameUsage","acceptedNameUsageID","accessRights","accrualMethod","accrualPeriodicity","accrualPolicy","alternative","associatedMedia","associatedOccurrences","associatedOrganisms","associatedReferences","associatedSequences","associatedTaxa","audience","available","basisOfRecord","bed","behavior","bibliographicCitation","catalogNumber","class","classKey","collectionCode","collectionID","conformsTo","continent","contributor","coordinateAccuracy","coordinatePrecision","coordinateUncertaintyInMeters","country","countryCode","county","coverage","created","creator","dataGeneralizations","datasetID","datasetKey","datasetName","date","dateAccepted","dateCopyrighted","dateIdentified","dateSubmitted","day","decimalLatitude","decimalLongitude","depth","depthAccuracy","description","disposition","distanceAboveSurface","distanceAboveSurfaceAccuracy","dynamicProperties","earliestAgeOrLowestStage","earliestEonOrLowestEonothem","earliestEpochOrLowestSeries","earliestEraOrLowestErathem","earliestPeriodOrLowestSystem","educationLevel","elevation","elevationAccuracy","endDayOfYear","establishmentMeans","event","eventDate","eventID","eventRemarks","eventTime","extent","family","familyKey","fieldNotes","fieldNumber","footprintSpatialFit","footprintSRS","footprintWKT","format","formation","gbifID","genericName","genus","genusKey","geodeticDatum","geologicalContext","geologicalContextID","georeferencedBy","georeferencedDate","georeferenceProtocol","georeferenceRemarks","georeferenceSources","georeferenceVerificationStatus","group","habitat","hasCoordinate","hasFormat","hasGeospatialIssues","hasPart","hasVersion","higherClassification","higherGeography","higherGeographyID","highestBiostratigraphicZone","identification","identificationID","identificationQualifier","identificationReferences","identificationRemarks","identificationVerificationStatus","identifiedBy","identifier","idFile","individualCount","individualID","informationWithheld","infraspecificEpithet","institutionCode","institutionID","instructionalMethod","isFormatOf","island","islandGroup","isPartOf","isReferencedBy","isReplacedBy","isRequiredBy","issue","issued","isVersionOf","kingdom","kingdomKey","language","lastCrawled","lastInterpreted","lastParsed","latestAgeOrHighestStage","latestEonOrHighestEonothem","latestEpochOrHighestSeries","latestEraOrHighestErathem","latestPeriodOrHighestSystem","license","lifeStage","lithostratigraphicTerms","livingSpecimen","locality","locationAccordingTo","locationID","locationRemarks","lowestBiostratigraphicZone","machineObservation","materialSample","materialSampleID","maximumDepthinMeters","maximumDistanceAboveSurfaceInMeters","maximumElevationInMeters","measurementAccuracy","measurementDeterminedBy","measurementDeterminedDate","measurementID","measurementMethod","measurementOrFact","measurementRemarks","measurementType","measurementUnit","mediator","mediaType","medium","member","minimumDepthinMeters","minimumDistanceAboveSurfaceInMeters","minimumElevationInMeters","modified","month","municipality","nameAccordingTo","nameAccordingToID","namePublishedIn","namePublishedInID","namePublishedInYear","nomenclaturalCode","nomenclaturalStatus","occurrence","occurrenceDetails","occurrenceID","occurrenceRemarks","occurrenceStatus","order","orderKey","organism","organismID","organismName","organismRemarks","organismScope","originalNameUsage","originalNameUsageID","otherCatalogNumbers","ownerInstitutionCode","parentNameUsage","parentNameUsageID","phylum","phylumKey","pointRadiusSpatialFit","preparations","preservedSpecimen","previousIdentifications","protocol","provenance","publisher","publishingCountry","recordedBy","recordNumber","references","relatedResourceID","relationshipAccordingTo","relationshipEstablishedDate","relationshipRemarks","relation","replaces","reproductiveCondition","requires","resourceID","resourceRelationship","resourceRelationshipID","rights","rightsHolder","samplingEffort","samplingProtocol","scientificName","scientificNameAuthorship","scientificNameID","sex","source","spatial","species","speciesKey","specificEpithet","startDayOfYear","stateProvince","subgenus","subgenusKey","subject","tableOfContents","taxon","taxonConceptID","taxonID","taxonKey","taxonomicStatus","taxonRank","taxonRemarks","temporal","title","type","typeStatus","typifiedName","valid","verbatimCoordinates","verbatimCoordinateSystem","verbatimDate","verbatimDepth","verbatimElevation","verbatimEventDate","verbatimLatitude","verbatimLocality","verbatimLongitude","verbatimSRS","verbatimTaxonRank","vernacularName","waterBody","year"];
@@ -651,7 +815,10 @@ function createMapping(firstLineInput, dwcTags, presentTags, nbInput){
 			
 
 		}
-
+        var infosMapping = document.createElement('h6');
+        infosMapping.setAttribute('id', "infosMapping_" + nbInput);
+        infosMapping.innerHTML = "Note : If you don't choose map one of your column, this one will be deleted.";
+        divMapping.appendChild(infosMapping);
 		divMapping.appendChild(mappingTable);
         mappingTable.setAttribute('class', "centered table-marges");
 
@@ -772,7 +939,7 @@ function deleteMapping(nbInput){
 function activeRunning(){
     var divRunning = document.getElementById('running');   
     //var submitButton = document.getElementById('workflowLaunch');
-    console.log("running");
+    //console.log("running");
     var divBody = document.getElementById('divBody');
     //submitButton.addEventListener("click", function(){
         divRunning.style.display = 'block';

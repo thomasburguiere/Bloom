@@ -20,6 +20,8 @@ public class ReconciliationService{
     private String reconcileTagBased;
     private HashMap<Integer, String> linesConnectedNewName;
     private String filename;
+    private String successReconcile;
+    private String filepath;
     
     public ReconciliationService(){
 
@@ -74,5 +76,21 @@ public class ReconciliationService{
     public void setFilename(String filename) {
         this.filename = filename;
     }
+	
+	public String getSuccessReconcile() {
+		return successReconcile;
+	}
+
+	public void setSuccessReconcile(String successReconcile) {
+		this.successReconcile = successReconcile;
+	}
+
+	public String getFilepath() {
+		return filepath;
+	}
+
+	public void setFilepath(String filepath) {
+		this.filepath = filepath;
+	}
     
 }

@@ -105,7 +105,7 @@ public class PrepareTests {
 		e.printStackTrace();
 	    }
 	    CSVFile csvFile = new CSVFile(file);
-	    MappingDwC newMappingDWC = new MappingDwC(csvFile, false);
+	    MappingDwC newMappingDWC = new MappingDwC(csvFile, Boolean.toString(false));
 	    //newMappingDWC.setOriginalName(inputFilesList.get(i).getName());
 	    String nameFile = inputFilesList.get(i).getName();
 	    //newMappingDWC.setOriginalExtension(nameFile.substring(nameFile.indexOf('.')+1,nameFile.length()));
@@ -121,7 +121,7 @@ public class PrepareTests {
 	    //initialisation.getInputFilesList().add(csvFile.getCsvFile());
 
 	    boolean doMapping = newMappingDWC.doMapping();
-	    newMappingDWC.setMapping(doMapping);
+	    newMappingDWC.setMappingInvolved(Boolean.toString(doMapping));
 	    if(doMapping){
 		ArrayList<String> presentTags = newMappingDWC.getPresentTags();
 		for(Entry<String, String> entry : connectionTags.entrySet()) {

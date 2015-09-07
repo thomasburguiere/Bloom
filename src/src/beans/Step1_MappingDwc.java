@@ -4,6 +4,7 @@
  */
 package src.beans;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import src.model.MappingDwC;
@@ -16,35 +17,32 @@ import src.model.MappingReconcilePreparation;
  */
 public class Step1_MappingDwc {
 
-    private boolean step1_ok = true;
+	private HashMap<Integer,MappingDwC> infos_mapping = new HashMap<Integer,MappingDwC>();
+	
     private boolean involved = false;
-    private HashMap<MappingDwC, String> mappedFilesAssociatedPath = new HashMap<MappingDwC, String>();
+    //private HashMap<MappingDwC, String> mappedFilesAssociatedPath = new HashMap<MappingDwC, String>();
+   //<!--<c:if test="${count1 == info.idFile}">-->
+    //<!--<span class="value"><c:out value='${info.value.isSuccess}'/></span>-->
     
     public Step1_MappingDwc(){
 	
     }
 
-    public boolean isStep1_ok() {
-        return step1_ok;
-    }
+	public HashMap<Integer, MappingDwC> getInfos_mapping() {
+		return infos_mapping;
+	}
 
-    public void setStep1_ok(boolean step1_ok) {
-        this.step1_ok = step1_ok;
-    }
+	public void setInfos_mapping(HashMap<Integer, MappingDwC> infos_mapping) {
+		this.infos_mapping = infos_mapping;
+	}
 
-    public boolean isInvolved() {
-        return involved;
-    }
+	public boolean isInvolved() {
+		return involved;
+	}
 
-    public void setInvolved(boolean involved) {
-        this.involved = involved;
-    }
-
-    public HashMap<MappingDwC, String> getMappedFilesAssociatedPath() {
-        return this.mappedFilesAssociatedPath;
-    }
-
-    public void setMappedFilesAssociatedPath(HashMap<MappingDwC, String> mappedFilesAssociatedPath) {
-        this.mappedFilesAssociatedPath = mappedFilesAssociatedPath;
-    }
+	public void setInvolved(boolean involved) {
+		this.involved = involved;
+	}
+    
+    
 }

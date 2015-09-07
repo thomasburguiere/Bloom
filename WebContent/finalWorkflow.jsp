@@ -65,12 +65,23 @@
 					<h3 class="post-subtitle">All results can be downloaded</h3>
 				</div>
                 <div id="hiddenResults">
+                    <c:set var="count0" value="0" scope="page"/>
+                    <c:forEach var="info" items="${step1.infos_mapping}">
+                        <c:if test="${info.value.mappingInvolved == false}">
+                            <c:set var="count0" value="${count0 + 1}" scope="page"/>
+                        </c:if>
+                    </c:forEach>
+                    <c:if test="${count0 > 0}">
+                        <input type="hidden" id="step0_involved" value="true"/>
+                    </c:if>
+                    <c:if test="${count0 == 0}">
+                        <input type="hidden" id="step0_involved" value="false"/>
+                    </c:if>
+                    
                     <input type="hidden" id="step1_involved" value="${step1.involved}" />
-                    <input type="hidden" id="step1_ok" value="${step1.step1_ok}" />
-
+                    
                     <input type="hidden" id="step2_involved" value="${step2.involved}" />
-                    <input type="hidden" id="step2_ok" value="${step2.step2_ok}" />
-
+                    
                     <input type="hidden" id="step3_involved" value="${step3.involved}" />
                     <input type="hidden" id="step3_ok" value="${step3.step3_ok}" />
                     <input type="hidden" id="step3_nbFound" value="${step3.nbFound}" />
@@ -114,8 +125,48 @@
                     <input
                         type="hidden" id="step9_ok" value="${step9.step9_ok}" />
                 </div>
-                
                 <hr class="col-lg-12"></hr>
+                <div id="headerStep0_involved" class="post-preview">
+                    <h4 class="post-meta">Step 0 : Checking input files format </h4>
+                </div>
+                <div class="fixed-table-body">
+                    <table data-toggle="table" data-card-view="true" class="table table-hover" style="margin-top: 0px;" data-height="299" data-response-handler="responseHandler" id=divStep0>
+                        <thead style="display: none;">
+                            <tr>
+                                <th style="">
+                                    <div class="th-inner ">Filename</div>
+                                    <div class="fht-cell"></div>
+                                </th>
+                                <th style="">
+                                    <div class="th-inner ">Checking format</div>
+                                    <div class="fht-cell"></div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:set var="count0" value="0" scope="page" />
+                            <c:forEach var="info" items="${step1.infos_mapping}">
+                                <tr data-index=<c:out value="${count0}"/>>
+                                   <c:if test="${info.value.mappingInvolved == false}">
+                                        <td colspan="6">
+                                            <div class="card-view">
+                                                <span class="title">Filename</span>
+                                                <span class="value"><c:out value='${info.value.filename}'/></span>
+                                            </div>
+                                            <div id="p_ok_step0_inp<c:out value='${count0}'/>" class="card-view">
+                                                <span class="title">Success</span>
+                                                <span id="spanSuccessStep0_inp<c:out value='${count0}'/>" class="value"><c:out value="${info.value.successMapping}"/></span>
+                                            </div>
+                                        </td>
+                                    </c:if>
+                                </tr>
+                                <c:set var="count0" value="${count0 + 1}" scope="page"/>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+                <hr class="col-lg-12"></hr>
+                <a href="../temp/data/inputFile_0.csv"/>Test download</a>
                 <div id="headerStep1_involved" class="post-preview">
                     <h4 class="post-meta">Step 1 : Mapping to DarwinCore format</h4>
                 </div>
@@ -142,22 +193,24 @@
                         </thead>
                         <tbody>
                             <c:set var="count1" value="0" scope="page" />
-                            <c:forEach items="${step1.mappedFilesAssociatedPath}" var="entry">
+                            <c:forEach var="info" items="${step1.infos_mapping}">
                                 <tr data-index=<c:out value="${count1}" />>
-                                    <td colspan="6">
-                                        <div class="card-view">
-                                            <span class="title">Filename</span>
-                                            <span class="value"><c:out value='${entry.key.filename}'/></span>
-                                        </div>
-                                        <div id="p_ok1" class="card-view">
-                                            <span class="title">Success</span>
-                                            <span class="value">${step1.step1_ok}</span>
-                                        </div>
-                                        <div class="card-view">
-                                            <span class="title">Download link</span>
-                                            <span class="value"><a href=<c:out value='${entry.value}'/>>Download</a></span>
-                                        </div>
-                                    </td>
+                                    <c:if test="${info.value.mappingInvolved == true}">
+                                        <td colspan="6">
+                                            <div class="card-view">
+                                                <span class="title">Filename</span>
+                                                <span class="value"><c:out value='${info.value.filename}'/></span>
+                                            </div>
+                                            <div id="p_ok_step1_inp<c:out value='${count1}'/>" class="card-view">
+                                                <span class="title">Success</span>
+                                                <span id="spanSuccessStep1_inp<c:out value='${count1}'/>" class="value"><c:out value="${info.value.successMapping}"/></span>
+                                            </div>
+                                            <div class="card-view">
+                                                <span class="title">Download link</span>
+                                                <span class="value"><a href=<c:out value='${info.value.filepath}'/>>Download</a></span>
+                                            </div>
+                                        </td>
+                                    </c:if>
                                 </tr>
                                 <c:set var="count1" value="${count1 + 1}" scope="page"/>
                             </c:forEach>
@@ -180,24 +233,26 @@
                         </thead>
                         <tbody>
                             <c:set var="count2" value="0" scope="page" />
-                            <c:forEach items="${step2.reconciledFilesAssociatedPath}" var="entry">
+                            <c:forEach items="${step2.infos_reconcile}" var="info">
                                 <tr data-index=<c:out value="${count2}" />>
-                                    <td colspan="6">
-                                        <div class="card-view">
-                                            <span class="title">Filename</span>
-                                            <span class="value"><c:out value='${entry.key.filename}'/></span>
-                                        </div>
-                                        <div id="p_ok2" class="card-view">
-                                            <span class="title">Success</span>
-                                            <span class="value">${step2.step2_ok}</span>
-                                        </div>
-                                        <div class="card-view">
-                                            <span class="title">Download link</span>
-                                            <span class="value">
-                                                <a href=<c:out value='${entry.value}'/>>Download</a>
-                                            </span>
-                                        </div>
-                                    </td>
+                                    <c:if test="${info.value.successReconcile == true}">
+                                        <td colspan="6">
+                                            <div class="card-view">
+                                                <span class="title">Filename</span>
+                                                <span class="value"><c:out value='${info.value.filename}'/></span>
+                                            </div>
+                                            <div id="p_ok_step2_inp<c:out value='${count2}'/>" class="card-view">
+                                                <span class="title">Success</span>
+                                                <span id="spanSuccessStep2_inp<c:out value='${count2}'/>" class="value"> <c:out value="${info.value.successReconcile}"/></span>
+                                            </div>
+                                            <div class="card-view">
+                                                <span class="title">Download link</span>
+                                                <span class="value">
+                                                    <a href=<c:out value='${info.value.filepath}'/>>Download</a>
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </c:if>
                                 </tr>
                                 <c:set var="count2" value="${count2 + 1}" scope="page"/>
                             </c:forEach>
@@ -221,6 +276,10 @@
                         <tbody>
                             <tr data-index=0 />
                                 <td colspan="6">
+                                    <div id="p_ok3" class="card-view">
+                                        <span class="title">Success</span>
+                                        <span id="spanSuccessStep3" class="value">${step3.step3_ok}</span>
+                                    </div>
                                     <div class="card-view">
                                         <span class="title">Occurrences number deleted</span>
                                         <span class="value"><c:out value='${step3.nbFound}'/></span>
@@ -228,10 +287,6 @@
                                     <div class="card-view">
                                         <span class="title">Download link</span>
                                         <span class="value"><a href=<c:out value='${step3.pathWrongCoordinates}'/>>Wrong coordinates file</a></span>
-                                    </div>
-                                    <div id="p_ok3" class="card-view">
-                                        <span class="title">Success</span>
-                                        <span class="value">${step3.step3_ok}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -255,6 +310,10 @@
                         <tbody>
                             <tr data-index=0 />
                                 <td colspan="6">
+                                    <div id="p_ok4" class="card-view">
+                                        <span class="title">Success</span>
+                                        <span id="spanSuccessStep4" class="value">${step4.step4_ok}</span>
+                                    </div>
                                     <div class="card-view">
                                         <span class="title">Occurrences number deleted</span>
                                         <span class="value"><c:out value='${step4.nbFound}'/></span>
@@ -262,10 +321,6 @@
                                     <div class="card-view">
                                         <span class="title">Download link</span>
                                         <span class="value"><a href=<c:out value='${step4.pathWrongGeoIssue}'/>>Wrong geospatial issue file</a></span>
-                                    </div>
-                                    <div id="p_ok4" class="card-view">
-                                        <span class="title">Success</span>
-                                        <span class="value">${step4.step4_ok}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -288,7 +343,7 @@
                             </div>
                             <div id="p_ok5" class="card-view">
                                 <span class="title">Success</span>
-                                <span class="value">${step5.step5_ok}</span>
+                                <span id="spanSuccessStep5" class="value">${step5.step5_ok}</span>
                             </div>
                         </div>
                     </table>
@@ -307,7 +362,7 @@
                             <td colspan="6">
                                 <div id="p_ok6" class="card-view">
                                     <span class="title">Success</span>
-                                    <span class="value"><c:out value='${step6.step6_ok}'/></span>
+                                    <span id="spanSuccessStep6" class="value"><c:out value='${step6.step6_ok}'/></span>
                                 </div>
                             </td>
                         </tr>
@@ -327,7 +382,7 @@
                             <td colspan="6">
                                 <div id="p_ok7" class="card-view">
                                     <span class="title">Success</span>
-                                    <span class="value"><c:out value='${step7.step7_ok}'/></span>
+                                    <span id="spanSuccessStep7" class="value"><c:out value='${step7.step7_ok}'/></span>
                                 </div>
                             </td>
                         </tr>
@@ -347,7 +402,7 @@
                             <td colspan="6">
                                 <div id="p_ok8" class="card-view">
                                     <span class="title">Success</span>
-                                    <span class="value"><c:out value='${step8.step8_ok}'/></span>
+                                    <span id="spanSuccessStep8" class="value"><c:out value='${step8.step8_ok}'/></span>
                                 </div>
                                 <div class="card-view">
                                     <span class="title">Occurrences number</span>
@@ -358,8 +413,8 @@
                                     <span class="value"><a href=<c:out value='${step8.pathWrongRaster}'/>>Wrong occurences for raster cells</a></span>
                                 </div>
                                 <div class="card-view">
-                                                <span class="title">Download link</span>
-                                                <span class="value"><a href=<c:out value='${step8.pathMatrixResultRaster}'/>>Matrix results file</a></span>
+                                    <span class="title">Download link</span>
+                                    <span class="value"><a href=<c:out value='${step8.pathMatrixResultRaster}'/>>Matrix results file</a></span>
                                 </div>
                             </td>
                         </tr>
@@ -382,6 +437,10 @@
                         <tbody>
                             <tr data-index=0 />
                                 <td colspan="6">
+                                    <div id="p_ok9" class="card-view">
+                                        <span class="title">Success</span>
+                                        <span id="spanSuccessStep9" class="value">${step9.step9_ok}</span>
+                                    </div>
                                     <div class="card-view">
                                         <span class="title">Occurrences number deleted</span>
                                         <span class="value"><c:out value='${step9.nbFound}'/></span>
@@ -389,10 +448,6 @@
                                     <div class="card-view">
                                         <span class="title">Download link</span>
                                         <span class="value"><a href=<c:out value='${step9.pathWrongEstablishmentMeans}'/>>Wrong establishmentMeans file</a></span>
-                                    </div>
-                                    <div id="p_ok9" class="card-view">
-                                        <span class="title">Success</span>
-                                        <span class="value">${step9.step9_ok}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -403,13 +458,12 @@
 
                 <div id="downloadFinalFiles">
                     <div class="post-preview">
-                        <h4 class="post-meta">These files can be downloaded</h4>
+                        <h4 class="post-meta">Download clean data</h4>
                     </div>
                     <c:forEach items="${finalisation.listPathsOutputFiles}" var="path">
                         <c:set var="name" value="${fn:split(path, '/')}" />
                         <c:set var="length" value="${fn:length(name)}"/>
-                        ${name[length-1]}
-                        <a href=<c:out value='${path}'/>>Download clean data </a>
+                        <a href=<c:out value='${path}'/>><c:out value='${name[length-1]}'/></a>
                         <br>
                     </c:forEach>
                 </div>

@@ -366,7 +366,7 @@ label{
 .btn {
 	font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	text-transform: uppercase;
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: 800;
 	letter-spacing: 1px;
     /*padding: 10px;
@@ -380,7 +380,9 @@ label{
 
 .btn-lg {
 	font-size: 16px;
-	padding: 25px 35px
+	padding-left: 15px;
+    padding-right: 15px;
+    
 }
 
 .font-button:hover,.font-button:focus {
@@ -604,13 +606,15 @@ input[type=radio]{
 
 .font-medium-button{
     text-transform: uppercase;
-	font-size: 15px;
+	font-size: 12px;
 	font-weight: 800;
 	letter-spacing: 1px;
     text-align: center;
     border-radius: 5px;
     vertical-align: middle;
     width: 80%;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 
@@ -659,4 +663,39 @@ input[type=radio]{
 
 #running{
     text-align: center;
+}
+
+.running{
+       
+}
+
+.progress-bar {
+    margin: 10px 0;
+    padding: 3px;
+    border: 1px solid #000;
+    font-size: 14px;
+    clear: both;
+    opacity: 90;
+    -moz-transition: opacity 1s linear;
+    -o-transition: opacity 1s linear;
+    -webkit-transition: opacity 1s linear;
+}
+
+.progress_bar.loading {
+    opacity: 1.0;
+}
+
+.progress-bar.percent {
+    background-color: #99ccff;
+    height: auto;
+    width: 0;
+}
+
+.dropdown-content{
+    display: inline-block;
+}
+
+.csvDropdown{
+    display: block;   
+    font-size: 12px;
 }

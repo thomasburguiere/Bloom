@@ -1,5 +1,5 @@
 function initialiseFinalPage() {
-	for (var i = 1; i <= 9 ; i++) {
+	for (var i = 0; i <= 9 ; i++) {
 		var step_involved = document.getElementById("step" + i + "_involved").value;
         
 		if(step_involved == "true"){
@@ -15,6 +15,7 @@ function initialiseFinalPage() {
 }
 
 function checkErrorOk(step_ok, p_ok, nbStep){
+    
 	if(step_ok == "true"){
 		console.log("true : " + "p_ok" + nbStep);
 		p_ok.setAttribute("style", "color:#089A4C");
@@ -27,8 +28,10 @@ function checkErrorOk(step_ok, p_ok, nbStep){
 
 function initialiseStep(nbStep, involved){
 	var divStep = document.getElementById("divStep" + nbStep);
-	var step_ok = document.getElementById("step" + nbStep + "_ok").value;
-	var step_ok = document.getElementById("step" + nbStep + "_ok").value;
+    if(nbStep !=0 && nbStep != 1 && nbStep !=2){
+        var step_ok = document.getElementById("step" + nbStep + "_ok").value;
+    }
+	
 	var p_ok = document.getElementById("p_ok" + nbStep);
 	var headerStep_involved = $("#headerStep" + nbStep + "_involved");
     var headerStep_notInvolved = $("#headerStep" + nbStep + "_NotInvolved");
@@ -39,7 +42,9 @@ function initialiseStep(nbStep, involved){
 		var divStepInvolved = document.getElementById("divStep" + nbStep + "Involved");
         headerStep_involved.show();
         headerStep_notInvolved.hide();
-		this.checkErrorOk(step_ok, p_ok, nbStep);
+        if(nbStep !=0 && nbStep != 1 && nbStep != 2){
+            this.checkErrorOk(step_ok, p_ok, nbStep);
+        }
 		//divStepInvolved.setAttribute('style', "margin-left: 40px; visibility: visible");
 	}
 	else{

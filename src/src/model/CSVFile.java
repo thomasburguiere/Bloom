@@ -151,11 +151,14 @@ public class CSVFile {
         if (reste.isEmpty()) {
             // no one separator found
             System.out.println("No separator found !");
+            this.setSeparator("-1");
+            this.separator = this.getSeparator();
         }
 
         else if (reste.size() > 1) {
             // too many separators found
-            System.out.println("Too many separators found");
+        	this.setSeparator("-1");
+            this.separator = this.getSeparator();
         }	
         else{
             this.setSeparator(reste.get(0));

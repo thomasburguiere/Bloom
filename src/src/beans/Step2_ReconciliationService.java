@@ -18,22 +18,13 @@ import src.model.ReconciliationService;
  */
 public class Step2_ReconciliationService {
 
-    private boolean step2_ok = true;
     private boolean involved = false;
-    private HashMap<ReconciliationService, String> reconciledFilesAssociatedPath = new HashMap<ReconciliationService, String>();
+    private HashMap<Integer, ReconciliationService> infos_reconcile = new HashMap<Integer, ReconciliationService>();
     
     public Step2_ReconciliationService(){
 	
     }
-
-    public boolean isStep2_ok() {
-        return step2_ok;
-    }
-
-    public void setStep2_ok(boolean step2_ok) {
-        this.step2_ok = step2_ok;
-    }
-
+    
     public boolean isInvolved() {
         return involved;
     }
@@ -42,14 +33,13 @@ public class Step2_ReconciliationService {
         this.involved = involved;
     }
 
-    public HashMap<ReconciliationService, String> getReconciledFilesAssociatedPath() {
-        return reconciledFilesAssociatedPath;
-    }
+	public HashMap<Integer, ReconciliationService> getInfos_reconcile() {
+		return infos_reconcile;
+	}
 
-    public void setReconciledFilesAssociatedPath(
-    	HashMap<ReconciliationService,  String> reconciledFilesAssociatedPath) {
-        this.reconciledFilesAssociatedPath = reconciledFilesAssociatedPath;
-    }
+	public void setInfos_reconcile(HashMap<Integer, ReconciliationService> infos_reconcile) {
+		this.infos_reconcile = infos_reconcile;
+	}
     
     
 }
