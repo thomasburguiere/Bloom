@@ -94,8 +94,11 @@ function deleteInput(nbInput, newInput){
     inputList.splice(nbInput, 1, newInput);
 }
 
+function loadReconcileService(nb_input){
+	
+}
 function taxonReconciliation(fileReader, counter, changeOrLoad) {
-	if(changeOrLoad != "load"){
+	if(changeOrLoad != "loadMapping"){
 		var divAddLoad = document.getElementById("divAddLoad_" + counter);
 		var reconcileButton = document.getElementById("reconcileButton_" + counter);
 		var buttonReconcile = null;
@@ -229,6 +232,7 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
                     }
 
                 }
+			
                 reader.onload = function(e) {
                     // Ensure that the progress bar displays 100% at the end.
                     divProgressBar.style.width = '100%';
@@ -270,18 +274,14 @@ function taxonReconciliation(fileReader, counter, changeOrLoad) {
 function readInputFileReconcile(contentFile, nbInput){
     var separator = "";
     var texte =  document.getElementById("csvDropdown_" + nbInput).options[document.getElementById("csvDropdown_" + nbInput).selectedIndex].value; 
-    console.log(texte);
     if(texte == "comma"){
         separator = ',';
-        console.log(separator);
     }
     else if(texte == "semiComma"){
         separator = ';';
-        console.log(separator);
     }
     else{
         separator = '\t';    
-        console.log(separator);
     }
 	var firstLine = contentFile.split('\n')[0].split(separator);
 	this.createReconciliationPreparation(firstLine, nbInput);
@@ -481,9 +481,9 @@ function startReconciliation(nbInput){
 	var columnCheck = this.getColumChecked(nbInput);
 	var inputObj = this.getInput(nbInput);
     //console.log(inputList);
-    console.log("nbInput : " + nbInput);
+    //console.log("nbInput : " + nbInput);
 	inputObj.tagsReconcile = tagsReconcile;
-    console.log(inputObj);
+    //console.log(inputObj);
     var inputElement = this.getInput(nbInput);
 	var rows = this.getRows(nbInput);
 	var cols = this.getCols(nbInput);
@@ -522,7 +522,7 @@ function startReconciliation(nbInput){
 		$(tableReconcile).fnAdjustColumnSizing();
 	} );
 
-	// Add event listener for opening and closing details
+	// Add event listener for opening and closing detailsfunctions.js
 	$('#tableReconcile_' + nbInput + ' tbody').on('click', 'td.details-control', function () {
 		var tr = $(this).closest('tr');
 		var td = $(this).closest('td');

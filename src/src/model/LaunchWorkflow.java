@@ -374,7 +374,7 @@ public class LaunchWorkflow {
 		System.out.println("pathWrongRaster : " + step8.getPathWrongRaster());
 		System.out.println("pathmatrixresult : " + step8.getPathMatrixResultRaster());
 		step8.setNbFound(rasterTreatment.getNbWrongOccurrences());
-	}
+	}//wrong_raster
 
 	/**
 	 * Launch establishmentMeans option

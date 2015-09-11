@@ -108,13 +108,18 @@
                                 <div id="divAdd_0" class="file-field input-field col-lg-3">
                                     <div class="btn">
                                           <span>Browse</span>
-                                          <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0', 'change')">
+                                          <input id="inp_0" type="file" name="inp_0" onChange="loadInputFile('0')">
                                     </div>
                                     <div class="file-path-wrapper">
                                         <input id="text_inp_0" class="file-path validate" type="text">
                                     </div>
                                 </div>
-                                <div id="divLoad_0" class="col-lg-3 marges"></div>
+                                <div id="divUpload_0" class="col-lg-2 marges">
+                                	<div id="divOKUpload_0" class=""></div>
+                                	<div id="divCancelUpload_0" class=""></div>
+                                </div>
+                                <div id="divCSV_0" class="col-lg-2 marges"></div>
+                                <div id="divLoad_0" class="col-lg-2 marges"></div>
                                 <div class="col-lg-3 marges" id="divReconcile_0"></div>
                             </div>
                        
@@ -262,7 +267,8 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
 	<script src="js/jquery.watable.js"></script>
 	<script type="text/javascript" src="js/ReconciliationFunctions.js"></script>
-	<script type="text/javascript" src="js/functions.js"></script>
+	<script type="text/javascript" src="js/functionsPrep.js"></script>
+	<script type="text/javascript" src="js/functionsMapping.js"></script>
 
 	<script type="text/javascript" charset="utf8"
 		src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js">

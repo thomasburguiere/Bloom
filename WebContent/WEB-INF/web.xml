@@ -18,6 +18,14 @@
 		<url-pattern>/controler</url-pattern>
 	</servlet-mapping>
 	<servlet>
+		<servlet-name>UploadControler</servlet-name>
+		<servlet-class>src.servlets.UploadControler</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UploadControler</servlet-name>
+		<url-pattern>/uploadControler</url-pattern>
+	</servlet-mapping>
+	<servlet>
 		<servlet-name>Initialise</servlet-name>
 		<servlet-class>src.beans.Initialise</servlet-class>
 	</servlet>

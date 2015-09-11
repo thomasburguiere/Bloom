@@ -53,7 +53,7 @@ import src.model.ReconciliationService;
 @WebServlet(name = "Controler")
 public class Controler extends HttpServlet {
 
-	private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/WebContent/"; 
+	private String DIRECTORY_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/"; 
 	private String RESSOURCES_PATH = "/home/mhachet/workspace/WebWorkflowCleanData/src/resources/";
 
 	private Initialise initialisation;

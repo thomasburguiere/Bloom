@@ -96,6 +96,7 @@ public class MappingDwC{
 			}
 
 		}
+		System.out.println("before : " + firstNewLine);
 		firstNewLine += firstNewLine.substring(0,firstNewLine.length()-2) + "\n";
 		
 		writerMappedFile.write(firstNewLine);
