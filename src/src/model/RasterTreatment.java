@@ -128,7 +128,7 @@ public class RasterTreatment {
 			new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/").mkdirs();
 		}
 		File dataInputFileRaster = new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/dataInputFileRaster.csv");			
-
+		System.out.println("dataInputFileRaster : " + dataInputFileRaster.getAbsolutePath());
 		ArrayList<Integer> listValidData = new ArrayList<>();
 		ArrayList<Integer> idForOneRaster = new ArrayList<>();
 
@@ -241,8 +241,12 @@ public class RasterTreatment {
 				//System.out.println(count + "   line : " + ligne);
 				if(count > 0){
 					arraySplit = ligne.split(" ");
-					//System.out.println("array : " + arraySplit.toString());
-					listValidData.add(Integer.parseInt(arraySplit[1]));
+					if(ligne.contains("<0 rows>")){
+						System.out.println("array : " + ligne);
+					}
+					else{
+						listValidData.add(Integer.parseInt(arraySplit[1]));
+					}
 				}
 				count++;
 
@@ -414,7 +418,7 @@ public class RasterTreatment {
 				{
 					new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/wrong/").mkdirs();
 				}
-				File wrongRasterFile = dataTreatment.createFileCsv(resultatSelect, dataTreatment.getNbSessionRandom() + "/wrong_raster_" + this.dataTreatment.getNbSessionRandom() + ".csv", "wrong");
+				File wrongRasterFile = dataTreatment.createFileCsv(resultatSelect, "/wrong_raster_" + this.dataTreatment.getNbSessionRandom() + ".csv", "wrong");
 				this.setWrongRasterFile(wrongRasterFile);
 			}
 	
