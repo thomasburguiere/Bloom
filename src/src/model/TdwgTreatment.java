@@ -65,10 +65,10 @@ public class TdwgTreatment {
 		iso2 = listInfos.get(iIso2);
 		GeometryFactory geometryFactory = new GeometryFactory();
 		Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
-		System.out.println("--------------------------------------------------------------");
+		/*System.out.println("--------------------------------------------------------------");
 		System.out.println("---------------- Check point in TDWG4 code -------------------");
 		System.out.println("Lat : " + latitude + "\tLong : " + longitude);
-		System.out.print("iso2 : " + iso2);
+		System.out.print("iso2 : " + iso2);*/
 		String tdwg4Code = "";
 		try {
 		    tdwg4Code = this.tdwg4ContainedPoint(point, iso2.replaceAll("\"", ""));
@@ -77,8 +77,8 @@ public class TdwgTreatment {
 		    this.setSucessTdwgTreatment(false);
 		    e.printStackTrace();
 		}
-		System.out.println("\ttdwg4 : " + tdwg4Code);
-		System.out.println("--------------------------------------------------------------");
+		//System.out.println("\ttdwg4 : " + tdwg4Code);
+		//System.out.println("--------------------------------------------------------------");
 
 		ConnectionDatabase newConnectionSelectID = new ConnectionDatabase();
 		String sqlSelectID = "SELECT locationID_ FROM Workflow.Clean_" + this.getNbSessionRandom() + " WHERE Clean_" + this.getNbSessionRandom() + ".id_=" + id_ + ";";

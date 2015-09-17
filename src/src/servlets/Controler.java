@@ -248,7 +248,7 @@ public class Controler extends HttpServlet {
 				for(int i = 0 ; i < tagsNoMapped.size() ; i++){
 					connectionTags.put(tagsNoMapped.get(i) + "_" + i, "");
 				}
-				System.out.println("connectionTagsControler : " + connectionTags);
+				//System.out.println("connectionTagsControler : " + connectionTags);
 				newMappingDWC.setConnectionTags(connectionTags);
 				newMappingDWC.getNoMappedFile().setCsvName(file.getName());
 				//initialisation.getInputFilesList().add(csvFile.getCsvFile());
@@ -345,7 +345,7 @@ public class Controler extends HttpServlet {
 			else if(fieldName.contains(reconcileActive)){
 				String [] tableauField =  fieldName.split("_");
 				int idReconcile = Integer.parseInt(tableauField[tableauField.length-1]);
-				//System.out.println("fieldName : " + fieldName);
+				System.out.println("fieldName : " + fieldName + "  " + reconcileActive);
 				for(int i = 0 ; i < listMappingReconcileDWC.size() ; i++ ){
 					int idFile = listMappingReconcileDWC.get(i).getIdFile();
 					if(idFile == (idReconcile)){
@@ -370,7 +370,7 @@ public class Controler extends HttpServlet {
 
 				int idDropdown = Integer.parseInt(tableauField[tableauField.length-1]);
 				int idFile = Integer.parseInt(tableauField[tableauField.length-2]);
-				System.out.println("dropdownReconcile : " + fieldName + "  " + idFile + "  " + listReconcileFiles.size());
+				//System.out.println("dropdownReconcile : " + fieldName + "  " + idFile + "  " + listReconcileFiles.size());
 				ReconciliationService reconciliationService = listReconcileFiles.get(idFile);
 				if(idDropdown == 0){
 					String tag = item.getString();
@@ -381,11 +381,17 @@ public class Controler extends HttpServlet {
 				System.out.println("fieldName : " + fieldName);
 				String [] tableauField =  fieldName.split("_");
 				String value = item.getString();
+				for(int t = 0; t < tableauField.length ; t++){
+					System.out.println("tableau : " + tableauField[t]);
+				}
+				
 				System.out.println("valueradio : " + value);
 				int idFile = Integer.parseInt(tableauField[tableauField.length-2]);
 				int idLine = Integer.parseInt(tableauField[tableauField.length-1]);
+				System.out.println(idLine);
 				ReconciliationService reconciliationService = listReconcileFiles.get(idFile);
 				HashMap<Integer, String> linesConnnectedNewName = reconciliationService.getLineConnectedNewName();
+				System.out.println(linesConnnectedNewName);
 				linesConnnectedNewName.put(idLine, value);
 			}
 			else if(fieldName.contains("csvDropdown_")){

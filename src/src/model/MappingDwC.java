@@ -98,11 +98,11 @@ public class MappingDwC{
 			}
 
 		}
-		System.out.println("before : " + firstNewLine);
+		//System.out.println("before : " + firstNewLine);
 		firstNewLine = firstNewLine.substring(0,firstNewLine.length()-1) + "\n";
 
 		writerMappedFile.write(firstNewLine);
-		System.out.println("line : " + firstNewLine);
+		//System.out.println("line : " + firstNewLine);
 		int countLines = 0;
 		int nbLines = noMappedFile.getLines().size();
 		countCol = 1;

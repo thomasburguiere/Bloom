@@ -108,16 +108,16 @@ public class GeographicTreatment {
 		File geoJsonFile = new File(RESSOURCES_PATH + "gadm_json/" + iso3.toUpperCase() + "_adm0.json");
 		GeometryFactory geometryFactory = new GeometryFactory();
 		Point point = geometryFactory.createPoint(new Coordinate(longitude, latitude));
-		System.out.println("--------------------------------------------------------------");
+		/*System.out.println("--------------------------------------------------------------");
 		System.out.println("------------------ Check point in polygon --------------------");
 		System.out.println("Lat : " + latitude + "\tLong : " +  longitude);
 		System.out.println("id_ : " + id_ + "\tgbifID : " + gbifId_ + "\tIso3 : " + iso3 + "\tiso2 : " + iso2);
-
+*/
 		boolean isContained = this.polygonContainedPoint(point, geoJsonFile);
-
+/*
 		System.out.println("The point is contained in the polygone : " + isContained);
 		System.out.println("--------------------------------------------------------------\n");
-
+*/
 		if(!isContained){
 		    nbWrongIso2 ++;
 		    ConnectionDatabase newConnectionSelectID = new ConnectionDatabase();

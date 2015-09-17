@@ -65,7 +65,7 @@ public class LaunchWorkflow {
 	 */
 	public void initialiseLaunchWorkflow() throws IOException{
 		File repCourant = new java.io.File(new java.io.File("").getAbsolutePath());
-		System.out.println("repCourant : "  + repCourant);
+		//System.out.println("repCourant : "  + repCourant);
 		this.dataTreatment = new Treatment();
 		this.dataTreatment.setNbSessionRandom(initialisation.getNbSessionRandom());
 		this.dataTreatment.setDIRECTORY_PATH(initialisation.getDIRECTORY_PATH());
