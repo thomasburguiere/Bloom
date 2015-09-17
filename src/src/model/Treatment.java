@@ -6,6 +6,7 @@ package src.model;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,9 +92,11 @@ public class Treatment {
 	 * @return void
 	 */
 	public void mappingDwC(MappingDwC mappingDWC, int idFile) throws IOException{
+		
 		mappingDWC.setConnectionValuesTags(mappingDWC.doConnectionValuesTags());
 		mappingDWC.findInvalidColumns();
 		File mappedFile = mappingDWC.createNewDwcFile(this.getNbSessionRandom(), idFile);
+		
 		mappingDWC.setMappedFile(mappedFile);
 	}
 
@@ -139,7 +142,7 @@ public class Treatment {
 			reconcileService.setSuccessReconcile(Boolean.toString(false));
 			System.err.println(e);
 		}
-		File reconcileFile = this.createFileCsv(listLinesReconciled, "data/reconcile_" + this.getNbSessionRandom() + "_" + idFile + ".csv");
+		File reconcileFile = this.createFileCsv(listLinesReconciled, "reconcile_" + this.getNbSessionRandom() + "_" + idFile + ".csv", "data");
 		reconcileService.setReconcileFile(reconcileFile);
 	}
 
@@ -173,14 +176,18 @@ public class Treatment {
 		if(!new File(DIRECTORY_PATH + "temp/").exists()){
 			new File(DIRECTORY_PATH + "temp/").mkdirs();
 		}
-		if(!new File(DIRECTORY_PATH + "temp/data/").exists()){
-			new File(DIRECTORY_PATH + "temp/data/").mkdirs();
+		if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom()).exists()){
+			new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom());
 		}
-		File tempFile = new File(DIRECTORY_PATH + "temp/data/inputFile_" + Integer.toString(nbFile) + ".csv");
+		if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/data/").exists()){
+			new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/data/").mkdirs();
+		}
+		File tempFile = new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/data/inputFile_" + Integer.toString(nbFile) + ".csv");
 		FileWriter writer = null;
 		try{
 			writer = new FileWriter(tempFile);
 			for(int i = 0 ; i < linesInputModified.size() ; i++){
+				//System.out
 				writer.write(linesInputModified.get(i) + "\n");
 			}
 		}catch(IOException ex){
@@ -214,6 +221,7 @@ public class Treatment {
 	 * @return void
 	 */
 	public void createTableDarwinCoreInput(String insertFileSQL){
+		System.out.println("insertFileSQL : " + insertFileSQL);
 		ConnectionDatabase newConnection = new ConnectionDatabase();
 		String choiceStatement = "execute";
 		ArrayList<String> messages = new ArrayList<String>();
@@ -276,16 +284,16 @@ public class Treatment {
 
 		geoTreatment.geoGraphicTreatment();
 
-		File wrongGeo = this.createFileCsv(geoTreatment.getWrongGeoList(), "wrong/wrong_geospatialIssues_" + this.getNbSessionRandom() + ".csv");
+		File wrongGeo = this.createFileCsv(geoTreatment.getWrongGeoList(), "wrong_geospatialIssues_" + this.getNbSessionRandom() + ".csv", "wrong");
 		geoTreatment.setWrongGeoFile(wrongGeo);
 
-		File wrongCoord = this.createFileCsv(geoTreatment.getWrongCoordinatesList(), "wrong/wrong_coordinates_" + this.getNbSessionRandom() + ".csv");
+		File wrongCoord = this.createFileCsv(geoTreatment.getWrongCoordinatesList(), "wrong_coordinates_" + this.getNbSessionRandom() + ".csv", "wrong");
 		geoTreatment.setWrongCoordinatesFile(wrongCoord);
 
-		File wrongPolygon = this.createFileCsv(geoTreatment.getWrongPolygonList(), "wrong/wrong_polygon_" + this.getNbSessionRandom() + ".csv");
+		File wrongPolygon = this.createFileCsv(geoTreatment.getWrongPolygonList(), "wrong_polygon_" + this.getNbSessionRandom() + ".csv", "wrong");
 		geoTreatment.setWrongPolygonFile(wrongPolygon);
 
-		return geoTreatment;
+		return geoTreatment;//repCourant : 
 	}
 
 
@@ -317,7 +325,7 @@ public class Treatment {
 
 		establishTreatment.establishmentMeansTreatment();
 		ArrayList<String> noEstablishment = establishTreatment.getNoEstablishmentList();
-		File wrongEstablishmentMeans = this.createFileCsv(noEstablishment, "wrong/noEstablishmentMeans_" + this.getNbSessionRandom() + ".csv");
+		File wrongEstablishmentMeans = this.createFileCsv(noEstablishment, "noEstablishmentMeans_" + this.getNbSessionRandom() + ".csv", "wrong");
 		establishTreatment.setWrongEstablishmentMeansFile(wrongEstablishmentMeans);
 
 		return establishTreatment;
@@ -330,17 +338,25 @@ public class Treatment {
 	 * @param String fileName
 	 * @return File 
 	 */
-	public File createFileCsv(ArrayList<String> linesFile, String fileName){
-		if(!new File(DIRECTORY_PATH + "temp/").exists())
-		{
+	public File createFileCsv(ArrayList<String> linesFile, String fileName, String category){
+		if(!new File(DIRECTORY_PATH + "temp/").exists()){
 			new File(DIRECTORY_PATH + "temp/").mkdirs();
 		}
-		if(!new File(DIRECTORY_PATH + "temp/wrong/").exists())
-		{
-			new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
+		if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom()).exists()){
+			new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom());
 		}
+		if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/data/").exists()){
+			new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/data/").mkdirs();
+		}
+		if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/wrong/").exists()){
+			new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/wrong/").mkdirs();
+		}
+		if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/final_results/").exists()){
+			new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/final_results/").mkdirs();
+		}
+		
 		//String fileRename = fileName + "_" + nbFileRandom + ".csv";
-		File newFile = new File(DIRECTORY_PATH + "temp/" + fileName);
+		File newFile = new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/" + category +"/" + fileName);
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter(newFile);

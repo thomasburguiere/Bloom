@@ -17,6 +17,7 @@
 		<servlet-name>Controler</servlet-name>
 		<url-pattern>/controler</url-pattern>
 	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>UploadControler</servlet-name>
 		<servlet-class>src.servlets.UploadControler</servlet-class>
@@ -25,6 +26,16 @@
 		<servlet-name>UploadControler</servlet-name>
 		<url-pattern>/uploadControler</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ReconcileControler</servlet-name>
+		<servlet-class>src.servlets.ReconcileControler</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReconcileControler</servlet-name>
+		<url-pattern>/reconcileControler</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>Initialise</servlet-name>
 		<servlet-class>src.beans.Initialise</servlet-class>

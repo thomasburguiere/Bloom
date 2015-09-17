@@ -76,7 +76,7 @@ public class RasterTreatment {
 		this.setNbWrongOccurrences(listNotValidData.size());
 
 		// remove temporary files bind to the raster analysis
-		//dataTreatment.deleteDirectory(new File(DIRECTORY_PATH + "temp/rasterAnalyse/"));
+		dataTreatment.deleteDirectory(new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/"));
 
 
 		return matrixFileValidCells;
@@ -123,11 +123,11 @@ public class RasterTreatment {
 		 *	BIP			Band Interleaved by Pixel (ESRI BIP)		.bip				NA
 		 ************************************************************************************************/
 		String scriptRaster = RESSOURCES_PATH + "raster.R";
-		if(!new File(DIRECTORY_PATH + "temp/rasterAnalyse/").exists())
+		if(!new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/").exists())
 		{
-			new File(DIRECTORY_PATH + "temp/rasterAnalyse/").mkdirs();
+			new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/").mkdirs();
 		}
-		File dataInputFileRaster = new File(DIRECTORY_PATH + "temp/rasterAnalyse/dataInputFileRaster.csv");			
+		File dataInputFileRaster = new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/dataInputFileRaster.csv");			
 
 		ArrayList<Integer> listValidData = new ArrayList<>();
 		ArrayList<Integer> idForOneRaster = new ArrayList<>();
@@ -169,11 +169,11 @@ public class RasterTreatment {
 		ArrayList<String> decimalLongitude = dataTreatment.getFileDarwinCore().getDecimalLongitudeClean();
 		ArrayList<String> idLine = dataTreatment.getFileDarwinCore().getIDClean();
 
-		if(!new File(DIRECTORY_PATH + "temp/rasterAnalyse/").exists())
+		if(!new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/").exists())
 		{
-			new File(DIRECTORY_PATH + "temp/rasterAnalyse/").mkdirs();
+			new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/").mkdirs();
 		}
-		File validRaster = new File(DIRECTORY_PATH + "temp/rasterAnalyse/validRaster.txt");
+		File validRaster = new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/validRaster.txt");
 		try {
 
 			FileWriter dataInputWriterTemp = new FileWriter(dataInputFileRaster, false);
@@ -188,7 +188,7 @@ public class RasterTreatment {
 
 			FileOutputStream fos = new FileOutputStream(validRaster);
 			Runtime rt = Runtime.getRuntime();
-			String [] cmdarray = {"Rscript", scriptRaster, DIRECTORY_PATH + "temp/rasterAnalyse/", dataRasterFile.getAbsolutePath(), dataInputFileRaster.getAbsolutePath()};
+			String [] cmdarray = {"Rscript", scriptRaster, DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/", dataRasterFile.getAbsolutePath(), dataInputFileRaster.getAbsolutePath()};
 
 			Process proc = rt.exec(cmdarray);
 			// any error message?
@@ -268,10 +268,13 @@ public class RasterTreatment {
 		if(!new File(DIRECTORY_PATH + "temp/").exists()){
 			new File(DIRECTORY_PATH + "temp/").mkdirs();
 		}
-		if(!new File(DIRECTORY_PATH + "temp/data/").exists()){
-			new File(DIRECTORY_PATH + "temp/data/").mkdirs();
+		if(!new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom()).exists()){
+			new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom());
 		}
-		File matrix = new File(DIRECTORY_PATH + "temp/rasterAnalyse/cells_proba_raster_" + dataTreatment.getNbSessionRandom() + ".csv");
+		if(!new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/data/").exists()){
+			new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/data/").mkdirs();
+		}
+		File matrix = new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/cells_proba_raster_" + dataTreatment.getNbSessionRandom() + ".csv");
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter(matrix);
@@ -407,11 +410,11 @@ public class RasterTreatment {
 
 			if(resultatSelect != null){
 				messagesSelect.add("nb lignes affectées :" + Integer.toString(resultatSelect.size() - 1));
-				if(!new File(DIRECTORY_PATH + "temp/wrong/").exists())
+				if(!new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/wrong/").exists())
 				{
-					new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
+					new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/wrong/").mkdirs();
 				}
-				File wrongRasterFile = dataTreatment.createFileCsv(resultatSelect, "wrong/wrong_raster_" + this.dataTreatment.getNbSessionRandom() + ".csv" );
+				File wrongRasterFile = dataTreatment.createFileCsv(resultatSelect, dataTreatment.getNbSessionRandom() + "/wrong_raster_" + this.dataTreatment.getNbSessionRandom() + ".csv", "wrong");
 				this.setWrongRasterFile(wrongRasterFile);
 			}
 	
@@ -420,11 +423,12 @@ public class RasterTreatment {
 			}
 		}
 		else{
-			if(!new File(DIRECTORY_PATH + "temp/wrong/").exists())
+			if(!new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/wrong/").exists())
 			{
-				new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
+				new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/wrong/").mkdirs();
 			}
-			File wrongRasterFile = dataTreatment.createFileCsv(new ArrayList<String>(), "wrong/wrong_raster_" + this.dataTreatment.getNbSessionRandom() + ".csv" );
+			File wrongRasterFile = dataTreatment.createFileCsv(new ArrayList<String>(), "/wrong_raster_" + this.dataTreatment.getNbSessionRandom() + ".csv", "wrong");
+			
 			this.setWrongRasterFile(wrongRasterFile);
 		}
 

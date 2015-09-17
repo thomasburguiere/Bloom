@@ -12,14 +12,21 @@ function getUUID(){
 
 	return UUID;
 }
+//--- Create temporary table with correct ISO2 ---
 
 function generateUUID() {
 	var d = new Date().getTime();
-	var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	var uuid = 'xxxxxxxx_xxxx_4xxx_yxxx_xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 		var r = (d + Math.random()*16)%16 | 0;
 		d = Math.floor(d/16);
 		return (c=='x' ? r : (r&0x3|0x8)).toString(16);
 	});
+	
+	var inputUUID = document.getElementById('uuid');
+	inputUUID.setAttribute('id', "formulaire_" + uuid);
+	inputUUID.setAttribute('name', "formulaire");
+	inputUUID.setAttribute('value', uuid);
+	
 	return uuid;
 };
 
@@ -82,9 +89,10 @@ function addField(compteur, idAdd, typeInput) {
 		divTableReconcile.setAttribute('class', "col-lg-12 dataTable");
 		divTableReconcile.style.display = "inline-block";
 
-		divAddLoad.appendChild(divCSV);
+		
 		divAddLoad.appendChild(divUpload)
-
+		divAddLoad.appendChild(divCSV);
+		
 		divAddLoad.appendChild(divLoad);
 		divAddLoad.appendChild(divReconcile);
 
@@ -420,7 +428,7 @@ function displayButtonsUpload(nb_input, action){
 		buttonCancelUpload.setAttribute('type', "button");
 		buttonCancelUpload.setAttribute('id', "cancelButtonUpload_" + nb_input);
 		buttonCancelUpload.setAttribute('class', "btn btn-default waves-effect waves-light font-medium-button");
-		buttonCancelUpload.setAttribute('onclick', "cancelInputFile('" + nb_input + "cancel')");
+		buttonCancelUpload.setAttribute('onclick', "cancelInputFile('" + nb_input + "','cancel')");
 
 		divOkUpload.appendChild(buttonOkUpload);
 		divCancelUpload.appendChild(buttonCancelUpload);
@@ -439,8 +447,9 @@ function displayButtonsUpload(nb_input, action){
 }
 
 function cancelInputFile(nb_input, action){
-	
-	var sampleText = document.getElementById("text_inp_" + nb_input).value;
+	var textinput = document.getElementById("text_inp_" + nb_input);
+	console.log("text_inp_" + nb_input);
+	var sampleText = textinput.value;
 
 	var sampleFile = document.getElementById("inp_" + nb_input).files[0];
 
@@ -564,14 +573,14 @@ function uploadInputFile(nb_input){
 	var sampleFile = document.getElementById("inp_" + nb_input).files[0];
 
 	var filesize = sampleFile.size;
-
+	var uuid = this.getUUID();
 	if(sampleText != ""){
 		var formdata = new FormData();
-		formdata.append("uuid", this.getUUID());
+		formdata.append("uuid", uuid);
 		formdata.append("nbInput", nb_input);
 		formdata.append("action", "upload");
 		formdata.append("sampleFile", sampleFile);
-
+		console.log(formdata);
 		var xhrPOST = new XMLHttpRequest();
 
 		xhrPOST.open("POST","uploadControler", true);
@@ -588,8 +597,12 @@ function uploadInputFile(nb_input){
 				actionSeparatorCSV(nb_input, "upload");
 				actionMappingButton(nb_input, "upload");
 				actionReconcileButton(nb_input, "upload");
-				console.log(this.responseText);
-				//loadMappingDwc(this.responseText, nb_input);
+				
+				var buttonConvert = document.getElementById("convert_" + nb_input);
+				buttonConvert.setAttribute("onclick" , "loadMappingDwc('" + this.responseText + "'," + nb_input + ")");
+				
+				var reconcileButton = document.getElementById("reconcileButton_" + nb_input);
+				reconcileButton.setAttribute("onclick" , "loadReconcileService('" + uuid + "','" + nb_input + "')");
 			}
 		}
 	}
@@ -627,7 +640,9 @@ function actionMappingButton(nb_input, action){
 		}
 	}
 	else if(action == "cancel"){
-		divLoad.removeChild(convertButton);
+		if(convertButton){
+			divLoad.removeChild(convertButton);
+		}
 	}
 	
 	
@@ -655,7 +670,10 @@ function actionReconcileButton(nb_input, action){
 		}
 	}
 	else if(action == "cancel"){
-		divReconcile.removeChild(reconcileButton);
+		if(reconcileButton){
+			divReconcile.removeChild(reconcileButton);
+		}
+		
 	}
 	
 	
@@ -670,20 +688,24 @@ function actionSeparatorCSV(nb_inp, action){
 		if(!select){
 			var selectCSV = document.createElement('select');
 			selectCSV.setAttribute('id', "csvDropdown_" + nb_inp);
+			selectCSV.setAttribute('name', "csvDropdown_" + nb_inp);
 			selectCSV.setAttribute('class', "csvDropdown");
 	
 			var optionComma = document.createElement('option');
 			optionComma.setAttribute('id', "optionComma_" + nb_inp);
+			optionComma.setAttribute('name', "optionComma_" + nb_inp);
 			optionComma.setAttribute('value', "comma");
 			optionComma.innerHTML = "Comma";
 	
 			var optionTab = document.createElement('option');
 			optionTab.setAttribute('id', "optionTab_" + nb_inp);
+			optionTab.setAttribute('name', "optionTab_" + nb_inp);
 			optionTab.setAttribute('value', "tab");
 			optionTab.innerHTML = "Tabulation";
 	
 			var optionSemiComma = document.createElement('option');
 			optionSemiComma.setAttribute('id', "optionSemiComma_" + nb_inp);
+			optionSemiComma.setAttribute('name', "optionSemiComma_" + nb_inp);
 			optionSemiComma.setAttribute('value', "semiComma");
 			optionSemiComma.innerHTML = "Semi comma";
 	
@@ -697,7 +719,9 @@ function actionSeparatorCSV(nb_inp, action){
 		}
 	}
 	else if(action == "cancel"){
-		divCSV.removeChild(select);
+		if(select){
+			divCSV.removeChild(select);
+		}
 	}
 		
 	

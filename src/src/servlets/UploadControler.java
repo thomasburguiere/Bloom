@@ -45,13 +45,6 @@ public class UploadControler  extends HttpServlet{
 
 	}
 
-	protected void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
-		String nbInput = "";
-		String uuid = "";
-		
-		
-		
-	}
 	
 	protected void doPost(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {		
 		int count = 0;
@@ -59,10 +52,7 @@ public class UploadControler  extends HttpServlet{
 		String nbInput = "";
 		String action = "";
 		
-		String firstline = "";
-		JSONArray jsonFile = new JSONArray();
-		
-		
+		String firstline = "";		
 		
 		List<FileItem> items = null;
 		try {
@@ -78,6 +68,9 @@ public class UploadControler  extends HttpServlet{
 			
 			if(count == 0){
 				uuid = itemFile.getString();
+				if(!new File(DIRECTORY_PATH + "temp/").exists()){
+					new File(DIRECTORY_PATH + "temp/").mkdirs();
+				}
 				if(!new File(DIRECTORY_PATH + "temp/" + uuid + "/").exists()){
 					new File(DIRECTORY_PATH + "temp/" + uuid + "/").mkdirs();
 				}
@@ -95,7 +88,7 @@ public class UploadControler  extends HttpServlet{
 				System.out.println(action);
 			}
 			else if(count == 3){
-				File file = new File(DIRECTORY_PATH + "temp/" + uuid + "/input_" + nbInput + "_" + uuid + ".csv");
+				File file = new File(DIRECTORY_PATH + "temp/" + uuid + "/data/input_" + nbInput + "_" + uuid + ".csv");
 				if(action.equals("upload")){
 					try {
 						itemFile.write(file);
@@ -104,18 +97,18 @@ public class UploadControler  extends HttpServlet{
 						e.printStackTrace();
 					}
 					firstline = this.getFirstLine(file);
-					String fileContained = this.getFileContained(file);
-					
+					//String fileContained = this.getFileContained(file);
+					System.out.println(firstline);
 					response.setContentType("application/text");
 					response.setCharacterEncoding("UTF-8");
 					response.getWriter().write(firstline);
 				}
 				else if(action.equals("cancel")){
+					
 					file.delete();
 					response.getWriter().write("cancelDone");
 				}
 			}
-			
 			
 			count ++;			
 		}

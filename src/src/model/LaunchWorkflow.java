@@ -5,7 +5,9 @@
  */
 package src.model;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,7 +114,7 @@ public class LaunchWorkflow {
 			}
 		}
 
-		//System.out.println("establishment : " + this.initialisation.getEstablishmentList());
+		//System.out.println("establishment : " + this.initialisation.getEstablishmentList());accessRight
 		//keep introduced data
 		if(this.initialisation.isEstablishment()){
 			this.launchEstablishmentMeansOption();
@@ -121,7 +123,7 @@ public class LaunchWorkflow {
 
 		this.writeFinalOutput();
 
-		this.dataTreatment.deleteTables();
+		//this.dataTreatment.deleteTables();
 	}
 
 	/**
@@ -153,9 +155,10 @@ public class LaunchWorkflow {
 
 			if(isMapping && isValid){
 				step1.setInvolved(isMapping);
-
+				
 				this.dataTreatment.mappingDwC(mappingDwc, idFile);
 				String pathMappedFile = mappingDwc.getMappedFile().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(),"");
+
 				mappingDwc.setFilepath(pathMappedFile);
 			}
 			hashMapStep1.put(idFile, mappingDwc);
@@ -191,14 +194,17 @@ public class LaunchWorkflow {
 			if(isValid){
 				if(reconcileFile.isReconcile()){
 					linesInputFile = this.dataTreatment.initialiseFile(reconcileFile.getReconcileFile(), idFile);
+					
 				}
 				else if(Boolean.parseBoolean(mappingFile.getMappingInvolved())){
+					
 					linesInputFile = this.dataTreatment.initialiseFile(mappingFile.getMappedFile(), idFile);
+					
 				}
 				else{
 					linesInputFile = this.dataTreatment.initialiseFile(mappingFile.getNoMappedFile().getCsvFile(), idFile);
+					
 				}
-
 				File inputFileModified = this.dataTreatment.createTemporaryFile(linesInputFile, idFile);
 				String sqlInsert = this.dataTreatment.createSQLInsert(inputFileModified, linesInputFile);
 
@@ -333,7 +339,7 @@ public class LaunchWorkflow {
 	 * @return boolean
 	 */
 	public boolean isValidSynonymFile(){
-		System.out.println("size synonym : " + this.initialisation.getInputSynonymsList());
+		//System.out.println("size synonym : " + this.initialisation.getInputSynonymsList());
 		if(this.initialisation.getInputSynonymsList().size() != 0){
 			return true;
 		}
@@ -402,8 +408,8 @@ public class LaunchWorkflow {
 		ArrayList<File> listFinalOutput = new ArrayList<>();
 		ArrayList<String> listPathsOutput = new ArrayList<>();
 
-		if(!new File(initialisation.getDIRECTORY_PATH() + "temp/final_results/").exists()){
-			new File(initialisation.getDIRECTORY_PATH() + "temp/final_results/").mkdir();
+		if(!new File(initialisation.getDIRECTORY_PATH() + "temp/" + initialisation.getNbSessionRandom() + "/final_results/").exists()){
+			new File(initialisation.getDIRECTORY_PATH() + "temp/" + initialisation.getNbSessionRandom() + "/final_results/").mkdir();
 		}
 
 		int nbFiles = this.initialisation.getNbFiles();
@@ -415,11 +421,11 @@ public class LaunchWorkflow {
 			ConnectionDatabase newConnection = new ConnectionDatabase();
 			ArrayList<String > resultCleanTable = newConnection.getCleanTableFromIdFile(idFile, initialisation.getNbSessionRandom());
 			String nameFile = originalName.replace("." + originalExtension, "") + "_" + initialisation.getNbSessionRandom() + "_clean.csv";
-			File cleanOutput = this.dataTreatment.createFileCsv(resultCleanTable, nameFile);
+			File cleanOutput = this.dataTreatment.createFileCsv(resultCleanTable, nameFile, "final_results");
 
 			listFinalOutput.add(cleanOutput);
 			String pathFile = cleanOutput.getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(),"");
-			listPathsOutput.add(pathFile);
+			listPathsOutput.add(pathFile);//_clean
 		}
 
 		finalisation.setListPathsOutputFiles(listPathsOutput);

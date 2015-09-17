@@ -6,6 +6,7 @@ package src.model;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +38,7 @@ public class MappingDwC{
 	private String filename;
 	private String filepath;
 	private int idFile;
-	
+
 	/**
 	 * 
 	 * src.model
@@ -72,6 +73,7 @@ public class MappingDwC{
 	public File createNewDwcFile(String nbFileRandom, int idFile) throws IOException{
 		String mappedFilename = noMappedFile.getCsvFile().getParent() + "/mappedDWC_" + nbFileRandom + "_" + idFile +".csv";
 		File mappedFile = new File(mappedFilename);
+		
 		FileWriter writerMappedFile = new FileWriter (mappedFile);
 		HashMap<String, String> connectionTags = this.getConnectionTags();
 		HashMap<String, ArrayList<String>> connectionValuesTags = this.getConnectionValuesTags();
@@ -80,8 +82,8 @@ public class MappingDwC{
 		String firstNewLine = "";		
 		int nbCol = connectionTags.size();
 		int countCol = 1;
-		System.out.println("value " + connectionTags);
-		System.out.println("valuesTags : " + connectionValuesTags);
+		//System.out.println("value " + connectionTags);
+		//System.out.println("valuesTags : " + connectionValuesTags);
 
 		for(Entry<String, String> entryDwC : connectionTags.entrySet()){
 			String [] splitKey = entryDwC.getKey().split("_");
@@ -97,8 +99,8 @@ public class MappingDwC{
 
 		}
 		System.out.println("before : " + firstNewLine);
-		firstNewLine += firstNewLine.substring(0,firstNewLine.length()-2) + "\n";
-		
+		firstNewLine = firstNewLine.substring(0,firstNewLine.length()-1) + "\n";
+
 		writerMappedFile.write(firstNewLine);
 		System.out.println("line : " + firstNewLine);
 		int countLines = 0;
@@ -117,7 +119,7 @@ public class MappingDwC{
 
 				countCol ++;
 			}
-			lineValues += lineValues.substring(0,lineValues.length()-2) + "\n";
+			lineValues = lineValues.substring(0,lineValues.length()-2) + "\n";
 			writerMappedFile.write(lineValues);
 			countLines++;
 		}
@@ -368,7 +370,7 @@ public class MappingDwC{
 	public void setTagsListDwC(ArrayList<String> tagsListDwC) {
 		this.tagsListDwC = tagsListDwC;
 	}
-	
+
 
 	/**
 	 * 
@@ -403,7 +405,7 @@ public class MappingDwC{
 	public void setConnectionValuesTags(HashMap<String, ArrayList<String>> connectionValuesTags) {
 		this.connectionValuesTags = connectionValuesTags;
 	}
-	
+
 	public ArrayList<Integer> getListInvalidColumns() {
 		return listInvalidColumns;
 	}
@@ -411,7 +413,7 @@ public class MappingDwC{
 	public void setListInvalidColumns(ArrayList<Integer> listInvalidColumns) {
 		this.listInvalidColumns = listInvalidColumns;
 	}
-	
+
 	public String getFilename() {
 		return filename;
 	}
@@ -451,5 +453,5 @@ public class MappingDwC{
 	public void setMappingInvolved(String mappingInvolved) {
 		this.mappingInvolved = mappingInvolved;
 	}
-	
+
 }

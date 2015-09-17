@@ -104,8 +104,8 @@ public class Controler extends HttpServlet {
 		initialisation.setDIRECTORY_PATH(DIRECTORY_PATH);
 		initialisation.setRESSOURCES_PATH(RESSOURCES_PATH);
 
-		this.setNbSessionRandom(this.generateRandomKey());
-		this.initialisation.setNbSessionRandom(this.getNbSessionRandom());
+		//this.setNbSessionRandom(this.generateRandomKey());
+		//this.initialisation.setNbSessionRandom(this.getNbSessionRandom());
 
 		List<FileItem> listFileItems = this.initialiseRequest(request);	
 
@@ -149,6 +149,8 @@ public class Controler extends HttpServlet {
 	 * @return List<FileItem>
 	 */
 	public List<FileItem> initialiseRequest(HttpServletRequest request){
+		
+		
 		DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
 		ServletFileUpload uploadHandler = new ServletFileUpload(fileItemFactory);
 		List<FileItem> items = null;
@@ -185,14 +187,8 @@ public class Controler extends HttpServlet {
 		int nbFilesHeader = 0;
 		int nbFilesSynonyms = 0;
 		int nbMappingInput = 0;
-
-		if(!new File(DIRECTORY_PATH + "temp/").exists()){
-			new File(DIRECTORY_PATH + "temp/").mkdirs();
-		}
-		if(!new File(DIRECTORY_PATH + "temp/data/").exists()){
-			new File(DIRECTORY_PATH + "temp/data/").mkdirs();
-		}
-
+				
+		
 		while (iterator.hasNext()) {
 			// DiskFileItem item = (DiskFileItem) iterator.next();
 			FileItem item = iterator.next();
@@ -206,19 +202,41 @@ public class Controler extends HttpServlet {
 			String tableReconcile = "tableReconcile_";
 
 			String fieldName = item.getFieldName();
-			//System.out.println("fieldName : " + fieldName);
-			if(fieldName.equals(input)){
+			//System.out.println("fieldName : " + fieldName + " item : " + item.getString());
+			if(fieldName.contains("formulaire")){
+				this.setNbSessionRandom(item.getString());
+				this.initialisation.setNbSessionRandom(this.getNbSessionRandom());
+				if(!new File(DIRECTORY_PATH + "temp/").exists()){
+					new File(DIRECTORY_PATH + "temp/").mkdirs();
+				}
+				if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom()).exists()){
+					new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom());
+				}
+				if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/data/").exists()){
+					new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/data/").mkdirs();
+				}
+				if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/wrong/").exists()){
+					new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/wrong/").mkdirs();
+				}
+				if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/final_results/").exists()){
+					new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/final_results/").mkdirs();
+				}
+			}
+			else if(fieldName.equals(input)){
 				DiskFileItem itemFile = (DiskFileItem) item;
 				String fileExtensionName = itemFile.getName();
 				fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
-
-				File file = new File(DIRECTORY_PATH + "temp/data/noMappedDWC_" + this.getNbSessionRandom() + "_" + nbFilesInput + "." + fileExtensionName);
-				try {
-					itemFile.write(file);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				File file = new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/data/input_" + nbFilesInput + "_" + this.getNbSessionRandom() + ".csv");
+				if(!file.exists()){
+					try {
+						System.out.println("writing");
+						//itemFile.write(file);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+				
 				CSVFile csvFile = new CSVFile(file);
 				MappingDwC newMappingDWC = new MappingDwC(csvFile, Boolean.toString(false));
 
@@ -230,7 +248,7 @@ public class Controler extends HttpServlet {
 				for(int i = 0 ; i < tagsNoMapped.size() ; i++){
 					connectionTags.put(tagsNoMapped.get(i) + "_" + i, "");
 				}
-				//System.out.println("connectionTagsControler : " + connectionTags);
+				System.out.println("connectionTagsControler : " + connectionTags);
 				newMappingDWC.setConnectionTags(connectionTags);
 				newMappingDWC.getNoMappedFile().setCsvName(file.getName());
 				//initialisation.getInputFilesList().add(csvFile.getCsvFile());
@@ -242,7 +260,7 @@ public class Controler extends HttpServlet {
 				mappingReconcileDWC.setOriginalName(itemFile.getName());
 				mappingReconcileDWC.setOriginalExtension(fileExtensionName);
 				listMappingReconcileDWC.add(mappingReconcileDWC);
-
+				
 				nbFilesInput ++;
 			}
 			else if(fieldName.equals(raster)){
@@ -252,7 +270,7 @@ public class Controler extends HttpServlet {
 				String fileExtensionName = item.getName();
 				fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
 				String fileName = item.getName();
-				File file = new File(DIRECTORY_PATH + "temp/data/" + fileName);
+				File file = new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/data/" + fileName);
 				try {
 					item.write(file);
 				} catch (Exception e) {
@@ -268,7 +286,7 @@ public class Controler extends HttpServlet {
 				String fileExtensionName = item.getName();
 				fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
 				String fileName = item.getName();
-				File file = new File(DIRECTORY_PATH + "temp/data/" + fileName);
+				File file = new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/data/" + fileName);
 				try {
 					item.write(file);
 				} catch (Exception e) {
@@ -288,6 +306,7 @@ public class Controler extends HttpServlet {
 				initialisation.setEstablishment(true);
 			}
 			else if(fieldName.contains("dropdownDwC_")){
+				//System.out.println("fieldName : " + fieldName);
 				String valueDropdown = item.getString();
 				String [] tableauField = fieldName.split("_");
 				String idDropdown = tableauField[tableauField.length-1];
@@ -305,7 +324,7 @@ public class Controler extends HttpServlet {
 
 			}
 			else if(fieldName.contains(mapping)){
-
+				//System.out.println("fieldName : " + fieldName);
 				int idMapping = Integer.parseInt(fieldName.split("_")[1]);
 				
 					for(int i = 0 ; i < listMappingReconcileDWC.size() ; i++ ){
@@ -326,7 +345,7 @@ public class Controler extends HttpServlet {
 			else if(fieldName.contains(reconcileActive)){
 				String [] tableauField =  fieldName.split("_");
 				int idReconcile = Integer.parseInt(tableauField[tableauField.length-1]);
-				
+				//System.out.println("fieldName : " + fieldName);
 				for(int i = 0 ; i < listMappingReconcileDWC.size() ; i++ ){
 					int idFile = listMappingReconcileDWC.get(i).getIdFile();
 					if(idFile == (idReconcile)){
@@ -346,7 +365,7 @@ public class Controler extends HttpServlet {
 
 			}
 			else if(fieldName.contains("dropdownReconcile_")){
-
+				//System.out.println("fieldName : " + fieldName);
 				String [] tableauField =  fieldName.split("_");
 
 				int idDropdown = Integer.parseInt(tableauField[tableauField.length-1]);
@@ -358,14 +377,42 @@ public class Controler extends HttpServlet {
 					reconciliationService.setReconcileTagBased(tag);
 				}
 			}
-			else if(fieldName.contains("radio_")){
+			else if(fieldName.contains("group_")){
+				System.out.println("fieldName : " + fieldName);
 				String [] tableauField =  fieldName.split("_");
 				String value = item.getString();
+				System.out.println("valueradio : " + value);
 				int idFile = Integer.parseInt(tableauField[tableauField.length-2]);
 				int idLine = Integer.parseInt(tableauField[tableauField.length-1]);
 				ReconciliationService reconciliationService = listReconcileFiles.get(idFile);
 				HashMap<Integer, String> linesConnnectedNewName = reconciliationService.getLineConnectedNewName();
 				linesConnnectedNewName.put(idLine, value);
+			}
+			else if(fieldName.contains("csvDropdown_")){
+				//System.out.println("fieldName : " + fieldName);
+				int idInput = Integer.parseInt(fieldName.split("_")[1]);
+				String separator = item.getString();
+				if(separator.equals("comma")){
+					separator = ",";
+				}
+				else if(separator.equals("semiComma")){
+					separator = ";";
+				}
+				else{
+					separator = "\t";
+				}
+				for(int i = 0 ; i < listMappingReconcileDWC.size() ; i++ ){
+					int idFile = listMappingReconcileDWC.get(i).getIdFile();
+					if(idFile == (idInput)){ 
+						MappingDwC mappingDWC = listMappingReconcileDWC.get(i).getMappingDWC();
+						mappingDWC.getNoMappedFile().setSeparator(separator);
+						System.out.println("separator : " + item.getString());
+					}
+				}
+				
+			}
+			else{
+				System.out.println("fieldName : " + fieldName);
 			}
 
 
@@ -389,11 +436,12 @@ public class Controler extends HttpServlet {
 				break;
 				}
 			}
-
+			
+			
 
 		}
 
-
+		
 		this.initialisation.setListMappingReconcileFiles(listMappingReconcileDWC);
 
 

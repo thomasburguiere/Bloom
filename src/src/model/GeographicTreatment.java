@@ -269,7 +269,7 @@ public class GeographicTreatment {
 	String choiceStatement = "executeUpdate";
 	messages.add("\n--- Create temporary table with correct ISO2 ---");
 	String sqlCreateTemp = "CREATE TABLE Workflow.temp_" + this.getNbSessionRandom() + " AS SELECT DarwinCoreInput.* FROM Workflow.DarwinCoreInput,Workflow.IsoCode WHERE countryCode_=IsoCode.iso2_;";
-
+	System.out.println(sqlCreateTemp);
 	messages.addAll(newConnectionTemp.newConnection(choiceStatement, sqlCreateTemp));
 
 	for(int i = 0 ; i < messages.size() ; i++){
@@ -324,9 +324,9 @@ public class GeographicTreatment {
 
 	
 	
-	if(!new File(DIRECTORY_PATH + "temp/wrong/").exists())
+	if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/wrong/").exists())
 	{
-	    new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
+	    new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/wrong/").mkdirs();
 	}
 
 	
@@ -366,9 +366,9 @@ public class GeographicTreatment {
 
 	this.setNbWrongGeospatialIssues(resultatSelect.size() - 1 );
 	
-	if(!new File(DIRECTORY_PATH + "temp/wrong/").exists())
+	if(!new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/wrong/").exists())
 	{
-	    new File(DIRECTORY_PATH + "temp/wrong/").mkdirs();
+	    new File(DIRECTORY_PATH + "temp/" + this.getNbSessionRandom() + "/wrong/").mkdirs();
 	}
 
 	
