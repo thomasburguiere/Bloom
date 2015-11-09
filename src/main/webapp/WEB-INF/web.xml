@@ -56,7 +56,7 @@
 		<servlet-class>fr.bird.bloom.servlets.Download</servlet-class>
 		<init-param>
 			<param-name>chemin</param-name>
-			<param-value>/home/mhachet/workspace/WebWorkflowCleanData/WebContent/output/temp/</param-value>
+			<param-value>/home/mhachet/workspace/bloom/output/temp/</param-value>
 			<!--<param-value>/var/lib/tomcat7/WebWorkflowCleanData/output/</param-value>-->
 		</init-param>
 	</servlet>

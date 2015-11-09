@@ -1,5 +1,6 @@
 package fr.bird.bloom.servlets;
 
+import fr.bird.bloom.utils.BloomConfig;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -35,36 +36,11 @@ public class UploadControler  extends HttpServlet{
 
 	public void init() throws ServletException{
 		// Do required initialization
-		File currentFile = new File("");
-		String currentPath = currentFile.getAbsolutePath();
-		System.out.println("currentPathUpload : " + currentPath);
-		
-		try{
-			BufferedReader buff = new BufferedReader(new FileReader(currentPath + "/.properties"));
-			if(currentPath.indexOf("eclipse") != -1){
-				currentPath = "";
-			}
-			try {
-				String line;
-				int count = 0;
-				while ((line = buff.readLine()) != null) {
-					if(count == 0){
-						this.setDIRECTORY_PATH(currentPath + line);
-						System.out.println("directoryPathUpload : " + this.getDIRECTORY_PATH());
-					}
-					else{
-						this.setRESSOURCES_PATH(currentPath + line);
-						System.out.println("ressourcePathUpload : " + this.getRESSOURCES_PATH());
-					}
-					count ++;
-					
-				}
-			} finally {
-				buff.close();
-			}
-		} catch (IOException ioe) {
-			System.out.println("Erreur --" + ioe.toString());
-		}
+
+		this.setDIRECTORY_PATH(BloomConfig.getProperty("directory.path"));
+		System.out.println("directoryPathUpload : " + this.getRESSOURCES_PATH());
+		this.setRESSOURCES_PATH(BloomConfig.getProperty("resource.path"));
+		System.out.println("ressourcePathUpload : " + this.getRESSOURCES_PATH());
 
 	}
 

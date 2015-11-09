@@ -21,6 +21,7 @@ import fr.bird.bloom.model.LaunchWorkflow;
 import fr.bird.bloom.model.MappingDwC;
 import fr.bird.bloom.model.MappingReconcilePreparation;
 import fr.bird.bloom.model.ReconciliationService;
+import fr.bird.bloom.utils.BloomConfig;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -85,36 +86,12 @@ public class MainControler extends HttpServlet {
 
 	public void init() throws ServletException{
 		// Do required initialization
-		File currentFile = new File("");
-		String currentPath = currentFile.getAbsolutePath();
-		System.out.println("currentPathControler : " + currentPath);
-		
-		try{
-			BufferedReader buff = new BufferedReader(new FileReader(currentPath + "/.properties"));
-			if(currentPath.indexOf("eclipse") != -1){
-				currentPath = "";
-			}
-			try {
-				String line;
-				int count = 0;
-				while ((line = buff.readLine()) != null) {
-					if(count == 0){
-						this.setDIRECTORY_PATH(currentPath + line);
-						System.out.println("directoryPathControler : " + this.getDIRECTORY_PATH());
-					}
-					else{
-						this.setRESSOURCES_PATH(currentPath + line);
-						System.out.println("ressourcePathControler : " + this.getRESSOURCES_PATH());
-					}
-					count ++;
-					
-				}
-			} finally {
-				buff.close();
-			}
-		} catch (IOException ioe) {
-			System.out.println("Erreur --" + ioe.toString());
-		}
+		this.setDIRECTORY_PATH(BloomConfig.getProperty("directory.path"));
+		System.out.println("directoryPathControler : " + this.getDIRECTORY_PATH());
+
+		this.setRESSOURCES_PATH(BloomConfig.getProperty("resource.path"));
+		System.out.println("ressourcePathControler : " + this.getRESSOURCES_PATH());
+
 
 	}
 
@@ -137,7 +114,7 @@ public class MainControler extends HttpServlet {
 	 * @throws IOException
 	 * @return void
 	 */
-	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{	
+	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		response.setContentType("text/plain");
 		initialisation = new Initialise();
 		initialisation.setDIRECTORY_PATH(DIRECTORY_PATH);
@@ -146,10 +123,10 @@ public class MainControler extends HttpServlet {
 		//this.setNbSessionRandom(this.generateRandomKey());
 		//this.initialisation.setNbSessionRandom(this.getNbSessionRandom());
 
-		List<FileItem> listFileItems = this.initialiseRequest(request);	
+		List<FileItem> listFileItems = this.initialiseRequest(request);
 
 		this.initialiseParameters(listFileItems, response, request);
-		request.setAttribute("initialise", initialisation);	
+		request.setAttribute("initialise", initialisation);
 
 		LaunchWorkflow newLaunch = new LaunchWorkflow(this.initialisation);
 
@@ -183,7 +160,7 @@ public class MainControler extends HttpServlet {
 
 	/**
 	 * Retrieve all request from the formulary
-	 * 
+	 *
 	 * @param request
 	 * @return List<FileItem>
 	 */
@@ -193,7 +170,7 @@ public class MainControler extends HttpServlet {
 		DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
 		ServletFileUpload uploadHandler = new ServletFileUpload(fileItemFactory);
 		List<FileItem> items = null;
-		try {	    
+		try {
 			items = (List<FileItem>)uploadHandler.parseRequest(request);
 		} catch (FileUploadException e) {
 			// TODO Auto-generated catch block
@@ -205,7 +182,7 @@ public class MainControler extends HttpServlet {
 
 	/**
 	 * Initialise parameters/options
-	 * 
+	 *
 	 * @param items
 	 * @param response
 	 * @throws IOException
@@ -277,20 +254,12 @@ public class MainControler extends HttpServlet {
 						e.printStackTrace();
 					}
 				}
-
+				//System.out.println("new CSVFile initialiseParameters line 280 MainControler");
 				CSVFile csvFile = new CSVFile(file);
+				//csvFile.readCsvFile();
 				MappingDwC newMappingDWC = new MappingDwC(csvFile, Boolean.toString(false));
 
 				listMappingFiles.add(newMappingDWC);
-
-				newMappingDWC.initialiseMapping(this.getNbSessionRandom());
-				HashMap<String, String> connectionTags = new HashMap<>();
-				ArrayList<String> tagsNoMapped = newMappingDWC.getTagsListNoMapped();
-				for(int i = 0 ; i < tagsNoMapped.size() ; i++){
-					connectionTags.put(tagsNoMapped.get(i) + "_" + i, "");
-				}
-				//System.out.println("connectionTagsControler : " + connectionTags);
-				newMappingDWC.setConnectionTags(connectionTags);
 				newMappingDWC.getNoMappedFile().setCsvName(file.getName());
 				//initialisation.getInputFilesList().add(csvFile.getCsvFile());
 				//newMappingDWC.setFilename(itemFile.getName());
@@ -305,7 +274,7 @@ public class MainControler extends HttpServlet {
 				nbFilesInput ++;
 			}
 			else if(fieldName.equals(raster)){
-				System.out.println("if raster : " + item);
+				//System.out.println("if raster : " + item);
 				initialisation.setRaster(true);
 
 				String fileExtensionName = item.getName();
@@ -325,7 +294,7 @@ public class MainControler extends HttpServlet {
 
 			}
 			else if(fieldName.equals(headerRaster)){
-				System.out.println("if header : " + item);
+				//	System.out.println("if header : " + item);
 
 				String fileExtensionName = item.getName();
 				fileExtensionName = FilenameUtils.getExtension(fileExtensionName);
@@ -346,7 +315,7 @@ public class MainControler extends HttpServlet {
 				initialisation.setRaster(true);
 			}
 			else if(fieldName.equals(synonyms)){
-				initialisation.setSynonym(true);		
+				initialisation.setSynonym(true);
 			}
 			else if(fieldName.equals("tdwg4")){
 				initialisation.setTdwg4Code(true);
@@ -366,7 +335,7 @@ public class MainControler extends HttpServlet {
 						String idKey = tableKey[tableKey.length-1];
 						if(idDropdown.equals(idKey)){
 							connectionTags.put(entry.getKey(), valueDropdown);
-						}    
+						}
 					}
 					//System.out.println("connectionTags : " + connectionTags);
 				}
@@ -378,7 +347,7 @@ public class MainControler extends HttpServlet {
 
 				for(int i = 0 ; i < listMappingReconcileDWC.size() ; i++ ){
 					int idFile = listMappingReconcileDWC.get(i).getIdFile();
-					if(idFile == (idMapping)){ 
+					if(idFile == (idMapping)){
 						MappingDwC mappingDWC = listMappingReconcileDWC.get(i).getMappingDWC();
 						if(item.getString().equals("true")){
 							mappingDWC.setMappingInvolved(Boolean.toString(true));
@@ -387,7 +356,7 @@ public class MainControler extends HttpServlet {
 							mappingDWC.setMappingInvolved(Boolean.toString(false));
 						}
 					}
-				}				
+				}
 
 				nbMappingInput ++;
 			}
@@ -431,9 +400,9 @@ public class MainControler extends HttpServlet {
 				//System.out.println("fieldName : " + fieldName);
 				String [] tableauField =  fieldName.split("_");
 				String value = item.getString();
-				for(int t = 0; t < tableauField.length ; t++){
+				/*for(int t = 0; t < tableauField.length ; t++){
 					System.out.println("tableau : " + tableauField[t]);
-				}
+				}*/
 
 				//System.out.println("valueradio : " + value);
 				int idFile = Integer.parseInt(tableauField[tableauField.length-2]);
@@ -462,16 +431,28 @@ public class MainControler extends HttpServlet {
 				}
 				for(int i = 0 ; i < listMappingReconcileDWC.size() ; i++ ){
 					int idFile = listMappingReconcileDWC.get(i).getIdFile();
-					if(idFile == (idInput)){ 
+					if(idFile == (idInput)){
 						MappingDwC mappingDWC = listMappingReconcileDWC.get(i).getMappingDWC();
 						mappingDWC.getNoMappedFile().setSeparator(separator);
+						mappingDWC.initialiseMapping(this.getNbSessionRandom());
+
+						HashMap<String, String> connectionTags = new HashMap<>();
+						ArrayList<String> tagsNoMapped = mappingDWC.getTagsListNoMapped();
+						for(int j = 0 ; j < tagsNoMapped.size() ; j++){
+							connectionTags.put(tagsNoMapped.get(j) + "_" + j, "");
+						}
+						//System.out.println("connectionTagsControler : " + connectionTags);
+						mappingDWC.setConnectionTags(connectionTags);
+
+
 						//System.out.println("separator : " + item.getString());
 					}
 				}
 
 			}
-			else{
-				//System.out.println("fieldName : " + fieldName);
+			else if(fieldName.contains("email")){
+				initialisation.setEmailUser(item.getString());
+				initialisation.setSendEmail(true);
 			}
 
 
@@ -479,20 +460,20 @@ public class MainControler extends HttpServlet {
 				String param = item.getFieldName();
 				//System.out.println(param);
 				switch(param){
-				case "native" : this.initialisation.getEstablishmentList().add("native");
-				break;
-				case "introduced" : this.initialisation.getEstablishmentList().add("introduced");
-				break;
-				case "naturalised" : this.initialisation.getEstablishmentList().add("naturalised");
-				break;
-				case "invasive" : this.initialisation.getEstablishmentList().add("invasive");
-				break;
-				case "managed" : this.initialisation.getEstablishmentList().add("managed");
-				break;
-				case "uncertain" : this.initialisation.getEstablishmentList().add("uncertain");
-				break;	
-				case "others" : this.initialisation.getEstablishmentList().add("others");
-				break;
+					case "native" : this.initialisation.getEstablishmentList().add("native");
+						break;
+					case "introduced" : this.initialisation.getEstablishmentList().add("introduced");
+						break;
+					case "naturalised" : this.initialisation.getEstablishmentList().add("naturalised");
+						break;
+					case "invasive" : this.initialisation.getEstablishmentList().add("invasive");
+						break;
+					case "managed" : this.initialisation.getEstablishmentList().add("managed");
+						break;
+					case "uncertain" : this.initialisation.getEstablishmentList().add("uncertain");
+						break;
+					case "others" : this.initialisation.getEstablishmentList().add("others");
+						break;
 				}
 			}
 

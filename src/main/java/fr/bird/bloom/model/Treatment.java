@@ -24,9 +24,9 @@ import org.apache.commons.lang.StringUtils;
 
 
 /**
- * 
+ *
  * src.model
- * 
+ *
  * TreatmentData.java
  */
 public class Treatment {
@@ -41,7 +41,7 @@ public class Treatment {
 
 
 	/**
-	 * 
+	 *
 	 * package model
 	 * TreatmentData
 	 */
@@ -52,7 +52,7 @@ public class Treatment {
 	/**
 	 * Delete Clean and temp tables. 
 	 * Delete DarwinCoreInput table.
-	 * 
+	 *
 	 * @return void
 	 */
 	public void deleteTables(){
@@ -111,7 +111,7 @@ public class Treatment {
 
 	/**
 	 * Convert input file (not DwC) to DwC format
-	 * 
+	 *
 	 * @param mappingDWC
 	 * @throws IOException
 	 * @return void
@@ -127,7 +127,7 @@ public class Treatment {
 
 	/**
 	 * change name from reconcile service
-	 * 
+	 *
 	 * @param reconcileService
 	 * @param referenceFileReconcile
 	 * @param idFile
@@ -140,7 +140,7 @@ public class Treatment {
 		ArrayList<String> listLinesReconciled = new ArrayList<>();
 		try{
 			System.out.println(referenceFileReconcile.getCsvFile().getAbsolutePath());
-			InputStream inputStreamReference = new FileInputStream(referenceFileReconcile.getCsvFile()); 
+			InputStream inputStreamReference = new FileInputStream(referenceFileReconcile.getCsvFile());
 			InputStreamReader inputStreamReaderReference = new InputStreamReader(inputStreamReference);
 			BufferedReader readerReference = new BufferedReader(inputStreamReaderReference);
 			String line = "";
@@ -176,7 +176,7 @@ public class Treatment {
 		catch(Exception e){
 			System.err.println("error false : " + e);
 			reconcileService.setSuccessReconcile(Boolean.toString(false));
-			
+
 		}
 		File reconcileFile = this.createFileCsv(listLinesReconciled, "reconcile_" + this.getNbSessionRandom() + "_" + idFile + ".csv", "data");
 		reconcileService.setReconcileFile(reconcileFile);
@@ -185,7 +185,7 @@ public class Treatment {
 	/**
 	 * Create a DarwinCore class for each file.
 	 * Initial file will be modified thanks to readFile()
-	 * 
+	 *
 	 * @param inputFile
 	 * @param nbFile
 	 * @throws IOException
@@ -204,7 +204,7 @@ public class Treatment {
 
 	/**
 	 * Create sql request to insert input file modified (temporary) in DarwinCoreInput table
-	 * 
+	 *
 	 * @param File inputDarwinCoreModified
 	 * @param List<String> linesInputFile
 	 * @return String sql request
@@ -242,14 +242,14 @@ public class Treatment {
 
 	/**
 	 * Create DarwinCoreInput table in the database from input file(s)
-	 * 
+	 *
 	 * @param String insertFileSQL
 	 * @return void
 	 */
 	public void createTableDarwinCoreInput(DarwinCore darwinCoreModified){
 		File darwinCoreFile = darwinCoreModified.getDarwinCoreFileTemp();
 		BufferedReader buff = null;
-		
+
 		try {
 			buff = new BufferedReader(new FileReader(darwinCoreFile));
 		} catch (FileNotFoundException e1) {
@@ -257,7 +257,7 @@ public class Treatment {
 			e1.printStackTrace();
 		}
 		int countLine = 0;
-		String firstLine = ""; 
+		String firstLine = "";
 		String line;
 		try {
 			while ((line = buff.readLine()) != null) {
@@ -307,11 +307,11 @@ public class Treatment {
 		for(int i = 0 ; i < messages.size() ; i++){
 			System.out.println(messages.get(i));
 		}*/
-	} 
+	}
 
 	/**
 	 * Add synonyms for each taxon (if exist)
-	 * 
+	 *
 	 * @param includeSynonyms
 	 * @return void
 	 */
@@ -339,7 +339,7 @@ public class Treatment {
 
 	/**
 	 * Find tdwg level 4 for occurrences
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean tdwgCodeOption(){
@@ -357,7 +357,7 @@ public class Treatment {
 
 	/**
 	 * process of geo checking 
-	 * 
+	 *
 	 * @return GeographicTreatment
 	 */
 	public GeographicTreatment checkGeographicOption(){
@@ -383,9 +383,9 @@ public class Treatment {
 
 
 	/**
-	 * 
+	 *
 	 * Check if coordinates are included in raster cells
-	 * 
+	 *
 	 * @param ArrayList<File> raster file
 	 * @return void
 	 */
@@ -404,7 +404,7 @@ public class Treatment {
 
 	/**
 	 * process of establishmentMeans option
-	 * 
+	 *
 	 * @param listEstablishmentChecked
 	 * @return EstablishmentTreatment
 	 */
@@ -424,10 +424,10 @@ public class Treatment {
 
 	/**
 	 * Create a new csv file from lines 
-	 * 
+	 *
 	 * @param ArrayList<String> linesFile
 	 * @param String fileName
-	 * @return File 
+	 * @return File
 	 */
 	public File createFileCsv(ArrayList<String> linesFile, String fileName, String category){
 		if(!new File(DIRECTORY_PATH + "temp/").exists()){
@@ -471,7 +471,7 @@ public class Treatment {
 
 	/**
 	 * Delete a directory
-	 * 
+	 *
 	 * @param path
 	 * @return boolean
 	 */
@@ -495,7 +495,7 @@ public class Treatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return DarwinCore
 	 */
 	public DarwinCore getFileDarwinCore() {
@@ -503,7 +503,7 @@ public class Treatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param fileDarwinCore
 	 * @return void
 	 */
@@ -512,7 +512,7 @@ public class Treatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return ArrayList<File>
 	 */
 	public ArrayList<File> getRasterFiles() {
@@ -520,7 +520,7 @@ public class Treatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param rasterFiles
 	 * @return void
 	 */
@@ -529,7 +529,7 @@ public class Treatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return HashMap<Integer,HashMap<String,Boolean>>
 	 */
 	public HashMap<Integer, HashMap<String, Boolean>> getHashMapValidOrNot() {
@@ -537,7 +537,7 @@ public class Treatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param hashMapValidOrNot
 	 * @return void
 	 */
@@ -547,7 +547,7 @@ public class Treatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return int
 	 */
 	public String getNbSessionRandom() {
@@ -555,7 +555,7 @@ public class Treatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param nbFileRandom
 	 * @return void
 	 */

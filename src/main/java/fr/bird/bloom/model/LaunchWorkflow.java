@@ -50,7 +50,7 @@ public class LaunchWorkflow {
 	private Step9_EstablishmentMeans step9;
 
 	/**
-	 * 
+	 *
 	 * src.model
 	 * LaunchWorkflow
 	 */
@@ -60,7 +60,7 @@ public class LaunchWorkflow {
 
 	/**
 	 * Call steps of the workflow
-	 * 
+	 *
 	 * @throws IOException
 	 * @return void
 	 */
@@ -85,8 +85,8 @@ public class LaunchWorkflow {
 
 		this.isValidInputFiles();
 
-		
-		
+
+
 		this.launchWorkflow();
 		step3.setInvolved(true);
 		step4.setInvolved(true);
@@ -109,7 +109,7 @@ public class LaunchWorkflow {
 			step8.setInvolved(true);
 			boolean rasterFilesIsValid = this.isValidRasterFiles();
 			if(rasterFilesIsValid){
-				this.launchRasterOption();	
+				this.launchRasterOption();
 			}
 			else{
 				File defaultRaster = new File(this.dataTreatment.getRESSOURCES_PATH() + "test/inputs_data/tmean1.bil");
@@ -119,7 +119,7 @@ public class LaunchWorkflow {
 				this.launchRasterOption();
 				//step8.setStep8_ok(false);
 			}
-			
+
 		}
 
 		//System.out.println("establishment : " + this.initialisation.getEstablishmentList());accessRight
@@ -130,7 +130,7 @@ public class LaunchWorkflow {
 		}
 
 		this.writeFinalOutput();
-		
+
 		if(initialisation.isSendEmail()){
 			SendMail mail = new SendMail();
 			mail.setDIRECTORY_PATH(initialisation.getDIRECTORY_PATH());
@@ -142,15 +142,15 @@ public class LaunchWorkflow {
 				e.printStackTrace();
 			}*/
 		}
-		
+
 		this.dataTreatment.deleteTables();
 
 	}
 
-	
+
 	/**
 	 * Call main steps of the workflow
-	 * 
+	 *
 	 * @throws IOException
 	 * @return void
 	 */
@@ -159,7 +159,7 @@ public class LaunchWorkflow {
 		ArrayList<MappingReconcilePreparation> listMappingReconcileDWC = this.initialisation.getListMappingReconcileFiles();
 		HashMap<Integer, ReconciliationService> reconcilePath = step2.getInfos_reconcile();
 		HashMap<Integer, MappingDwC> hashMapStep1 = step1.getInfos_mapping();
-		
+
 		/**
 		 * pre-treatment for mapping and reconcile
 		 */
@@ -170,7 +170,7 @@ public class LaunchWorkflow {
 
 			int idFile = listMappingReconcileDWC.get(i).getIdFile();
 			mappingDwc.setIdFile(idFile);
-			
+
 			String originalName = listMappingReconcileDWC.get(i).getOriginalName();
 			mappingDwc.setFilename(originalName);
 
@@ -180,14 +180,14 @@ public class LaunchWorkflow {
 
 			if(isMapping && isValid){
 				step1.setInvolved(isMapping);
-				
+
 				this.dataTreatment.mappingDwC(mappingDwc, idFile);
 				String pathMappedFile = mappingDwc.getMappedFile().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(),"output/"); //change to 'output/'
 
 				mappingDwc.setFilepath(pathMappedFile);
 			}
 			hashMapStep1.put(idFile, mappingDwc);
-			
+
 			ReconciliationService reconcileService = listMappingReconcileDWC.get(i).getReconcileDWC();
 			boolean reconcile = reconcileService.isReconcile();
 			if(reconcile && isValid){
@@ -204,10 +204,10 @@ public class LaunchWorkflow {
 				}
 				String pathReconcileFile = reconcileService.getReconcileFile().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(),"output/"); //change to 'output/'
 				reconcileService.setFilepath(pathReconcileFile);
-				
-				
+
+
 			}
-			
+
 			reconcilePath.put(idFile, reconcileService);
 		}
 		//System.out.println("new CSVFile launchWorkflow line 205 LaunchWorkflow");
@@ -222,20 +222,20 @@ public class LaunchWorkflow {
 			MappingDwC mappingFile = mappingReconcilePrep.getMappingDWC();
 			ReconciliationService reconcileFile = mappingReconcilePrep.getReconcileDWC();
 			boolean isValid = mappingReconcilePrep.isValid();
-			String separator = mappingFile.getNoMappedFile().getSeparator(); 
+			String separator = mappingFile.getNoMappedFile().getSeparator();
 			if(isValid){
 				if(reconcileFile.isReconcile()){
 					darwinCoreModified = this.dataTreatment.initialiseFile(reconcileFile.getReconcileFile(), idFile, separator);
-					
+
 				}
 				else if(Boolean.parseBoolean(mappingFile.getMappingInvolved())){
-					
+
 					darwinCoreModified = this.dataTreatment.initialiseFile(mappingFile.getMappedFile(), idFile, separator);
-					
+
 				}
 				else{
 					darwinCoreModified = this.dataTreatment.initialiseFile(mappingFile.getNoMappedFile().getCsvFile(), idFile, separator);
-					
+
 				}
 				//File inputFileModified = this.dataTreatment.createTemporaryFile(linesInputFile, idFile);
 				//String sqlInsert = this.dataTreatment.createSQLInsert(inputFileModified);
@@ -244,7 +244,7 @@ public class LaunchWorkflow {
 				//this.dataTreatment.createTableDarwinCoreInput(sqlInsert);
 			}
 
-		}	
+		}
 
 		GeographicTreatment geoTreatment = this.dataTreatment.checkGeographicOption();
 
@@ -269,13 +269,13 @@ public class LaunchWorkflow {
 
 	/**
 	 * Check if data (from input files) are valid 
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public void isValidInputFiles(){
 
 		ArrayList<MappingReconcilePreparation> listMappingReconcileFiles = this.initialisation.getListMappingReconcileFiles();
-		
+
 		for(int i = 0; i < listMappingReconcileFiles.size(); i++){
 
 			MappingReconcilePreparation mappingReconcilePrep = listMappingReconcileFiles.get(i);
@@ -284,7 +284,7 @@ public class LaunchWorkflow {
 			MappingDwC mappingFile = mappingReconcilePrep.getMappingDWC();
 			ReconciliationService reconciliationService = mappingReconcilePrep.getReconcileDWC();
 			CSVFile csvFileNoMapped = mappingFile.getNoMappedFile();
-			
+
 			if(csvFileNoMapped.getSeparator().equals("-1")){
 				System.out.println("separator false : " + csvFileNoMapped.getSeparator());
 				mappingFile.setSuccessMapping(Boolean.toString(false));
@@ -303,7 +303,7 @@ public class LaunchWorkflow {
 
 						if(!tagsDwcOfficial.contains(tagInput)){
 							mappingFile.setSuccessMapping(Boolean.toString(false));
-						}				
+						}
 					}
 				}
 				else{
@@ -311,14 +311,14 @@ public class LaunchWorkflow {
 					mappingFile.setSuccessMapping(Boolean.toString(true));
 				}
 			}
-			
+
 		}
 
 	}
 
 	/**
 	 * Check if raster files are valid
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isValidRasterFiles(){
@@ -371,7 +371,7 @@ public class LaunchWorkflow {
 
 	/**
 	 * Check if synonym file is valid
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isValidSynonymFile(){
@@ -386,7 +386,7 @@ public class LaunchWorkflow {
 
 	/**
 	 * Launch synonym option
-	 * 
+	 *
 	 * @param isValidSynonymFile
 	 * @return void
 	 */
@@ -403,7 +403,7 @@ public class LaunchWorkflow {
 
 	/**
 	 * Launch raster option
-	 * 
+	 *
 	 * @return void
 	 */
 	public void launchRasterOption(){
@@ -415,13 +415,13 @@ public class LaunchWorkflow {
 		step8.setProcessRaster(errorProcessRaster);
 		for(Entry<String, Boolean> entry : errorProcessRaster.entrySet()) {
 			String filenameRaster = entry.getKey();
-		    boolean errorProcess = entry.getValue();
-		    if(errorProcess){
-		    	step8.setStep8_ok(false);
-		    }
-		    else{
-		    	step8.setStep8_ok(true);
-		    }
+			boolean errorProcess = entry.getValue();
+			if(errorProcess){
+				step8.setStep8_ok(false);
+			}
+			else{
+				step8.setStep8_ok(true);
+			}
 		}
 		step8.setPathWrongRaster(rasterTreatment.getWrongRasterFile().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), "output/")); //change to 'output/'
 		step8.setPathMatrixResultRaster(rasterTreatment.getMatrixFileValidCells().getAbsolutePath().replace(initialisation.getDIRECTORY_PATH(), "output/")); //change to 'output/'
@@ -432,7 +432,7 @@ public class LaunchWorkflow {
 
 	/**
 	 * Launch establishmentMeans option
-	 * 
+	 *
 	 * @return void
 	 */
 	public void launchEstablishmentMeansOption(){
@@ -476,7 +476,7 @@ public class LaunchWorkflow {
 				e.printStackTrace();
 			}
 			DatabaseTreatment newConnection = new DatabaseTreatment(statement);
-			
+
 			ArrayList<String > resultCleanTable = newConnection.getCleanTableFromIdFile(idFile, initialisation.getNbSessionRandom());
 			String nameFile = originalName.replace("." + originalExtension, "") + "_" + initialisation.getNbSessionRandom() + "_clean.csv";
 			File cleanOutput = this.dataTreatment.createFileCsv(resultCleanTable, nameFile, "final_results");
@@ -491,7 +491,7 @@ public class LaunchWorkflow {
 	}
 
 	/**
-	 *  
+	 *
 	 * @return TreatmentData
 	 */
 	public Treatment getDataTreatment() {
@@ -499,7 +499,7 @@ public class LaunchWorkflow {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param dataTreatment
 	 * @return void
 	 */

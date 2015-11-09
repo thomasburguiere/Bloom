@@ -21,9 +21,9 @@ import java.util.Map.Entry;
 
 import org.omg.PortableInterceptor.INACTIVE;
 /**
- * 
+ *
  * src.model
- * 
+ *
  * MappingDwC.java
  */
 public class MappingDwC{
@@ -42,9 +42,9 @@ public class MappingDwC{
 	private String filepath;
 	private int idFile;
 	private ArrayList<String> lines;
-	
+
 	/**
-	 * 
+	 *
 	 * src.model
 	 * MappingDwC
 	 */
@@ -58,7 +58,7 @@ public class MappingDwC{
 	 * set correct DwC tags
 	 * set all tags in input file
 	 * set present tags in both 
-	 * 
+	 *
 	 * @return void
 	 */
 	public void initialiseMapping(String nbSessionRandom){
@@ -77,13 +77,13 @@ public class MappingDwC{
 	public File createNewDwcFile(String nbFileRandom, int idFile) throws IOException{
 		String mappedFilename = noMappedFile.getCsvFile().getParent() + "/mappedDWC_" + nbFileRandom + "_" + idFile +".csv";
 		File mappedFile = new File(mappedFilename);
-		
+
 		FileWriter writerMappedFile = new FileWriter (mappedFile);
 		HashMap<String, String> connectionTags = this.getConnectionTags();
 		HashMap<String, ArrayList<String>> connectionValuesTags = this.getConnectionValuesTags();
 		ArrayList<Integer> listInvalidColumns = this.getListInvalidColumns();
 
-		String firstNewLine = "";		
+		String firstNewLine = "";
 		int nbCol = connectionTags.size();
 		int countCol = 1;
 		//System.out.println("value " + connectionTags);
@@ -133,7 +133,7 @@ public class MappingDwC{
 
 	/**
 	 * Found all DwC tags
-	 * 
+	 *
 	 * @return ArrayList<String>
 	 */
 	public ArrayList<String> initialiseDwCTags(String nbSessionRandom){
@@ -144,7 +144,7 @@ public class MappingDwC{
 		String getColumnsName = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='DarwinCoreInput';";
 		ArrayList<String> messages = new ArrayList<>();
 		DatabaseTreatment columnsNameDwC = null;
-		
+
 		try {
 			Statement statement = ConnectionDatabase.getInstance().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			columnsNameDwC = new DatabaseTreatment(statement);
@@ -153,11 +153,11 @@ public class MappingDwC{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		messages.add("\n--- Get columns name of DwC format ---");
-		
+
 		//messages.addAll(columnsNameDwC.newConnection(choiceStatement, getColumnsName));
-		
+
 		tempList = columnsNameDwC.getResultatSelect();
 		// delete "COLUMN_NAME" and "id_"filename : 
 		tempList.remove(0);
@@ -178,9 +178,9 @@ public class MappingDwC{
 
 	/**
 	 * Found all tags in input file
-	 * 
+	 *
 	 * @return ArrayList<String>
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public ArrayList<String> initialiseNoMappedTags(){
 		/*CSVFile csvNoMapped = new CSVFile(this.getNoMappedFile().getCsvFile());
@@ -195,7 +195,7 @@ public class MappingDwC{
 
 	/**
 	 * Found all tags already DwC in input file 
-	 * 
+	 *
 	 * @return ArrayList<String>
 	 */
 	public ArrayList<String> initialisePresentTags(){
@@ -229,14 +229,14 @@ public class MappingDwC{
 
 	/**
 	 * Connect tags (from input file) to value (from input file)
-	 * 
+	 *
 	 * @return HashMap<String,ArrayList<String>>
 	 */
 	public HashMap<String, ArrayList<String>> doConnectionValuesTags(){
 		HashMap<String, ArrayList<String>> connectionValuesTags = new HashMap<String, ArrayList<String>>();
 		CSVFile noMappedFile = this.getNoMappedFile();
 		try{
-			InputStream inputStreamNoMapped = new FileInputStream(noMappedFile.getCsvFile()); 
+			InputStream inputStreamNoMapped = new FileInputStream(noMappedFile.getCsvFile());
 			InputStreamReader inputStreamReaderNoMapped = new InputStreamReader(inputStreamNoMapped);
 			BufferedReader readerNoMapped = new BufferedReader(inputStreamReaderNoMapped);
 			String line = "";
@@ -274,7 +274,7 @@ public class MappingDwC{
 
 				countLine++;
 			}
-			readerNoMapped.close(); 
+			readerNoMapped.close();
 		}
 		catch(Exception e){
 			System.err.println(e);
@@ -303,10 +303,10 @@ public class MappingDwC{
 		return false;
 	}
 
-	
+
 	public int getNbLines(File file){
 		int nbLines = 0;
-		
+
 		BufferedReader br = null;
 		InputStream in = null;
 		try{
@@ -329,11 +329,11 @@ public class MappingDwC{
 				}
 			}
 		}
-		
+
 		return nbLines;
 	}
 	/**
-	 * 
+	 *
 	 * @return CSVFile
 	 */
 	public CSVFile getNoMappedFile() {
@@ -341,7 +341,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param noMappedFile
 	 * @return void
 	 */
@@ -350,7 +350,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @return File
 	 */
 	public File getMappedFile() {
@@ -358,7 +358,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param mappedFile
 	 * @return void
 	 */
@@ -368,7 +368,7 @@ public class MappingDwC{
 
 
 	/**
-	 * 
+	 *
 	 * @return ArrayList<String>
 	 */
 	public ArrayList<String> getPresentTags() {
@@ -376,7 +376,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param presentTags
 	 * @return void
 	 */
@@ -385,7 +385,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @return ArrayList<String>
 	 */
 	public ArrayList<String> getTagsListNoMapped() {
@@ -393,7 +393,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param tagsListNoMapped
 	 * @return void
 	 */
@@ -402,7 +402,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @return ArrayList<String>
 	 */
 	public ArrayList<String> getTagsListDwC() {
@@ -410,7 +410,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param tagsListDwC
 	 * @return void
 	 */
@@ -420,7 +420,7 @@ public class MappingDwC{
 
 
 	/**
-	 * 
+	 *
 	 * @return HashMap<String,String>
 	 */
 	public HashMap<String, String> getConnectionTags() {
@@ -428,7 +428,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param connectionTags
 	 * @return void
 	 */
@@ -437,7 +437,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @return HashMap<String,ArrayList<String>>
 	 */
 	public HashMap<String, ArrayList<String>> getConnectionValuesTags() {
@@ -445,7 +445,7 @@ public class MappingDwC{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param connectionValuesTags
 	 * @return void
 	 */
@@ -508,5 +508,5 @@ public class MappingDwC{
 	public void setLines(ArrayList<String> lines) {
 		this.lines = lines;
 	}
-	
+
 }

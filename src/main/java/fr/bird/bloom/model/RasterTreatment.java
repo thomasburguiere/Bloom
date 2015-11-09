@@ -41,7 +41,7 @@ public class RasterTreatment {
 	private File matrixFileValidCells;
 	private File wrongRasterFile;
 	private HashMap<String, Boolean> checkProcess;
-	
+
 	public RasterTreatment(ArrayList<File> rasterFiles, Treatment dataTreatment){
 		this.rasterFiles = rasterFiles;
 		this.dataTreatment = dataTreatment;
@@ -49,7 +49,7 @@ public class RasterTreatment {
 
 	/**
 	 * All treatment steps for raster analysis
-	 * 
+	 *
 	 * @return File matrix with raster results
 	 */
 	public File treatmentRaster(){
@@ -85,11 +85,11 @@ public class RasterTreatment {
 
 		return matrixFileValidCells;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Check the number of raster file, necessary 1
-	 * 
+	 *
 	 * @param ArrayList<File> raster file
 	 * @return void
 	 */
@@ -106,20 +106,20 @@ public class RasterTreatment {
 				hashMapValidOrNot.put(id, booleanRasterFiles);
 			}
 		}
-		
+
 		checkProcess = new HashMap<>();
 	}
 
 	/**
 	 * Retrieve all "id_" included in a raster cell
-	 * Use R script thanks to "raster" package 
-	 * 
+	 * Use R script thanks to "raster" package
+	 *
 	 * @return ArrayList<Integer> list of all "id_" which are included in a raster cell
 	 */
 	public ArrayList<Integer> getValidData(){
 
 		/************************************* FORMATS ************************************************
-		File type 		Long name 					default extension 	Multiband support
+		 File type 		Long name 					default extension 	Multiband support
 		 *	raster 			’Native’ raster package format 			.grd 				Yes
 		 *	ascii 			ESRI Ascii 					.asc 				No
 		 *	SAGA GIS		System for Automated Geoscientific Analyses	.sdat 				No
@@ -134,7 +134,7 @@ public class RasterTreatment {
 		{
 			new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/").mkdirs();
 		}
-		File dataInputFileRaster = new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/dataInputFileRaster.csv");			
+		File dataInputFileRaster = new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/dataInputFileRaster.csv");
 		//System.out.println("dataInputFileRaster : " + dataInputFileRaster.getAbsolutePath());
 		ArrayList<Integer> listValidData = new ArrayList<>();
 		ArrayList<Integer> idForOneRaster = new ArrayList<>();
@@ -162,12 +162,12 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * Call R script to found coordinates included in a raster cell  
-	 * 
+	 * Call R script to found coordinates included in a raster cell
+	 *
 	 * @param String scriptRaster path of raster script
 	 * @param File dataRasterFile raster file for the analysis
-	 * @param File dataInputFileRaster input data 
-	 * 
+	 * @param File dataInputFileRaster input data
+	 *
 	 * @return ArrayList<Integer>
 	 */
 	public ArrayList<Integer> rasterScript(String scriptRaster, File dataRasterFile, File dataInputFileRaster){
@@ -202,8 +202,8 @@ public class RasterTreatment {
 			Process proc = rt.exec(cmdarray);
 			// any error message?
 			// any streamGobble is a thread
-			StreamGobbler errorGobbler = new StreamGobbler(proc.getErrorStream(), "ERROR", fosError);            
-			
+			StreamGobbler errorGobbler = new StreamGobbler(proc.getErrorStream(), "ERROR", fosError);
+
 			// any output?
 			// new thread
 			StreamGobbler outputGobbler = new StreamGobbler(proc.getInputStream(), "OUTPUT", fos);
@@ -221,25 +221,25 @@ public class RasterTreatment {
 		}
 		boolean errorProcess = this.errorDuringProcess(errorRaster);
 		//System.out.println("error process : " + errorProcess);
-		
+
 		this.getCheckProcess().put(dataRasterFile.getName(), errorProcess);
-		
-		ArrayList<Integer> listValidData= null; 
-		
+
+		ArrayList<Integer> listValidData= null;
+
 		if(!errorProcess){
 			listValidData = this.getValidIDCells(validRaster);
 		}
 		else{
 			listValidData = new ArrayList<>();
 		}
-		
-		
+
+
 		return listValidData;
 	}
 
 	/**
 	 * Check if a error happened during R script process
-	 * 
+	 *
 	 * @param errorRaster
 	 * @return boolean
 	 */
@@ -253,7 +253,7 @@ public class RasterTreatment {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 		InputStreamReader ipsr = new InputStreamReader(ips);
 		BufferedReader br = new BufferedReader(ipsr);
 		String line;
@@ -267,20 +267,20 @@ public class RasterTreatment {
 					error = true;
 				}
 			}
-			br.close(); 
+			br.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return error;
-		
+
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Retrieve all valid "id_" (included in a raster cell)
-	 * 
+	 *
 	 * @param File temporary file with all valid "id_" (included in raster cell) and others informations contained in raster file
 	 * @return ArrayList<Integer> list of valid "id_"
 	 */
@@ -292,7 +292,7 @@ public class RasterTreatment {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 		File outputRaster = new File(DIRECTORY_PATH + "temp/" + dataTreatment.getNbSessionRandom() + "/rasterAnalyse/outputRaster.csv");
 		InputStreamReader ipsr=new InputStreamReader(ips);
 		BufferedReader br=new BufferedReader(ipsr);
@@ -311,7 +311,7 @@ public class RasterTreatment {
 						/*for(int i=0; i < arraySplit.length; i++){
 							System.out.println("array : " + arraySplit[i]);
 						}*/
-						
+
 						listValidData.add(Integer.parseInt(arraySplit[1]));
 					}
 				}
@@ -319,7 +319,7 @@ public class RasterTreatment {
 
 
 			}
-			br.close(); 
+			br.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -332,7 +332,7 @@ public class RasterTreatment {
 
 	/**
 	 * Write a matrix file with raster results
-	 * 
+	 *
 	 * @return File
 	 */
 	public File writeMatrixReport(){
@@ -362,11 +362,11 @@ public class RasterTreatment {
 		for (Entry<Integer, HashMap<String, Boolean>> entry : hashMapValidOrNot.entrySet()) {
 
 			HashMap<String, Boolean> proba = entry.getValue();
-			
+
 			if(firstLine){
 				int nbRasterFile = 1;
 				for (Entry<String, Boolean> probaEntry : proba.entrySet()){
-					
+
 					String rasterName = probaEntry.getKey();
 					//System.out.println("nbRasterFile : " + proba.size() + " " + rasterName);
 					if(nbRasterFile == 1){
@@ -400,7 +400,7 @@ public class RasterTreatment {
 			e.printStackTrace();
 		}
 		for (Entry<Integer, HashMap<String, Boolean>> entry : hashMapValidOrNot.entrySet()) {
-			int id = entry.getKey();			
+			int id = entry.getKey();
 			int nbRasterFile = 1;
 			String line = "";
 			HashMap<String, Boolean> probaBis = entry.getValue();
@@ -467,13 +467,13 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * From valid list and all data, retrieve not valid data
 	 * Not valid data aren't included in a raster cell
-	 * 
+	 *
 	 * @param ArrayList<Integer> list of valid data "id_"
-	 * @param ArrayList<String> list of valid and not valid data "id_" 
-	 * @return ArrayList<Integer> list of not valid data "id_" 
+	 * @param ArrayList<String> list of valid and not valid data "id_"
+	 * @return ArrayList<Integer> list of not valid data "id_"
 	 */
 	public ArrayList<Integer> getIDdelete(ArrayList<Integer> validData, ArrayList<String> validAndNotData){
 		ArrayList<Integer> dataToDelete = new ArrayList<Integer>();
@@ -489,10 +489,10 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * From "id_" not valid, delete it to Clean table
-	 * 
-	 * @param ArrayList<Integer> list of not valid data "id_" 
+	 *
+	 * @param ArrayList<Integer> list of not valid data "id_"
 	 * @return void
 	 */
 	public void deleteWrongCellsFromClean(ArrayList<Integer> notValidData){
@@ -558,7 +558,7 @@ public class RasterTreatment {
 			this.setWrongRasterFile(wrongRasterFile);
 		}
 
-		/* 
+		/*
 		 * Second part, delete data in Clean table aren't included in cells
 		 */
 		for(int i = 0 ; i < notValidData.size() ; i++){
@@ -593,7 +593,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return ArrayList<File>
 	 */
 	public ArrayList<File> getRasterFiles() {
@@ -601,7 +601,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param rasterFiles
 	 */
 	public void setRasterFiles(ArrayList<File> rasterFiles) {
@@ -609,7 +609,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return HashMap<Integer, HashMap<String, Boolean>>
 	 */
 	public HashMap<Integer, HashMap<String, Boolean>> getHashMapValidOrNot() {
@@ -617,7 +617,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param hashMapValidOrNot
 	 */
 	public void setHashMapValidOrNot(
@@ -626,7 +626,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Treatment
 	 */
 	public Treatment getDataTreatment() {
@@ -634,7 +634,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param dataTreatment
 	 */
 	public void setDataTreatment(Treatment dataTreatment) {
@@ -642,7 +642,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getDIRECTORY_PATH() {
@@ -650,7 +650,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param dIRECTORY_PATH
 	 */
 	public void setDIRECTORY_PATH(String dIRECTORY_PATH) {
@@ -658,7 +658,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return int
 	 */
 	public int getNbWrongOccurrences() {
@@ -666,7 +666,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param nbWrongOccurrences
 	 */
 	public void setNbWrongOccurrences(int nbWrongOccurrences) {
@@ -674,7 +674,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getRESSOURCES_PATH() {
@@ -682,7 +682,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param rESSOURCES_PATH
 	 */
 	public void setRESSOURCES_PATH(String rESSOURCES_PATH) {
@@ -690,7 +690,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return File
 	 */
 	public File getMatrixFileValidCells() {
@@ -698,7 +698,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param matrixFileValidCells
 	 */
 	public void setMatrixFileValidCells(File matrixFileValidCells) {
@@ -706,7 +706,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return File
 	 */
 	public File getWrongRasterFile() {
@@ -714,7 +714,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param wrongRasterFile
 	 */
 	public void setWrongRasterFile(File wrongRasterFile) {
@@ -722,7 +722,7 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return HashMap<String, Boolean>
 	 */
 	public HashMap<String, Boolean> getCheckProcess() {
@@ -730,11 +730,11 @@ public class RasterTreatment {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param checkProcess
 	 */
 	public void setCheckProcess(HashMap<String, Boolean> checkProcess) {
 		this.checkProcess = checkProcess;
 	}
-	
+
 }
