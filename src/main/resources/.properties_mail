@@ -1,0 +1,4 @@
+smtpHost	smtp.mnhn.fr
+from	mhachet@mnhn.fr
+username	mhachet
+password	ledzeppelin
