@@ -1,4 +1,5 @@
-smtpHost	smtp.mnhn.fr
-from	mhachet@mnhn.fr
+smtpHost	smtp.orange.fr
+from	mhachet@orange.fr
 username	mhachet
-password	ledzeppelin
+password	797DGT
+smtpPort	587
